@@ -11,6 +11,7 @@ namespace BeautyStudio.ViewModels;
 public partial class UpcomingInterventionsViewModel : ObservableObject
 {
     private readonly AppointmentService _appointmentService = new();
+    private readonly MainViewModel _mainViewModel;
 
     public ObservableCollection<Appointment> Appointments { get; } = new();
 
@@ -19,9 +20,18 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
 
     public bool HasAppointments => Appointments.Count > 0;
 
-    public UpcomingInterventionsViewModel()
+    public UpcomingInterventionsViewModel(MainViewModel mainViewModel)
     {
+        _mainViewModel = mainViewModel;
         Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasAppointments));
+    }
+
+    [RelayCommand]
+    private async Task EditAppointmentAsync(Appointment? appointment)
+    {
+        if (appointment?.Customer == null) return;
+        var details = new CustomerDetailsViewModel(appointment.Customer, _mainViewModel, loadImmediately: false, returnToUpcomingAppointments: true);
+        await details.LoadAndEditAppointmentAsync(appointment);
     }
 
     [RelayCommand]
