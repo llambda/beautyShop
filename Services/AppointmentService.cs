@@ -29,6 +29,17 @@ public class AppointmentService
             .ToListAsync();
     }
 
+    public async Task<List<Appointment>> GetUpcomingAsync()
+    {
+        await using var db = new AppDbContext();
+        return await db.Set<Appointment>().AsNoTracking()
+            .Include(x => x.Customer)
+            .Include(x => x.InterventionType)
+            .Where(x => x.Date >= DateTime.Now)
+            .OrderBy(x => x.Date)
+            .ToListAsync();
+    }
+
     public async Task SaveAsync(Appointment appointment)
     {
         await using var db = new AppDbContext();
