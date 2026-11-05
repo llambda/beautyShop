@@ -107,6 +107,12 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAppointmentAsync()
     {
+        if (SelectedAppointmentType == null)
+        {
+            StatusMessage = "Seleziona il tipo di intervento per l'appuntamento.";
+            return;
+        }
+
         try
         {
             var item = SelectedAppointment ?? new Appointment { CustomerId = Customer.Id };
