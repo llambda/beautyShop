@@ -29,7 +29,7 @@
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate>
       <DataTemplate>
-       <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="88" Background="{DynamicResource MaterialDesign.Brush.Surface}">
+       <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="88">
         <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers><DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger></Style.Triggers></Style></Border.Style>
         <Grid>
          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
