@@ -15,6 +15,7 @@ public partial class MainViewModel : ObservableObject
     private readonly CustomerDialogService _dialogService;
     private readonly SettingsViewModel _settingsViewModel;
     private CalendarViewModel? _calendarViewModel;
+    private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
 
@@ -108,7 +109,9 @@ public partial class MainViewModel : ObservableObject
                 break;
 
             case "Interventi":
-                ShowCustomers();
+                _upcomingInterventionsViewModel ??= new UpcomingInterventionsViewModel();
+                CurrentViewModel = _upcomingInterventionsViewModel;
+                _ = _upcomingInterventionsViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
         }
     }
