@@ -22,7 +22,6 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
     public UpcomingInterventionsViewModel()
     {
         Interventions.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasInterventions));
-        _ = LoadAsync();
     }
 
     [RelayCommand]
