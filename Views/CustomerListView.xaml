@@ -86,7 +86,7 @@
                             MinHeight="310"
                             Margin="0,0,20,20"
                             Padding="0"
-                            Background="{DynamicResource MaterialDesign.Brush.Surface}"
+                            Background="Transparent"
                             BorderThickness="0"
                             Cursor="Hand"
                             Command="{Binding DataContext.EditCustomerCommand,
@@ -97,7 +97,7 @@
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border
-                                        Background="{TemplateBinding Background}"
+                                        Background="{DynamicResource MaterialDesign.Brush.Surface}"
                                         BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}"
                                         BorderThickness="1"
                                         CornerRadius="14"
