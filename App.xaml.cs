@@ -39,6 +39,9 @@ public partial class App : Application
                     Notes TEXT NULL,
                     CONSTRAINT FK_Appointments_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
                 );");
+                var appointmentTypeColumn = await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('Appointments') WHERE name = 'InterventionTypeId'").SingleAsync();
+                if (appointmentTypeColumn == 0)
+                    await db.Database.ExecuteSqlRawAsync("ALTER TABLE Appointments ADD COLUMN InterventionTypeId INTEGER NULL;");
             }
 
             var customerService = new CustomerService();
