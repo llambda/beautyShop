@@ -62,7 +62,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (_returnToUpcomingAppointments)
             _mainViewModel.ShowUpcomingAppointments();
         else
-            ReturnAfterAppointmentEdit();
+            _mainViewModel.ShowCustomerDetails(this);
     }
 
     private async Task LoadAsync()
@@ -159,7 +159,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         await ReloadAppointmentsAsync();
         SelectedAppointment = null;
         StatusMessage = "Appuntamento eliminato.";
-        _mainViewModel.ShowCustomerDetails(this);
+        ReturnAfterAppointmentEdit();
     }
 
     [RelayCommand]
