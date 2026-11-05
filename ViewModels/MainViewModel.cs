@@ -109,11 +109,19 @@ public partial class MainViewModel : ObservableObject
                 break;
 
             case "Interventi":
-                _upcomingInterventionsViewModel ??= new UpcomingInterventionsViewModel();
+                _upcomingInterventionsViewModel ??= new UpcomingInterventionsViewModel(this);
                 CurrentViewModel = _upcomingInterventionsViewModel;
                 _ = _upcomingInterventionsViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
         }
+    }
+
+    public void ShowUpcomingAppointments()
+    {
+        if (_upcomingInterventionsViewModel == null) return;
+        SelectedSection = "Interventi";
+        CurrentViewModel = _upcomingInterventionsViewModel;
+        _ = _upcomingInterventionsViewModel.RefreshCommand.ExecuteAsync(null);
     }
 
     public void ShowCustomerDetails(CustomerDetailsViewModel viewModel)
