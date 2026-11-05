@@ -14,6 +14,7 @@ public partial class MainViewModel : ObservableObject
     private readonly CustomerService _customerService;
     private readonly CustomerDialogService _dialogService;
     private readonly SettingsViewModel _settingsViewModel;
+    private CalendarViewModel? _calendarViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
 
@@ -99,10 +100,14 @@ public partial class MainViewModel : ObservableObject
                 _ = _settingsViewModel.LoadInterventionTypesCommand.ExecuteAsync(null);
                 break;
 
+            case "Appuntamenti":
             case "Calendario":
+                _calendarViewModel ??= new CalendarViewModel();
+                CurrentViewModel = _calendarViewModel;
+                _ = _calendarViewModel.RefreshCommand.ExecuteAsync(null);
+                break;
+
             case "Interventi":
-                // Le relative schermate verranno aggiunte
-                // nei prossimi passaggi.
                 ShowCustomers();
                 break;
         }
