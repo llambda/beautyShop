@@ -31,6 +31,13 @@ public partial class App : Application
                     CONSTRAINT FK_Interventions_InterventionLocations_LocationId FOREIGN KEY (LocationId) REFERENCES InterventionLocations (Id) ON DELETE RESTRICT,
                     CONSTRAINT FK_Interventions_InterventionTypes_TypeId FOREIGN KEY (TypeId) REFERENCES InterventionTypes (Id) ON DELETE RESTRICT
                 );");
+                await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS Appointments (
+                    Id INTEGER NOT NULL CONSTRAINT PK_Appointments PRIMARY KEY AUTOINCREMENT,
+                    CustomerId INTEGER NOT NULL,
+                    Date TEXT NOT NULL,
+                    Notes TEXT NULL,
+                    CONSTRAINT FK_Appointments_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
+                );");
             }
 
             var customerService = new CustomerService();
