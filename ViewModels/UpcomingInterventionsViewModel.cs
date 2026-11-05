@@ -10,18 +10,18 @@ namespace BeautyStudio.ViewModels;
 
 public partial class UpcomingInterventionsViewModel : ObservableObject
 {
-    private readonly InterventionService _interventionService = new();
+    private readonly AppointmentService _appointmentService = new();
 
-    public ObservableCollection<Intervention> Interventions { get; } = new();
+    public ObservableCollection<Appointment> Appointments { get; } = new();
 
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private string? statusMessage;
 
-    public bool HasInterventions => Interventions.Count > 0;
+    public bool HasAppointments => Interventions.Count > 0;
 
     public UpcomingInterventionsViewModel()
     {
-        Interventions.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasInterventions));
+        Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasInterventions));
     }
 
     [RelayCommand]
@@ -33,17 +33,17 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
         StatusMessage = null;
         try
         {
-            var items = await _interventionService.GetUpcomingAsync();
-            Interventions.Clear();
+            var items = await _appointmentService.GetUpcomingAsync();
+            Appointments.Clear();
             foreach (var item in items)
-                Interventions.Add(item);
+                Appointments.Add(item);
 
-            if (Interventions.Count == 0)
-                StatusMessage = "Non ci sono interventi programmati a partire da oggi.";
+            if (Appointments.Count == 0)
+                StatusMessage = "Non ci sono appuntamenti programmati a partire da adesso.";
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Errore durante il caricamento degli interventi: {ex.Message}";
+            StatusMessage = $"Errore durante il caricamento degli appuntamenti: {ex.Message}";
         }
         finally
         {
