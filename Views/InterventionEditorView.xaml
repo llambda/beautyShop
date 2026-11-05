@@ -1,0 +1,23 @@
+<UserControl x:Class="BeautyStudio.Views.InterventionEditorView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+ Background="#F7F5F6">
+ <ScrollViewer VerticalScrollBarVisibility="Auto"><Grid Margin="24"><StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
+  <Button Command="{Binding Parent.CancelEditorCommand}" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/><TextBlock Text="Torna alla scheda cliente" Margin="8,0,0,0"/></StackPanel></Button>
+  <TextBlock Text="{Binding Parent.Customer.FirstName} {Binding Parent.Customer.LastName}" FontSize="14" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,12,0,4"/>
+  <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+  <Border Background="White" CornerRadius="15" Padding="24"><StackPanel>
+   <TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding Parent.InterventionDate}" Margin="0,0,0,16"/>
+   <TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Locations}" SelectedItem="{Binding Parent.SelectedLocation}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
+   <TextBlock Text="Tipo di intervento" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedType}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
+   <TextBlock Text="Note" Margin="0,0,0,5"/><TextBox Text="{Binding Parent.InterventionNotes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="85" Padding="8"/>
+   <TextBlock Text="Foto prima" FontWeight="SemiBold" Margin="0,18,0,7"/><Button Content="Aggiungi foto prima" Command="{Binding Parent.AddBeforePhotosCommand}" HorizontalAlignment="Left" Padding="12,6"/>
+   <ItemsControl ItemsSource="{Binding Parent.BeforePhotos}" Margin="0,8,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,8,8"><StackPanel><Image Source="{Binding}" Width="110" Height="90" Stretch="UniformToFill"/><Button Content="Rimuovi" Command="{Binding DataContext.Parent.RemoveBeforePhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+   <TextBlock Text="Foto dopo" FontWeight="SemiBold" Margin="0,18,0,7"/><Button Content="Aggiungi foto dopo" Command="{Binding Parent.AddAfterPhotosCommand}" HorizontalAlignment="Left" Padding="12,6"/>
+   <ItemsControl ItemsSource="{Binding Parent.AfterPhotos}" Margin="0,8,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,8,8"><StackPanel><Image Source="{Binding}" Width="110" Height="90" Stretch="UniformToFill"/><Button Content="Rimuovi" Command="{Binding DataContext.Parent.RemoveAfterPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+   <TextBlock Text="{Binding Parent.StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,16,0,0" TextWrapping="Wrap"/>
+   <StackPanel Orientation="Horizontal" Margin="0,20,0,0"><Button Content="Salva intervento" Command="{Binding Parent.SaveInterventionCommand}" Padding="18,9" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" BorderThickness="0"/><Button Content="Elimina" Command="{Binding Parent.DeleteInterventionCommand}" Margin="8,0,0,0" Padding="18,9" IsEnabled="{Binding Parent.SelectedIntervention, Converter={StaticResource NullToBoolConverter}}"/><Button Content="Annulla" Command="{Binding Parent.CancelEditorCommand}" Margin="8,0,0,0" Padding="18,9"/></StackPanel>
+  </StackPanel></Border>
+ </StackPanel></Grid></ScrollViewer>
+</UserControl>
