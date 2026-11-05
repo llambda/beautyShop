@@ -29,10 +29,11 @@
      <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
      <ItemsControl.ItemTemplate>
       <DataTemplate>
-       <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="88" Background="{Binding IsToday, Converter={StaticResource BoolToSurfaceBrushConverter}}">
+       <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="88" Background="{DynamicResource MaterialDesign.Brush.Surface}">
+        <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers><DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger></Style.Triggers></Style></Border.Style>
         <Grid>
          <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-         <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold" Foreground="{Binding IsCurrentMonth, Converter={StaticResource BoolToForegroundBrushConverter}}"/>
+         <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/><Style.Triggers><DataTrigger Binding="{Binding IsCurrentMonth}" Value="False"><Setter Property="Foreground" Value="#B8AFB4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
           <ItemsControl ItemsSource="{Binding Appointments}">
            <ItemsControl.ItemTemplate><DataTemplate>
