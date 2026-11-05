@@ -18,6 +18,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
 {
     private readonly MainViewModel _mainViewModel;
     private readonly InterventionService _interventionService = new();
+    private readonly AppointmentService _appointmentService = new();
     private readonly InterventionLocationService _locationService = new();
     private readonly InterventionTypeService _typeService = new();
 
@@ -28,8 +29,12 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private InterventionType? selectedType;
     [ObservableProperty] private string? interventionNotes;
     [ObservableProperty] private string? statusMessage;
+    [ObservableProperty] private Appointment? selectedAppointment;
+    [ObservableProperty] private DateTime appointmentDate = DateTime.Now;
+    [ObservableProperty] private string? appointmentNotes;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
+    public ObservableCollection<Appointment> Appointments { get; } = new();
     public ObservableCollection<InterventionLocation> Locations { get; } = new();
     public ObservableCollection<InterventionType> Types { get; } = new();
     public ObservableCollection<string> BeforePhotos { get; } = new();
@@ -53,6 +58,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             foreach (var item in locations) Locations.Add(item);
             foreach (var item in types) Types.Add(item);
             await ReloadInterventionsAsync();
+            await ReloadAppointmentsAsync();
         }
         catch (Exception ex) { StatusMessage = $"Errore caricamento: {ex.Message}"; }
     }
@@ -62,6 +68,58 @@ public partial class CustomerDetailsViewModel : ObservableObject
         var items = await _interventionService.GetForCustomerAsync(Customer.Id);
         Interventions.Clear();
         foreach (var item in items) Interventions.Add(item);
+    }
+
+    private async Task ReloadAppointmentsAsync()
+    {
+        var items = await _appointmentService.GetForCustomerAsync(Customer.Id);
+        Appointments.Clear();
+        foreach (var item in items) Appointments.Add(item);
+    }
+
+    [RelayCommand]
+    private void NewAppointment()
+    {
+        SelectedAppointment = null;
+        AppointmentDate = DateTime.Now;
+        AppointmentNotes = string.Empty;
+    }
+
+    [RelayCommand]
+    private void EditAppointment(Appointment? item)
+    {
+        if (item == null) return;
+        SelectedAppointment = item;
+        AppointmentDate = item.Date;
+        AppointmentNotes = item.Notes;
+    }
+
+    [RelayCommand]
+    private async Task SaveAppointmentAsync()
+    {
+        try
+        {
+            var item = SelectedAppointment ?? new Appointment { CustomerId = Customer.Id };
+            item.Date = AppointmentDate;
+            item.Notes = AppointmentNotes?.Trim();
+            await _appointmentService.SaveAsync(item);
+            await ReloadAppointmentsAsync();
+            NewAppointment();
+            StatusMessage = "Appuntamento salvato.";
+        }
+        catch (Exception ex) { StatusMessage = $"Salvataggio appuntamento non riuscito: {ex.Message}"; }
+    }
+
+    [RelayCommand]
+    private async Task DeleteAppointmentAsync()
+    {
+        if (SelectedAppointment == null) return;
+        if (MessageBox.Show("Eliminare questo appuntamento?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            return;
+        await _appointmentService.DeleteAsync(SelectedAppointment);
+        await ReloadAppointmentsAsync();
+        NewAppointment();
+        StatusMessage = "Appuntamento eliminato.";
     }
 
     [RelayCommand]
