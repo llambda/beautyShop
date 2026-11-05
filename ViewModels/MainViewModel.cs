@@ -108,6 +108,21 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    public void ShowCustomerDetails(CustomerDetailsViewModel viewModel)
+    {
+        CurrentViewModel = viewModel;
+    }
+
+    public void ShowInterventionEditor(CustomerDetailsViewModel viewModel)
+    {
+        CurrentViewModel = new InterventionEditorViewModel(viewModel);
+    }
+
+    public void ShowAppointmentEditor(CustomerDetailsViewModel viewModel)
+    {
+        CurrentViewModel = new AppointmentEditorViewModel(viewModel);
+    }
+
     public void ShowCustomers()
     {
         SelectedSection = "Clienti";
