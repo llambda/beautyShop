@@ -85,6 +85,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = DateTime.Today;
         AppointmentTime = DateTime.Now.ToString("HH:mm");
         AppointmentNotes = string.Empty;
+        StatusMessage = null;
+        _mainViewModel.ShowAppointmentEditor(this);
     }
 
     [RelayCommand]
@@ -95,6 +97,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = item.Date.Date;
         AppointmentTime = item.Date.ToString("HH:mm");
         AppointmentNotes = item.Notes;
+        StatusMessage = null;
+        _mainViewModel.ShowAppointmentEditor(this);
     }
 
     [RelayCommand]
@@ -112,8 +116,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.Notes = AppointmentNotes?.Trim();
             await _appointmentService.SaveAsync(item);
             await ReloadAppointmentsAsync();
-            NewAppointment();
+            SelectedAppointment = null;
             StatusMessage = "Appuntamento salvato.";
+            _mainViewModel.ShowCustomerDetails(this);
         }
         catch (Exception ex) { StatusMessage = $"Salvataggio appuntamento non riuscito: {ex.Message}"; }
     }
@@ -126,8 +131,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
             return;
         await _appointmentService.DeleteAsync(SelectedAppointment);
         await ReloadAppointmentsAsync();
-        NewAppointment();
+        SelectedAppointment = null;
         StatusMessage = "Appuntamento eliminato.";
+        _mainViewModel.ShowCustomerDetails(this);
     }
 
     [RelayCommand]
@@ -141,6 +147,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         BeforePhotos.Clear();
         AfterPhotos.Clear();
         StatusMessage = null;
+        _mainViewModel.ShowInterventionEditor(this);
     }
 
     [RelayCommand]
@@ -155,6 +162,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SetPhotos(BeforePhotos, item.BeforePhotosJson);
         SetPhotos(AfterPhotos, item.AfterPhotosJson);
         StatusMessage = null;
+        _mainViewModel.ShowInterventionEditor(this);
     }
 
     [RelayCommand]
@@ -179,7 +187,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             await ReloadInterventionsAsync();
             SelectedIntervention = null;
             StatusMessage = "Intervento salvato.";
-            NewIntervention();
+            _mainViewModel.ShowCustomerDetails(this);
         }
         catch (Exception ex) { StatusMessage = $"Salvataggio non riuscito: {ex.Message}"; }
     }
@@ -192,8 +200,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
             return;
         await _interventionService.DeleteAsync(SelectedIntervention);
         await ReloadInterventionsAsync();
-        NewIntervention();
+        SelectedIntervention = null;
         StatusMessage = "Intervento eliminato.";
+        _mainViewModel.ShowCustomerDetails(this);
     }
 
     [RelayCommand]
@@ -239,6 +248,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
         }
         catch { }
     }
+
+    [RelayCommand]
+    private void CancelEditor() => _mainViewModel.ShowCustomerDetails(this);
 
     [RelayCommand]
     private void BackToCustomers() => _mainViewModel.ShowCustomers();
