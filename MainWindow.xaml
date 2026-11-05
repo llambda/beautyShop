@@ -20,6 +20,10 @@
             <views:CustomerListView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:CalendarViewModel}">
+            <views:CalendarView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:CustomerDetailsViewModel}">
             <views:CustomerDetailsView/>
         </DataTemplate>
@@ -124,7 +128,7 @@
 
                     <Button Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Calendario"
+                            CommandParameter="Appuntamenti"
                             Height="48"
                             HorizontalContentAlignment="Center">
 
@@ -135,7 +139,7 @@
                                 Width="24"
                                 Height="24"/>
 
-                            <TextBlock Text="Calendario"
+                            <TextBlock Text="Appuntamenti"
                                        Margin="15,0,0,0"
                                        VerticalAlignment="Center"
                                        Visibility="{Binding IsMenuExpanded,
