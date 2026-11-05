@@ -24,6 +24,14 @@
             <views:CustomerDetailsView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:InterventionEditorViewModel}">
+            <views:InterventionEditorView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:AppointmentEditorViewModel}">
+            <views:AppointmentEditorView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
             <views:SettingsView/>
         </DataTemplate>
