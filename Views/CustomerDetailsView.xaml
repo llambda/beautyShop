@@ -80,6 +80,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
