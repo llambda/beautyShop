@@ -1,0 +1,319 @@
+<UserControl x:Class="BeautyStudio.Views.CustomerListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             UseLayoutRounding="True"
+             SnapsToDevicePixels="True">
+
+    <Grid ClipToBounds="True">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ====================================== -->
+        <!-- HEADER                                 -->
+        <!-- ====================================== -->
+
+        <Grid Grid.Row="0"
+              Margin="0,0,0,25">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel VerticalAlignment="Center">
+
+                <TextBlock Text="Clienti"
+                           FontSize="28"
+                           FontWeight="SemiBold"
+                           Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+
+                <TextBlock Text="Gestisci la tua clientela"
+                           FontSize="13"
+                           Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                           Margin="0,5,0,0"/>
+
+            </StackPanel>
+
+            <!-- NUOVO CLIENTE -->
+
+            <Button Grid.Column="1"
+                    Command="{Binding AddCustomerCommand}"
+                    Background="{DynamicResource MaterialDesign.Brush.Primary}"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Padding="18,10"
+                    MinWidth="145"
+                    MinHeight="44"
+                    Cursor="Hand"
+                    VerticalAlignment="Center">
+
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center">
+
+                    <materialDesign:PackIcon
+                        Kind="Plus"
+                        Width="20"
+                        Height="20"
+                        VerticalAlignment="Center"/>
+
+                    <TextBlock Text="Nuovo cliente"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"/>
+
+                </StackPanel>
+
+            </Button>
+
+        </Grid>
+
+
+        <!-- ====================================== -->
+        <!-- ELENCO CLIENTI                         -->
+        <!-- ====================================== -->
+
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False">
+
+            <ItemsControl ItemsSource="{Binding Customers}"
+                          HorizontalAlignment="Stretch">
+
+                <!-- DISPOSIZIONE CARD -->
+
+                <ItemsControl.ItemsPanel>
+
+                    <ItemsPanelTemplate>
+
+                        <WrapPanel Orientation="Horizontal"
+                                   HorizontalAlignment="Left"/>
+
+                    </ItemsPanelTemplate>
+
+                </ItemsControl.ItemsPanel>
+
+
+                <!-- TEMPLATE CLIENTE -->
+
+                <ItemsControl.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <!-- CARD CLICCABILE -->
+
+                        <Button
+                            Width="230"
+                            MinHeight="310"
+                            Margin="0,0,20,20"
+                            Padding="0"
+                            Background="{DynamicResource MaterialDesign.Brush.Surface}"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Command="{Binding DataContext.EditCustomerCommand,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            CommandParameter="{Binding}">
+
+                            <!-- TEMPLATE PERSONALIZZATO BUTTON -->
+
+                            <Button.Template>
+
+                                <ControlTemplate TargetType="Button">
+
+                                    <Border
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}"
+                                        BorderThickness="1"
+                                        CornerRadius="14"
+                                        ClipToBounds="True">
+
+                                        <ContentPresenter
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            RecognizesAccessKey="True"/>
+
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+
+                                            <Setter Property="Background"
+                                                    Value="{DynamicResource MaterialDesign.Brush.SurfaceVariant}"/>
+
+                                        </Trigger>
+
+                                        <Trigger Property="IsPressed"
+                                                 Value="True">
+
+                                            <Setter Property="Opacity"
+                                                    Value="0.85"/>
+
+                                        </Trigger>
+
+                                    </ControlTemplate.Triggers>
+
+                                </ControlTemplate>
+
+                            </Button.Template>
+
+
+                            <!-- CONTENUTO CARD -->
+
+                            <Grid>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="180"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+
+                                <!-- ================================= -->
+                                <!-- FOTOGRAFIA CLIENTE                -->
+                                <!-- ================================= -->
+
+                                <Border Grid.Row="0"
+                                        Background="{DynamicResource MaterialDesign.Brush.SurfaceVariant}"
+                                        ClipToBounds="True">
+
+                                    <Grid>
+
+                                        <!-- IMMAGINE -->
+
+                                        <Image x:Name="CustomerPhoto"
+                                               Source="{Binding PhotoPath,
+                                                   Converter={StaticResource PhotoPathToImageConverter}}"
+                                               Stretch="UniformToFill"
+                                               HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Stretch"/>
+
+
+                                        <!-- SEGNAPOSTO AUTOMATICO -->
+
+                                        <StackPanel
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+
+                                            <StackPanel.Style>
+
+                                                <Style TargetType="StackPanel">
+
+                                                    <Setter Property="Visibility"
+                                                            Value="Collapsed"/>
+
+                                                    <Style.Triggers>
+
+                                                        <DataTrigger
+                                                            Binding="{Binding Source,
+                                                                ElementName=CustomerPhoto}"
+                                                            Value="{x:Null}">
+
+                                                            <Setter Property="Visibility"
+                                                                    Value="Visible"/>
+
+                                                        </DataTrigger>
+
+                                                    </Style.Triggers>
+
+                                                </Style>
+
+                                            </StackPanel.Style>
+
+
+                                            <materialDesign:PackIcon
+                                                Kind="Account"
+                                                Width="48"
+                                                Height="48"
+                                                Foreground="{DynamicResource MaterialDesign.Brush.Primary.Light}"
+                                                HorizontalAlignment="Center"/>
+
+                                            <TextBlock
+                                                Text="Nessuna foto"
+                                                Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                                FontSize="11"
+                                                HorizontalAlignment="Center"
+                                                Margin="0,5,0,0"/>
+
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                </Border>
+
+
+                                <!-- ================================= -->
+                                <!-- DATI CLIENTE                      -->
+                                <!-- ================================= -->
+
+                                <StackPanel Grid.Row="1"
+                                            Margin="16,14,16,18">
+
+                                    <!-- NOME -->
+
+                                    <TextBlock
+                                        Text="{Binding FirstName}"
+                                        FontSize="17"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                                        TextWrapping="Wrap"/>
+
+                                    <!-- COGNOME -->
+
+                                    <TextBlock
+                                        Text="{Binding LastName}"
+                                        FontSize="17"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                                        TextWrapping="Wrap"/>
+
+
+                                    <!-- SEPARATORE -->
+
+                                    <Separator
+                                        Margin="0,12,0,10"
+                                        Background="{DynamicResource MaterialDesign.Brush.Outline}"/>
+
+
+                                    <!-- DATA NASCITA -->
+
+                                    <StackPanel Orientation="Horizontal">
+
+                                        <materialDesign:PackIcon
+                                            Kind="CakeVariant"
+                                            Width="16"
+                                            Height="16"
+                                            Foreground="{DynamicResource MaterialDesign.Brush.Primary}"
+                                            VerticalAlignment="Center"/>
+
+                                        <TextBlock
+                                            Text="{Binding BirthDate,
+                                                StringFormat='{}{0:dd/MM/yyyy}'}"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center"/>
+
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                            </Grid>
+
+                        </Button>
+
+                    </DataTemplate>
+
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+        </ScrollViewer>
+
+    </Grid>
+
+</UserControl>

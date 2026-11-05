@@ -1,0 +1,112 @@
+<UserControl x:Class="BeautyStudio.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:BeautyStudio.Views">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+            <TextBlock Text="Impostazioni" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Aspetto" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Palette colori" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <TextBlock Text="Scegli una palette. I pulsanti Primary e Secondary impostano separatamente i colori dell'app."
+                               TextWrapping="Wrap" Margin="0,0,0,16"/>
+                    <ItemsControl ItemsSource="{Binding PrimaryPalettes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="145" Margin="0,0,8,8" CornerRadius="3"
+                                        Background="{DynamicResource MaterialDesign.Brush.SurfaceContainer}"
+                                        BorderBrush="{DynamicResource MaterialDesign.Brush.OutlineVariant}" BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Name}" FontSize="11" Margin="6,4"
+                                                   Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                            <Button Grid.Column="0" Content="Primary" Tag="{Binding Hex}"
+                                                    Click="PrimaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Background="{Binding Hex}" Foreground="{Binding PrimaryText}"
+                                                    ToolTip="Imposta colore primario"/>
+                                            <Button Grid.Column="1" Content="Secondary" Tag="{Binding SecondaryHex}"
+                                                    Click="SecondaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Background="{Binding SecondaryHex}" Foreground="{Binding SecondaryText}"
+                                                    ToolTip="Imposta colore secondario"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Luoghi intervento" FontSize="20" FontWeight="SemiBold"/>
+                            <TextBlock Text="Seleziona un luogo per modificarlo o eliminarlo." TextWrapping="Wrap" Margin="0,5,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Command="{Binding AddLocationCommand}" ToolTip="Aggiungi luogo" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/>
+                            </Button>
+                            <Button Command="{Binding EditLocationCommand}" x:Name="EditLocationButton" IsEnabled="False" ToolTip="Modifica luogo selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/>
+                            </Button>
+                            <Button Command="{Binding DeleteLocationCommand}" x:Name="DeleteLocationButton" IsEnabled="False" ToolTip="Elimina luogo selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <DataGrid ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" SelectionChanged="Locations_SelectionChanged" AutoGenerateColumns="False"
+                              Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                              CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240"
+                              SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nome" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Indirizzo" Binding="{Binding Address}" Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22">
+                <StackPanel>
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Tipi di intervento" FontSize="20" FontWeight="SemiBold"/>
+                            <TextBlock Text="Gestisci le categorie di trattamento disponibili." TextWrapping="Wrap" Margin="0,5,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Command="{Binding AddInterventionTypeCommand}" ToolTip="Aggiungi tipo" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/>
+                            </Button>
+                            <Button Command="{Binding EditInterventionTypeCommand}" x:Name="EditTypeButton" IsEnabled="False" ToolTip="Modifica tipo selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/>
+                            </Button>
+                            <Button Command="{Binding DeleteInterventionTypeCommand}" x:Name="DeleteTypeButton" IsEnabled="False" ToolTip="Elimina tipo selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40">
+                                <materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <DataGrid ItemsSource="{Binding InterventionTypes}" SelectedItem="{Binding SelectedInterventionType}" SelectionChanged="Types_SelectionChanged" AutoGenerateColumns="False"
+                              Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                              CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240"
+                              SelectionMode="Single">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nome" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Descrizione" Binding="{Binding Description}" Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

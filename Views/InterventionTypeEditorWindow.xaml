@@ -1,0 +1,28 @@
+<Window x:Class="BeautyStudio.Views.InterventionTypeEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Tipo di intervento" Width="460" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Background="{DynamicResource MaterialDesign.Brush.Background}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="TitleText" FontSize="22" FontWeight="SemiBold" Margin="0,0,0,18"/>
+        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <TextBlock Text="Nome *"/>
+            <TextBox x:Name="NameBox" Margin="0,5,0,0" Padding="8"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Margin="0,0,0,12">
+            <TextBlock Text="Descrizione"/>
+            <TextBox x:Name="DescriptionBox" Margin="0,5,0,0" Padding="8" Height="100" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+        <TextBlock x:Name="ErrorText" Grid.Row="3" Foreground="Red" Margin="0,0,0,10"/>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Annulla" IsCancel="True" Margin="0,0,8,0" Padding="16,8"/>
+            <Button Content="Salva" Click="Save_Click" IsDefault="True" Padding="18,8" Style="{StaticResource MaterialDesignRaisedButton}"/>
+        </StackPanel>
+    </Grid>
+</Window>
