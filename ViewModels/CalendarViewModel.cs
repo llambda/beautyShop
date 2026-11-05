@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace BeautyStudio.ViewModels;
@@ -17,7 +18,7 @@ public partial class CalendarViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
 
     public ObservableCollection<CalendarDayViewModel> Days { get; } = new();
-    public string MonthTitle => DisplayedMonth.ToString("MMMM yyyy");
+    public string MonthTitle => DisplayedMonth.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("it-IT"));
 
     public CalendarViewModel() => _ = LoadAsync();
 
