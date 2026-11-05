@@ -41,14 +41,25 @@
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
-                        <DockPanel Margin="0,0,0,15"><TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/><Button Content="Nuovo intervento" Command="{Binding NewInterventionCommand}" DockPanel.Dock="Right" Padding="14,7" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" BorderThickness="0"/></DockPanel>
-                        <ItemsControl ItemsSource="{Binding Interventions}">
-                            <ItemsControl.ItemTemplate><DataTemplate>
-                                <Border BorderBrush="#E8E0E5" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8">
-                                    <DockPanel><StackPanel><TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Type.Name}" Margin="0,3,0,0"/><TextBlock Text="{Binding Location.Name}" Foreground="#777077" FontSize="12"/><TextBlock Text="{Binding Notes}" TextWrapping="Wrap" Margin="0,5,0,0"/></StackPanel><Button Content="Apri" Command="{Binding DataContext.EditInterventionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" DockPanel.Dock="Right" VerticalAlignment="Center"/></DockPanel>
-                                </Border>
-                            </DataTemplate></ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
+                                <Button Command="{Binding EditInterventionCommand}" x:Name="EditInterventionButton" IsEnabled="False" ToolTip="Modifica intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
+                                <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
+                            </StackPanel>
+                        </Grid>
+                        <DataGrid ItemsSource="{Binding Interventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" AutoGenerateColumns="False"
+                                  Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding Type.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                         
                     </StackPanel>
                 </Border>
