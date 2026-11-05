@@ -17,11 +17,11 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private string? statusMessage;
 
-    public bool HasAppointments => Interventions.Count > 0;
+    public bool HasAppointments => Appointments.Count > 0;
 
     public UpcomingInterventionsViewModel()
     {
-        Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasInterventions));
+        Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(HasAppointments));
     }
 
     [RelayCommand]
