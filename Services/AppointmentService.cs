@@ -1,5 +1,6 @@
 using BeautyStudio.Data;
 using BeautyStudio.Models;
+using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
