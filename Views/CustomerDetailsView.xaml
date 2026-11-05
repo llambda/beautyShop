@@ -45,7 +45,7 @@
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewInterventionCommand}" Click="NewIntervention_Click" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
+                                <Button Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
                                 <Button Command="{Binding EditInterventionCommand}" CommandParameter="{Binding SelectedIntervention}" x:Name="EditInterventionButton" IsEnabled="False" ToolTip="Modifica intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
                                 <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
                             </StackPanel>
@@ -63,30 +63,13 @@
                         
                     </StackPanel>
                 </Border>
-                <Border x:Name="InterventionDetailsPanel" Visibility="Collapsed" Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel>
-                        <TextBlock Text="Dettagli intervento" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
-                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                            <StackPanel Grid.Column="0" Margin="0,0,10,12"><TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding InterventionDate}"/></StackPanel>
-                            <StackPanel Grid.Column="1" Margin="10,0,0,12"><TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" DisplayMemberPath="Name"/></StackPanel>
-                            <StackPanel Grid.Row="1" Grid.ColumnSpan="2"><TextBlock Text="Tipo di intervento" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Name"/></StackPanel>
-                        </Grid>
-                        <TextBlock Text="Note" Margin="0,12,0,5"/><TextBox Text="{Binding InterventionNotes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="70" Padding="8"/>
-                        <TextBlock Text="Foto prima" FontWeight="SemiBold" Margin="0,16,0,7"/><Button Content="Aggiungi foto prima" Command="{Binding AddBeforePhotosCommand}" HorizontalAlignment="Left" Padding="12,6"/>
-                        <ItemsControl ItemsSource="{Binding BeforePhotos}" Margin="0,8,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,8,8"><StackPanel><Image Source="{Binding}" Width="100" Height="85" Stretch="UniformToFill"/><Button Content="Rimuovi" Command="{Binding DataContext.RemoveBeforePhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Padding="4"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
-                        <TextBlock Text="Foto dopo" FontWeight="SemiBold" Margin="0,12,0,7"/><Button Content="Aggiungi foto dopo" Command="{Binding AddAfterPhotosCommand}" HorizontalAlignment="Left" Padding="12,6"/>
-                        <ItemsControl ItemsSource="{Binding AfterPhotos}" Margin="0,8,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,8,8"><StackPanel><Image Source="{Binding}" Width="100" Height="85" Stretch="UniformToFill"/><Button Content="Rimuovi" Command="{Binding DataContext.RemoveAfterPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Padding="4"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
-                        <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,12,0,0" TextWrapping="Wrap"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0"><Button Content="Salva intervento" Command="{Binding SaveInterventionCommand}" Padding="16,8" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" BorderThickness="0"/><Button Content="Elimina" Command="{Binding DeleteInterventionCommand}" Margin="8,0,0,0" Padding="16,8"/><Button Content="Nuovo / Annulla" Command="{Binding NewInterventionCommand}" Margin="8,0,0,0" Padding="16,8"/></StackPanel>
-                    </StackPanel>
-                </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewAppointmentCommand}" Click="NewAppointment_Click" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
+                                <Button Command="{Binding NewAppointmentCommand}" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
                                 <Button Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}" x:Name="EditAppointmentButton" IsEnabled="False" ToolTip="Modifica appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
                                 <Button Command="{Binding DeleteAppointmentCommand}" x:Name="DeleteAppointmentButton" IsEnabled="False" ToolTip="Elimina appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
                             </StackPanel>
@@ -100,30 +83,6 @@
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                    </StackPanel>
-                </Border>
-                <Border x:Name="AppointmentDetailsPanel" Visibility="Collapsed" Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel>
-                        <TextBlock Text="Dettagli appuntamento" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,15"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Margin="0,0,10,12">
-                                <TextBlock Text="Data" Margin="0,0,0,5"/>
-                                <DatePicker SelectedDate="{Binding AppointmentDate}"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="10,0,0,12">
-                                <TextBlock Text="Ora (HH:mm)" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding AppointmentTime, UpdateSourceTrigger=PropertyChanged}" Padding="8"/>
-                            </StackPanel>
-                        </Grid>
-                        <TextBlock Text="Note" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding AppointmentNotes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="65" Padding="8"/>
-                        <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,12,0,0" TextWrapping="Wrap"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                            <Button Content="Salva appuntamento" Command="{Binding SaveAppointmentCommand}" Padding="16,8" Background="{DynamicResource MaterialDesign.Brush.Primary}" Foreground="White" BorderThickness="0"/>
-                            <Button Content="Elimina" Command="{Binding DeleteAppointmentCommand}" Margin="8,0,0,0" Padding="16,8"/>
-                            <Button Content="Nuovo / Annulla" Command="{Binding NewAppointmentCommand}" Margin="8,0,0,0" Padding="16,8"/>
-                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>
