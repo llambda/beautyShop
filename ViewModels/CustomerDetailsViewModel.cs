@@ -17,6 +17,7 @@ namespace BeautyStudio.ViewModels;
 public partial class CustomerDetailsViewModel : ObservableObject
 {
     private readonly MainViewModel _mainViewModel;
+    private readonly bool _returnToUpcomingAppointments;
     private readonly InterventionService _interventionService = new();
     private readonly AppointmentService _appointmentService = new();
     private readonly InterventionLocationService _locationService = new();
@@ -42,11 +43,26 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public ObservableCollection<string> BeforePhotos { get; } = new();
     public ObservableCollection<string> AfterPhotos { get; } = new();
 
-    public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel)
+    public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false)
     {
         Customer = customer;
         _mainViewModel = mainViewModel;
-        _ = LoadAsync();
+        _returnToUpcomingAppointments = returnToUpcomingAppointments;
+        if (loadImmediately) _ = LoadAsync();
+    }
+
+    public async Task LoadAndEditAppointmentAsync(Appointment appointment)
+    {
+        await LoadAsync();
+        EditAppointment(appointment);
+    }
+
+    private void ReturnAfterAppointmentEdit()
+    {
+        if (_returnToUpcomingAppointments)
+            _mainViewModel.ShowUpcomingAppointments();
+        else
+            ReturnAfterAppointmentEdit();
     }
 
     private async Task LoadAsync()
@@ -128,7 +144,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             await ReloadAppointmentsAsync();
             SelectedAppointment = null;
             StatusMessage = "Appuntamento salvato.";
-            _mainViewModel.ShowCustomerDetails(this);
+            ReturnAfterAppointmentEdit();
         }
         catch (Exception ex) { StatusMessage = $"Salvataggio appuntamento non riuscito: {ex.Message}"; }
     }
@@ -260,7 +276,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void CancelEditor() => _mainViewModel.ShowCustomerDetails(this);
+    private void CancelEditor() => ReturnAfterAppointmentEdit();
 
     [RelayCommand]
     private void BackToCustomers() => _mainViewModel.ShowCustomers();
