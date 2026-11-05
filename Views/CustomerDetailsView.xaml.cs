@@ -24,4 +24,18 @@ public partial class CustomerDetailsView : UserControl
         if (selected)
             InterventionDetailsPanel.Visibility = Visibility.Visible;
     }
+
+    private void NewAppointment_Click(object sender, RoutedEventArgs e)
+    {
+        AppointmentDetailsPanel.Visibility = Visibility.Visible;
+    }
+
+    private void Appointments_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        bool selected = ((DataGrid)sender).SelectedItem is not null;
+        EditAppointmentButton.IsEnabled = selected;
+        DeleteAppointmentButton.IsEnabled = selected;
+        if (selected)
+            AppointmentDetailsPanel.Visibility = Visibility.Visible;
+    }
 }
