@@ -16,9 +16,6 @@ public partial class App : Application
             await using (var db = new AppDbContext())
             {
                 await db.Database.EnsureCreatedAsync();
-                var appointmentTypeColumn = await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('Appointments') WHERE name = 'InterventionTypeId'").SingleAsync();
-                if (appointmentTypeColumn == 0)
-                    await db.Database.ExecuteSqlRawAsync("ALTER TABLE Appointments ADD COLUMN InterventionTypeId INTEGER NULL;");
                 await db.Database.ExecuteSqlRawAsync("CREATE TABLE IF NOT EXISTS InterventionLocations (Id INTEGER NOT NULL CONSTRAINT PK_InterventionLocations PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, Address TEXT NULL, Notes TEXT NULL);");
                 await db.Database.ExecuteSqlRawAsync("CREATE TABLE IF NOT EXISTS InterventionTypes (Id INTEGER NOT NULL CONSTRAINT PK_InterventionTypes PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, Description TEXT NULL);");
                 await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS Interventions (
@@ -38,6 +35,7 @@ public partial class App : Application
                     Id INTEGER NOT NULL CONSTRAINT PK_Appointments PRIMARY KEY AUTOINCREMENT,
                     CustomerId INTEGER NOT NULL,
                     Date TEXT NOT NULL,
+                    InterventionTypeId INTEGER NULL,
                     Notes TEXT NULL,
                     CONSTRAINT FK_Appointments_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
                 );");
