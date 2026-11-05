@@ -19,7 +19,6 @@
    <DataGrid ItemsSource="{Binding Interventions}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" RowHeight="48">
     <DataGrid.Columns>
      <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="125"/>
-     <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="85"/>
      <DataGridTextColumn Header="Cliente" Width="2*">
       <DataGridTextColumn.Binding>
        <MultiBinding StringFormat="{}{0} {1}"><Binding Path="Customer.FirstName"/><Binding Path="Customer.LastName"/></MultiBinding>
