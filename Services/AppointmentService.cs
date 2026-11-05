@@ -13,7 +13,18 @@ public class AppointmentService
     {
         await using var db = new AppDbContext();
         return await db.Set<Appointment>().AsNoTracking()
+            .Include(x => x.InterventionType)
             .Where(x => x.CustomerId == customerId)
+            .OrderBy(x => x.Date)
+            .ToListAsync();
+    }
+
+    public async Task<List<Appointment>> GetAllAsync()
+    {
+        await using var db = new AppDbContext();
+        return await db.Set<Appointment>().AsNoTracking()
+            .Include(x => x.Customer)
+            .Include(x => x.InterventionType)
             .OrderBy(x => x.Date)
             .ToListAsync();
     }
