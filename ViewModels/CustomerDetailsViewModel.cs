@@ -33,6 +33,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
     [ObservableProperty] private string appointmentTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private string? appointmentNotes;
+    [ObservableProperty] private InterventionType? selectedAppointmentType;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
     public ObservableCollection<Appointment> Appointments { get; } = new();
@@ -85,6 +86,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = DateTime.Today;
         AppointmentTime = DateTime.Now.ToString("HH:mm");
         AppointmentNotes = string.Empty;
+        SelectedAppointmentType = Types.FirstOrDefault();
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
     }
@@ -97,6 +99,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = item.Date.Date;
         AppointmentTime = item.Date.ToString("HH:mm");
         AppointmentNotes = item.Notes;
+        SelectedAppointmentType = Types.FirstOrDefault(x => x.Id == item.InterventionTypeId);
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
     }
@@ -114,6 +117,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             }
             item.Date = AppointmentDate.Date.Add(time);
             item.Notes = AppointmentNotes?.Trim();
+            item.InterventionTypeId = SelectedAppointmentType?.Id;
             await _appointmentService.SaveAsync(item);
             await ReloadAppointmentsAsync();
             SelectedAppointment = null;
