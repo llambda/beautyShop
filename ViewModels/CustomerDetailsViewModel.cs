@@ -30,7 +30,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private string? interventionNotes;
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private Appointment? selectedAppointment;
-    [ObservableProperty] private DateTime appointmentDate = DateTime.Now;
+    [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
+    [ObservableProperty] private string appointmentTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private string? appointmentNotes;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
@@ -81,7 +82,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     private void NewAppointment()
     {
         SelectedAppointment = null;
-        AppointmentDate = DateTime.Now;
+        AppointmentDate = DateTime.Today;
+        AppointmentTime = DateTime.Now.ToString("HH:mm");
         AppointmentNotes = string.Empty;
     }
 
@@ -90,7 +92,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         if (item == null) return;
         SelectedAppointment = item;
-        AppointmentDate = item.Date;
+        AppointmentDate = item.Date.Date;
+        AppointmentTime = item.Date.ToString("HH:mm");
         AppointmentNotes = item.Notes;
     }
 
@@ -100,7 +103,12 @@ public partial class CustomerDetailsViewModel : ObservableObject
         try
         {
             var item = SelectedAppointment ?? new Appointment { CustomerId = Customer.Id };
-            item.Date = AppointmentDate;
+            if (!TimeSpan.TryParse(AppointmentTime, out var time))
+            {
+                StatusMessage = "Inserisci un orario valido (HH:mm).";
+                return;
+            }
+            item.Date = AppointmentDate.Date.Add(time);
             item.Notes = AppointmentNotes?.Trim();
             await _appointmentService.SaveAsync(item);
             await ReloadAppointmentsAsync();
