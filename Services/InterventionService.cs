@@ -20,6 +20,18 @@ public class InterventionService
             .ToListAsync();
     }
 
+    public async Task<List<Intervention>> GetUpcomingAsync()
+    {
+        await using var db = new AppDbContext();
+        return await db.Set<Intervention>()
+            .Include(x => x.Customer)
+            .Include(x => x.Location)
+            .Include(x => x.Type)
+            .Where(x => x.Date >= DateTime.Today)
+            .OrderBy(x => x.Date)
+            .ToListAsync();
+    }
+
     public async Task SaveAsync(Intervention intervention)
     {
         await using var db = new AppDbContext();
