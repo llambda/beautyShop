@@ -6,26 +6,20 @@
              SnapsToDevicePixels="True">
 
     <Grid ClipToBounds="True">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ====================================== -->
-        <!-- HEADER                                 -->
-        <!-- ====================================== -->
-
+        <!-- HEADER -->
         <Grid Grid.Row="0"
               Margin="0,0,0,25">
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel VerticalAlignment="Center">
-
                 <TextBlock Text="Clienti"
                            FontSize="28"
                            FontWeight="SemiBold"
@@ -35,11 +29,9 @@
                            FontSize="13"
                            Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
                            Margin="0,5,0,0"/>
-
             </StackPanel>
 
             <!-- NUOVO CLIENTE -->
-
             <Button Grid.Column="1"
                     Command="{Binding AddCustomerCommand}"
                     Background="{DynamicResource MaterialDesign.Brush.Primary}"
@@ -50,7 +42,6 @@
                     MinHeight="44"
                     Cursor="Hand"
                     VerticalAlignment="Center">
-
                 <StackPanel Orientation="Horizontal"
                             VerticalAlignment="Center">
 
@@ -64,18 +55,11 @@
                                Margin="8,0,0,0"
                                VerticalAlignment="Center"
                                FontWeight="SemiBold"/>
-
                 </StackPanel>
-
             </Button>
-
         </Grid>
 
-
-        <!-- ====================================== -->
-        <!-- ELENCO CLIENTI                         -->
-        <!-- ====================================== -->
-
+        <!-- ELENCO CLIENTI -->
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
@@ -85,27 +69,18 @@
                           HorizontalAlignment="Stretch">
 
                 <!-- DISPOSIZIONE CARD -->
-
                 <ItemsControl.ItemsPanel>
-
                     <ItemsPanelTemplate>
-
                         <WrapPanel Orientation="Horizontal"
                                    HorizontalAlignment="Left"/>
-
                     </ItemsPanelTemplate>
-
                 </ItemsControl.ItemsPanel>
 
-
                 <!-- TEMPLATE CLIENTE -->
-
                 <ItemsControl.ItemTemplate>
-
                     <DataTemplate>
 
                         <!-- CARD CLICCABILE -->
-
                         <Button
                             Width="230"
                             MinHeight="310"
@@ -119,11 +94,8 @@
                             CommandParameter="{Binding}">
 
                             <!-- TEMPLATE PERSONALIZZATO BUTTON -->
-
                             <Button.Template>
-
                                 <ControlTemplate TargetType="Button">
-
                                     <Border
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}"
@@ -135,95 +107,66 @@
                                             HorizontalAlignment="Stretch"
                                             VerticalAlignment="Stretch"
                                             RecognizesAccessKey="True"/>
-
                                     </Border>
 
                                     <ControlTemplate.Triggers>
-
                                         <Trigger Property="IsMouseOver"
                                                  Value="True">
-
                                             <Setter Property="Background"
                                                     Value="{DynamicResource MaterialDesign.Brush.SurfaceVariant}"/>
-
                                         </Trigger>
 
                                         <Trigger Property="IsPressed"
                                                  Value="True">
-
                                             <Setter Property="Opacity"
                                                     Value="0.85"/>
-
                                         </Trigger>
-
                                     </ControlTemplate.Triggers>
-
                                 </ControlTemplate>
-
                             </Button.Template>
 
-
                             <!-- CONTENUTO CARD -->
-
                             <Grid>
-
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="180"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-
-                                <!-- ================================= -->
-                                <!-- FOTOGRAFIA CLIENTE                -->
-                                <!-- ================================= -->
-
+                                <!-- FOTOGRAFIA CLIENTE -->
                                 <Border Grid.Row="0"
                                         Background="{DynamicResource MaterialDesign.Brush.SurfaceVariant}"
                                         ClipToBounds="True">
 
                                     <Grid>
-
-                                        <!-- IMMAGINE -->
-
+                                        <!-- IMMAGINE CENTRATA -->
                                         <Image x:Name="CustomerPhoto"
                                                Source="{Binding PhotoPath,
                                                    Converter={StaticResource PhotoPathToImageConverter}}"
                                                Stretch="UniformToFill"
-                                               HorizontalAlignment="Stretch"
-                                               VerticalAlignment="Stretch"/>
-
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
 
                                         <!-- SEGNAPOSTO AUTOMATICO -->
-
                                         <StackPanel
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
 
                                             <StackPanel.Style>
-
                                                 <Style TargetType="StackPanel">
-
                                                     <Setter Property="Visibility"
                                                             Value="Collapsed"/>
 
                                                     <Style.Triggers>
-
                                                         <DataTrigger
                                                             Binding="{Binding Source,
                                                                 ElementName=CustomerPhoto}"
                                                             Value="{x:Null}">
-
                                                             <Setter Property="Visibility"
                                                                     Value="Visible"/>
-
                                                         </DataTrigger>
-
                                                     </Style.Triggers>
-
                                                 </Style>
-
                                             </StackPanel.Style>
-
 
                                             <materialDesign:PackIcon
                                                 Kind="Account"
@@ -238,23 +181,15 @@
                                                 FontSize="11"
                                                 HorizontalAlignment="Center"
                                                 Margin="0,5,0,0"/>
-
                                         </StackPanel>
-
                                     </Grid>
-
                                 </Border>
 
-
-                                <!-- ================================= -->
-                                <!-- DATI CLIENTE                      -->
-                                <!-- ================================= -->
-
+                                <!-- DATI CLIENTE -->
                                 <StackPanel Grid.Row="1"
                                             Margin="16,14,16,18">
 
                                     <!-- NOME -->
-
                                     <TextBlock
                                         Text="{Binding FirstName}"
                                         FontSize="17"
@@ -263,7 +198,6 @@
                                         TextWrapping="Wrap"/>
 
                                     <!-- COGNOME -->
-
                                     <TextBlock
                                         Text="{Binding LastName}"
                                         FontSize="17"
@@ -271,18 +205,13 @@
                                         Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                                         TextWrapping="Wrap"/>
 
-
                                     <!-- SEPARATORE -->
-
                                     <Separator
                                         Margin="0,12,0,10"
                                         Background="{DynamicResource MaterialDesign.Brush.Outline}"/>
 
-
                                     <!-- DATA NASCITA -->
-
                                     <StackPanel Orientation="Horizontal">
-
                                         <materialDesign:PackIcon
                                             Kind="CakeVariant"
                                             Width="16"
@@ -297,23 +226,13 @@
                                             Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
                                             Margin="8,0,0,0"
                                             VerticalAlignment="Center"/>
-
                                     </StackPanel>
-
                                 </StackPanel>
-
                             </Grid>
-
                         </Button>
-
                     </DataTemplate>
-
                 </ItemsControl.ItemTemplate>
-
             </ItemsControl>
-
         </ScrollViewer>
-
     </Grid>
-
 </UserControl>
