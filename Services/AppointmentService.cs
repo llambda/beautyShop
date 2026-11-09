@@ -27,6 +27,7 @@ public class AppointmentService
         return await db.Set<Appointment>().AsNoTracking()
             .Include(x => x.Customer)
             .Include(x => x.InterventionType)
+            .Include(x => x.Location)
             .OrderBy(x => x.Date)
             .ToListAsync();
     }
