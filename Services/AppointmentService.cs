@@ -68,14 +68,30 @@ public class AppointmentService
         bool slotTaken = activeAppointment && AppointmentOverlapValidator.HasOverlap(appointment.Date, appointment.DurationMinutes, candidates);
         if (slotTaken)
             throw new InvalidOperationException("Questo orario si sovrappone a un altro appuntamento. Modifica l'orario o la durata.");
+        var isNew = appointment.Id == 0;
         if (appointment.Id == 0) db.Add(appointment);
         else db.Update(appointment);
+        await db.SaveChangesAsync();
+        db.CustomerActivities.Add(new CustomerActivity
+        {
+            CustomerId = appointment.CustomerId,
+            OccurredAt = DateTime.Now,
+            Category = isNew ? "Appuntamento creato" : "Appuntamento modificato",
+            Detail = $"{appointment.Date:dd/MM/yyyy HH:mm} · {appointment.Status} · Durata {appointment.DurationMinutes} minuti."
+        });
         await db.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(Appointment appointment)
     {
         await using var db = new AppDbContext();
+        db.CustomerActivities.Add(new CustomerActivity
+        {
+            CustomerId = appointment.CustomerId,
+            OccurredAt = DateTime.Now,
+            Category = "Appuntamento eliminato",
+            Detail = $"Appuntamento del {appointment.Date:dd/MM/yyyy HH:mm} eliminato."
+        });
         db.Remove(appointment);
         await db.SaveChangesAsync();
     }
