@@ -80,36 +80,63 @@ public sealed class ExportService
 
 internal static class MinimalPdf
 {
-    public static void Write(string path, IEnumerable<string> lines)
+    public static void Write(string path, IEnumerable<string> sourceLines)
     {
-        var content = new StringBuilder("BT /F1 10 Tf 48 790 Td 14 TL\n");
-        foreach (var line in lines.Take(48))
+        var lines = new List<string>();
+        foreach (var source in sourceLines)
         {
-            var safe = line.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)").Replace("€", "EUR");
-            content.Append('(').Append(safe).Append(") Tj T*\n");
+            var line = source ?? string.Empty;
+            while (line.Length > 100)
+            {
+                lines.Add(line.Substring(0, 100));
+                line = line.Substring(100);
+            }
+            lines.Add(line);
         }
-        content.Append("ET");
-        var stream = Encoding.Latin1.GetBytes(content.ToString());
-        var objects = new[]
+
+        var pages = lines.Chunk(48).Select(x => x.ToArray()).ToList();
+        if (pages.Count == 0) pages.Add(Array.Empty<string>());
+
+        var objects = new List<string>();
+        objects.Add("<< /Type /Catalog /Pages 2 0 R >>");
+        var pageIds = Enumerable.Range(0, pages.Count).Select(i => 4 + i * 2).ToArray();
+        objects.Add("<< /Type /Pages /Kids [" + string.Join(" ", pageIds.Select(id => id + " 0 R")) + "] /Count " + pages.Count + " >>");
+        objects.Add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+
+        foreach (var page in pages)
         {
-            "<< /Type /Catalog /Pages 2 0 R >>",
-            "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-            "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
-            "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-            $"<< /Length {stream.Length} >>\nstream\n{content}\nendstream"
-        };
+            var content = new StringBuilder("BT /F1 10 Tf 48 790 Td 14 TL\n");
+            foreach (var line in page)
+            {
+                var safe = line.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)").Replace("€", "EUR");
+                content.Append('(').Append(safe).Append(") Tj T*\n");
+            }
+            content.Append("ET\n");
+            var bytes = Encoding.Latin1.GetBytes(content.ToString());
+            var pageId = 4 + objects.Count(x => x.StartsWith("<< /Type /Page ", StringComparison.Ordinal)) * 2;
+            var contentId = pageId + 1;
+            objects.Add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents " + contentId + " 0 R >>");
+            objects.Add("<< /Length " + bytes.Length + " >>\nstream\n" + content + "endstream");
+        }
+
         using var output = new FileStream(path, FileMode.Create, FileAccess.Write);
-        void W(string s) { var b = Encoding.Latin1.GetBytes(s); output.Write(b); }
-        W("%PDF-1.4\n");
+        void WriteText(string value)
+        {
+            var bytes = Encoding.Latin1.GetBytes(value);
+            output.Write(bytes, 0, bytes.Length);
+        }
+
+        WriteText("%PDF-1.4\n");
         var offsets = new List<long> { 0 };
-        for (int i = 0; i < objects.Length; i++)
+        for (var i = 0; i < objects.Count; i++)
         {
             offsets.Add(output.Position);
-            W($"{i + 1} 0 obj\n{objects[i]}\nendobj\n");
+            WriteText((i + 1) + " 0 obj\n" + objects[i] + "\nendobj\n");
         }
         var xref = output.Position;
-        W($"xref\n0 {objects.Length + 1}\n0000000000 65535 f \n");
-        foreach (var offset in offsets.Skip(1)) W($"{offset:0000000000} 00000 n \n");
-        W($"trailer\n<< /Size {objects.Length + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF");
+        WriteText("xref\n0 " + (objects.Count + 1) + "\n0000000000 65535 f \n");
+        foreach (var offset in offsets.Skip(1))
+            WriteText(offset.ToString("0000000000", CultureInfo.InvariantCulture) + " 00000 n \n");
+        WriteText("trailer\n<< /Size " + (objects.Count + 1) + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF");
     }
 }
