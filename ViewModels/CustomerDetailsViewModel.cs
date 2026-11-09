@@ -38,6 +38,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
     [ObservableProperty] private string appointmentTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private string? appointmentNotes;
+    [ObservableProperty] private string selectedAppointmentStatus = "Da confermare";
+    public ObservableCollection<string> AppointmentStatuses { get; } = new() { "Da confermare", "Confermato", "Annullato", "Non presentato" };
     [ObservableProperty] private InterventionType? selectedAppointmentType;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
@@ -149,6 +151,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = DateTime.Today;
         AppointmentTime = DateTime.Now.ToString("HH:mm");
         AppointmentNotes = string.Empty;
+        SelectedAppointmentStatus = "Da confermare";
         SelectedAppointmentType = Types.FirstOrDefault();
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
@@ -162,6 +165,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentDate = item.Date.Date;
         AppointmentTime = item.Date.ToString("HH:mm");
         AppointmentNotes = item.Notes;
+        SelectedAppointmentStatus = string.IsNullOrWhiteSpace(item.Status) ? "Da confermare" : item.Status;
         SelectedAppointmentType = Types.FirstOrDefault(x => x.Id == item.InterventionTypeId);
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
@@ -186,6 +190,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             }
             item.Date = AppointmentDate.Date.Add(time);
             item.Notes = AppointmentNotes?.Trim();
+            item.Status = SelectedAppointmentStatus;
             item.InterventionTypeId = SelectedAppointmentType?.Id;
             await _appointmentService.SaveAsync(item);
             await ReloadAppointmentsAsync();
@@ -335,6 +340,14 @@ public partial class CustomerDetailsViewModel : ObservableObject
             File.Copy(source, target, true);
             destination.Add(target);
         }
+    }
+
+    [RelayCommand]
+    private void OpenPhoto(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return;
+        try { Process.Start(new ProcessStartInfo(path) { UseShellExecute = true }); }
+        catch (Exception ex) { StatusMessage = "Impossibile aprire la fotografia: " + ex.Message; }
     }
 
     private static void SetPhotos(ObservableCollection<string> target, string? json)
