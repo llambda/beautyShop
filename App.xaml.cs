@@ -68,7 +68,7 @@ public partial class App : Application
             }
             catch (System.Exception backupException)
             {
-                MessageBox.Show($"Backup automatico non riuscito. L'applicazione verrà comunque avviata.\\n{backupException.Message}",
+                MessageBox.Show($"Backup automatico non riuscito. L'applicazione verrà comunque avviata.\n{backupException.Message}",
                     "Beauty Studio - Backup", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
