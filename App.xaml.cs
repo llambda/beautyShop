@@ -62,6 +62,8 @@ public partial class App : Application
                 await EnsureColumnAsync("Interventions", "PaidAt", "TEXT NULL");
             }
 
+            new BackupService().CreateAutomaticBackupIfNeeded();
+
             var customerService = new CustomerService();
             var photoStorageService = new PhotoStorageService();
             var dialogService = new CustomerDialogService(customerService, photoStorageService);
