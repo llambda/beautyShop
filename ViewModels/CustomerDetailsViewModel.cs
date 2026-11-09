@@ -52,6 +52,18 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public ObservableCollection<string> BeforePhotos { get; } = new();
     public ObservableCollection<string> AfterPhotos { get; } = new();
 
+    partial void OnSelectedInterventionChanged(Intervention? value)
+    {
+        if (value == null)
+        {
+            BeforePhotos.Clear();
+            AfterPhotos.Clear();
+            return;
+        }
+        SetPhotos(BeforePhotos, value.BeforePhotosJson);
+        SetPhotos(AfterPhotos, value.AfterPhotosJson);
+    }
+
     public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false)
     {
         Customer = customer;
