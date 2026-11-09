@@ -70,21 +70,15 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public ObservableCollection<Intervention> FilteredInterventions { get; } = new();
     [ObservableProperty] private InterventionType? historyFilterType;
     [ObservableProperty] private InterventionLocation? historyFilterLocation;
-    [ObservableProperty] private DateTime? historyFromDate;
-    [ObservableProperty] private DateTime? historyToDate;
 
     partial void OnHistoryFilterTypeChanged(InterventionType? value) => ApplyHistoryFilter();
     partial void OnHistoryFilterLocationChanged(InterventionLocation? value) => ApplyHistoryFilter();
-    partial void OnHistoryFromDateChanged(DateTime? value) => ApplyHistoryFilter();
-    partial void OnHistoryToDateChanged(DateTime? value) => ApplyHistoryFilter();
 
     [RelayCommand]
     private void ClearHistoryFilters()
     {
         HistoryFilterType = null;
         HistoryFilterLocation = null;
-        HistoryFromDate = null;
-        HistoryToDate = null;
         ApplyHistoryFilter();
     }
 
@@ -93,8 +87,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         var filtered = Interventions.Where(item =>
             (HistoryFilterType == null || item.TypeId == HistoryFilterType.Id)
             && (HistoryFilterLocation == null || item.LocationId == HistoryFilterLocation.Id)
-            && (!HistoryFromDate.HasValue || item.Date.Date >= HistoryFromDate.Value.Date)
-            && (!HistoryToDate.HasValue || item.Date.Date <= HistoryToDate.Value.Date))
+)
             .OrderByDescending(item => item.Date).ToList();
         FilteredInterventions.Clear();
         foreach (var item in filtered) FilteredInterventions.Add(item);
@@ -377,9 +370,10 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task DeleteAppointmentAsync()
+    private async Task DeleteAppointmentAsync(Appointment? appointment)
     {
-        if (SelectedAppointment == null) return;
+        if (appointment == null) return;
+        SelectedAppointment = appointment;
         if (MessageBox.Show($"Eliminare l'appuntamento del {SelectedAppointment.Date:dd/MM/yyyy} alle {SelectedAppointment.Date:HH:mm}?\nNon verrà creato alcun intervento nello storico.", "Elimina appuntamento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
         await _appointmentService.DeleteAsync(SelectedAppointment);
