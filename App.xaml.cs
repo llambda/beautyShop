@@ -81,7 +81,7 @@ public partial class App : Application
                 await EnsureColumnAsync("Interventions", "PaidAt",
                     "ALTER TABLE Interventions ADD COLUMN PaidAt TEXT NULL;");
                 await EnsureColumnAsync("Interventions", "PhotoMetadataJson",
-                    "ALTER TABLE Interventions ADD COLUMN PhotoMetadataJson TEXT NOT NULL DEFAULT '{}';");
+                    "ALTER TABLE Interventions ADD COLUMN PhotoMetadataJson TEXT NOT NULL DEFAULT '{{}}';");
                 await EnsureColumnAsync("Appointments", "Status",
                     "ALTER TABLE Appointments ADD COLUMN Status TEXT NOT NULL DEFAULT 'Da confermare';");
                 await EnsureColumnAsync("Appointments", "LocationId",
