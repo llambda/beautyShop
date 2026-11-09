@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<InterventionType> InterventionTypes => Set<InterventionType>();
     public DbSet<Intervention> Interventions => Set<Intervention>();
     public DbSet<Appointment> Appointments => Set<Appointment>();
+    public DbSet<InterventionHistoryEntry> InterventionHistory => Set<InterventionHistoryEntry>();
 
     public static string DataDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BeautyStudio");
     public static string DatabasePath => Path.Combine(DataDirectory, "Database", "BeautyStudio.db");
@@ -36,5 +37,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<InterventionType>().ToTable("InterventionTypes");
         modelBuilder.Entity<Intervention>().ToTable("Interventions");
         modelBuilder.Entity<Appointment>().ToTable("Appointments");
+        modelBuilder.Entity<InterventionHistoryEntry>().ToTable("InterventionHistory");
     }
 }
