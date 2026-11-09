@@ -135,6 +135,29 @@
                     </DataGrid>
                 </StackPanel>
             </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,20,0,0">
+                <StackPanel>
+                    <TextBlock Text="Versione e aggiornamenti" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding CurrentVersion, StringFormat='Versione installata: {0}'}" Margin="0,6,0,10"/>
+                    <WrapPanel>
+                        <Button Command="{Binding CheckForUpdatesCommand}" IsEnabled="{Binding IsCheckingUpdates, Converter={StaticResource InverseBooleanConverter}}" Padding="16,9" Margin="0,0,10,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Update" Width="18" Height="18"/>
+                                <TextBlock Text="Controlla aggiornamenti" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding OpenLatestReleaseCommand}" Padding="16,9" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="OpenInNew" Width="18" Height="18"/>
+                                <TextBlock Text="Apri pagina versioni" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding UpdateStatus}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap"/>
+                    <TextBlock Text="Il programma verifica le release pubblicate su GitHub. L'installazione resta manuale per evitare sostituzioni non sicure dei file in uso." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
