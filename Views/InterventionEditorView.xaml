@@ -11,6 +11,9 @@
    <TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding Parent.InterventionDate}" Margin="0,0,0,16"/>
    <TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Locations}" SelectedItem="{Binding Parent.SelectedLocation}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
    <TextBlock Text="Tipo di intervento" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedType}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
+   <TextBlock Text="Prezzo (€)" Margin="0,0,0,5"/>
+   <TextBox Text="{Binding Parent.InterventionPrice, UpdateSourceTrigger=PropertyChanged}" Padding="8" Margin="0,0,0,16"/>
+   <CheckBox Content="Pagamento ricevuto" IsChecked="{Binding Parent.InterventionIsPaid}" Margin="0,0,0,16"/>
    <TextBlock Text="Note" Margin="0,0,0,5"/><TextBox Text="{Binding Parent.InterventionNotes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="85" Padding="8"/>
    <TextBlock Text="Foto prima" FontWeight="SemiBold" Margin="0,18,0,7"/><Button Content="Aggiungi foto prima" Command="{Binding Parent.AddBeforePhotosCommand}" HorizontalAlignment="Left" Padding="12,6"/>
    <ItemsControl ItemsSource="{Binding Parent.BeforePhotos}" Margin="0,8,0,0"><ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel><ItemsControl.ItemTemplate><DataTemplate><Border Margin="0,0,8,8"><StackPanel><Image Source="{Binding}" Width="110" Height="90" Stretch="UniformToFill"/><Button Content="Rimuovi" Command="{Binding DataContext.Parent.RemoveBeforePhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
