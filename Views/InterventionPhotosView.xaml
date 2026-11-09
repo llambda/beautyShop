@@ -33,6 +33,9 @@
                     <TextBlock Text="{Binding NotesDisplay}" TextWrapping="Wrap" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
+            <Border Padding="10,8" Margin="0,0,0,14" Background="{DynamicResource MaterialDesign.Brush.Surface}">
+                <TextBlock Text="{Binding PhotoIntegrityMessage}" TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+            </Border>
             <Grid Margin="0,0,0,18">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Background="White" Padding="20" Margin="0,0,8,0" MinHeight="620">
