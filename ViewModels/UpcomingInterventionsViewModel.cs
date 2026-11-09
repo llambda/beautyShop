@@ -38,7 +38,8 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
     private async Task MarkAppointmentAsExecutedAsync(Appointment? appointment)
     {
         if (appointment?.Customer == null) return;
-        var details = new CustomerDetailsViewModel(appointment.Customer, _mainViewModel, loadImmediately: false, returnToUpcomingAppointments: true);
+        // Dopo la conferma mostriamo la scheda cliente con l'intervento appena registrato.
+        var details = new CustomerDetailsViewModel(appointment.Customer, _mainViewModel, loadImmediately: false, returnToUpcomingAppointments: false);
         await details.LoadAndMarkAppointmentAsExecutedAsync(appointment);
     }
 
