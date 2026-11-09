@@ -43,7 +43,7 @@
                         <TextBlock Text="FOTO PRIMA" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
                         <Button Command="{Binding OpenPhotoCommand}" CommandParameter="{Binding CurrentBeforePhoto.Path}" Padding="0" BorderThickness="0" Background="Transparent" Height="480" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image Source="{Binding CurrentBeforePhoto.Path}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="{Binding CurrentBeforePhoto.Path, Converter={StaticResource PhotoPathToImageConverter}}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Viewbox>
                         </Button>
                         <TextBlock Text="Nessuna foto prima" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" HorizontalAlignment="Center" Margin="0,8">
@@ -65,7 +65,7 @@
                         <TextBlock Text="FOTO DOPO" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
                         <Button Command="{Binding OpenPhotoCommand}" CommandParameter="{Binding CurrentAfterPhoto.Path}" Padding="0" BorderThickness="0" Background="Transparent" Height="480" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image Source="{Binding CurrentAfterPhoto.Path}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Image Source="{Binding CurrentAfterPhoto.Path, Converter={StaticResource PhotoPathToImageConverter}}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Viewbox>
                         </Button>
                         <TextBlock Text="Nessuna foto dopo" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" HorizontalAlignment="Center" Margin="0,8">
