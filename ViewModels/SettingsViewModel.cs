@@ -20,6 +20,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly CustomerService _customerService;
     private readonly BackupService _backupService = new();
     private readonly UpdateCheckService _updateCheckService = new();
+    private readonly WorkingHoursService _workingHoursService = new();
     private readonly ThemeSettingsService _themeService = new();
     private bool _loadingTheme;
 
@@ -44,6 +45,7 @@ public partial class SettingsViewModel : ObservableObject
         new("BlueGrey", "#FF607D8B", "#FF78909C", "#FFFFFFFF", "#FFFFFFFF"),
         new("Grey", "#FF9E9E9E", "#FFBDBDBD", "#000000", "#000000"),
     };
+    public ObservableCollection<WorkingDaySetting> WorkingDays { get; } = new();
     public ObservableCollection<PaletteOption> PrimaryPalettes { get; } = BuildPalettes();
     public ObservableCollection<PaletteOption> SecondaryPalettes { get; } = BuildPalettes();
 
@@ -65,6 +67,7 @@ public partial class SettingsViewModel : ObservableObject
         _locationService = locationService;
         _typeService = typeService;
         _customerService = customerService;
+        foreach (var day in _workingHoursService.Load()) WorkingDays.Add(day);
 
         var settings = _themeService.Load();
         _loadingTheme = true;
@@ -89,6 +92,20 @@ public partial class SettingsViewModel : ObservableObject
             SecondaryColor = SelectedSecondaryPalette.SecondaryHex,
             IsDark = IsDarkTheme
         });
+    }
+
+    [RelayCommand]
+    private void SaveWorkingHours()
+    {
+        try
+        {
+            _workingHoursService.Save(WorkingDays);
+            DataManagementStatus = "Orari di lavoro salvati. Le nuove prenotazioni rispetteranno giorni, orari e pause impostati.";
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Impossibile salvare gli orari: " + ex.Message;
+        }
     }
 
     [RelayCommand]
