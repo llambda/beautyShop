@@ -47,9 +47,19 @@ public class AppointmentService
     public async Task SaveAsync(Appointment appointment)
     {
         await using var db = new AppDbContext();
-        bool slotTaken = appointment.Status != "Annullato" && await db.Appointments.AnyAsync(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Date == appointment.Date);
+        if (appointment.DurationMinutes <= 0 || appointment.DurationMinutes > 720)
+            throw new InvalidOperationException("La durata dell'appuntamento deve essere compresa tra 1 e 720 minuti.");
+
+        bool activeAppointment = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase);
+        bool slotTaken = activeAppointment && await db.Appointments.AnyAsync(x =>
+            x.Id != appointment.Id
+            && x.Status != "Annullato"
+            && x.Status != "Non presentato"
+            && x.Date < appointment.Date.AddMinutes(appointment.DurationMinutes)
+            && x.Date.AddMinutes(x.DurationMinutes) > appointment.Date);
         if (slotTaken)
-            throw new InvalidOperationException("Esiste già un appuntamento in questo orario. Scegli un altro orario.");
+            throw new InvalidOperationException("Questo orario si sovrappone a un altro appuntamento. Modifica l'orario o la durata.");
         if (appointment.Id == 0) db.Add(appointment);
         else db.Update(appointment);
         await db.SaveChangesAsync();
