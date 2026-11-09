@@ -250,6 +250,11 @@ public partial class CustomerDetailsViewModel : ObservableObject
             StatusMessage = "Seleziona luogo e tipo di intervento nelle Impostazioni.";
             return;
         }
+        if (InterventionPrice < 0)
+        {
+            StatusMessage = "Il prezzo non può essere negativo.";
+            return;
+        }
 
         try
         {
