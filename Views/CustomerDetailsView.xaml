@@ -86,7 +86,7 @@
                                 <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
                             </StackPanel>
                         </Grid>
-                        <DataGrid ItemsSource="{Binding Interventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" AutoGenerateColumns="False"
+                        <DataGrid ItemsSource="{Binding Interventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
                                   Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                                   CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
                             <DataGrid.Columns>
