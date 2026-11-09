@@ -105,15 +105,7 @@
                         </TextBlock>
                     </StackPanel>
                 </Border>
-                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel>
-                        <TextBlock Text="Esporta scheda cliente" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,8" Margin="0,0,8,0" MinHeight="38"/>
-                            <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,8" MinHeight="38"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
+       </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <Grid Margin="0,0,0,15">
@@ -196,6 +188,15 @@
                             <TextBlock Text="{Binding LastInterventionDate, StringFormat='Ultimo intervento: {0:dd/MM/yyyy}', TargetNullValue='Ultimo intervento: -'}" Margin="0,0,18,0"/>
                             <TextBlock Text="{Binding NextAppointmentDate, StringFormat='Prossimo appuntamento: {0:dd/MM/yyyy HH:mm}', TargetNullValue='Nessun appuntamento futuro'}" Margin="0,0,18,0"/>
                         </WrapPanel>
+                    </StackPanel>
+         
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Esporta scheda cliente" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,8" Margin="0,0,8,0" MinHeight="38"/>
+                            <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,8" MinHeight="38"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>
