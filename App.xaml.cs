@@ -48,18 +48,28 @@ public partial class App : Application
                 if (appointmentTypeColumn == 0)
                     await db.Database.ExecuteSqlRawAsync("ALTER TABLE Appointments ADD COLUMN InterventionTypeId INTEGER NULL;");
 
-                async Task EnsureColumnAsync(string table, string column, string sqlType)
+                async Task EnsureColumnAsync(string table, string column, string alterSql)
                 {
-                    var count = await db.Database.SqlQueryRaw<int>($"SELECT COUNT(*) AS Value FROM pragma_table_info('{table}') WHERE name = '{column}'").SingleAsync();
+                    // I valori table/column vengono passati come parametri SQL;
+                    // il comando ALTER è scelto esclusivamente tra stringhe statiche interne.
+                    var count = await db.Database.SqlQuery<int>(
+                        $"SELECT COUNT(*) AS Value FROM pragma_table_info({table}) WHERE name = {column}")
+                        .SingleAsync();
+
                     if (count == 0)
-                        await db.Database.ExecuteSqlRawAsync($"ALTER TABLE {table} ADD COLUMN {column} {sqlType};");
+                        await db.Database.ExecuteSqlRawAsync(alterSql);
                 }
 
-                await EnsureColumnAsync("Customers", "Allergies", "TEXT NULL");
-                await EnsureColumnAsync("Customers", "Sensitivities", "TEXT NULL");
-                await EnsureColumnAsync("Interventions", "Price", "TEXT NOT NULL DEFAULT '0'");
-                await EnsureColumnAsync("Interventions", "IsPaid", "INTEGER NOT NULL DEFAULT 0");
-                await EnsureColumnAsync("Interventions", "PaidAt", "TEXT NULL");
+                await EnsureColumnAsync("Customers", "Allergies",
+                    "ALTER TABLE Customers ADD COLUMN Allergies TEXT NULL;");
+                await EnsureColumnAsync("Customers", "Sensitivities",
+                    "ALTER TABLE Customers ADD COLUMN Sensitivities TEXT NULL;");
+                await EnsureColumnAsync("Interventions", "Price",
+                    "ALTER TABLE Interventions ADD COLUMN Price TEXT NOT NULL DEFAULT '0';");
+                await EnsureColumnAsync("Interventions", "IsPaid",
+                    "ALTER TABLE Interventions ADD COLUMN IsPaid INTEGER NOT NULL DEFAULT 0;");
+                await EnsureColumnAsync("Interventions", "PaidAt",
+                    "ALTER TABLE Interventions ADD COLUMN PaidAt TEXT NULL;");
             }
 
             try
