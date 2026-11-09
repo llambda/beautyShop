@@ -36,7 +36,7 @@ public class AppointmentService
         return await db.Set<Appointment>().AsNoTracking()
             .Include(x => x.Customer)
             .Include(x => x.InterventionType)
-            .Where(x => x.Date >= DateTime.Now)
+            .Where(x => x.Date >= DateTime.Now && x.Status != "Annullato"
             .OrderBy(x => x.Date)
             .ToListAsync();
     }
