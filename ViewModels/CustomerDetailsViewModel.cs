@@ -106,6 +106,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         foreach (var item in Interventions)
             Timeline.Add(new CustomerTimelineEntry(item.Date, "Intervento", item.Type?.Name ?? "Tipo non specificato",
                 item.Location?.Name ?? "Luogo non specificato", item.IsPaid ? "Pagato" : "Non pagato"));
+        if (!_customerActivities.Any(x => x.Category == "Cliente"))
+            Timeline.Add(new CustomerTimelineEntry(Customer.CreatedAt, "Cliente inserito", "Scheda cliente presente in Beauty Studio.", "Anagrafica cliente", string.Empty));
         foreach (var item in _customerActivities)
             Timeline.Add(new CustomerTimelineEntry(item.OccurredAt, item.Category, item.Detail, "Attività scheda cliente", string.Empty));
         foreach (var item in _interventionHistory)
