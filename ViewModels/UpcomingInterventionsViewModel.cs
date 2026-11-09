@@ -1,5 +1,6 @@
 using BeautyStudio.Models;
 using BeautyStudio.Services;
+using MessageBox = BeautyStudio.Services.StyledMessageBox;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
@@ -41,6 +42,28 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
         // Dopo la conferma mostriamo la scheda cliente con l'intervento appena registrato.
         var details = new CustomerDetailsViewModel(appointment.Customer, _mainViewModel, loadImmediately: false, returnToUpcomingAppointments: false);
         await details.LoadAndMarkAppointmentAsExecutedAsync(appointment);
+    }
+
+    [RelayCommand]
+    private async Task DeleteAppointmentAsync(Appointment? appointment)
+    {
+        if (appointment == null) return;
+        if (MessageBox.Show(
+            $"Eliminare l'appuntamento del {appointment.Date:dd/MM/yyyy} alle {appointment.Date:HH:mm} per {appointment.Customer?.FirstName} {appointment.Customer?.LastName}?",
+            "Elimina appuntamento", System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning) != System.Windows.MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            await _appointmentService.DeleteAsync(appointment);
+            Appointments.Remove(appointment);
+            StatusMessage = "Appuntamento eliminato.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Eliminazione non riuscita: {ex.Message}";
+        }
     }
 
     [RelayCommand]
