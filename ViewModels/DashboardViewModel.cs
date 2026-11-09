@@ -40,7 +40,8 @@ public partial class DashboardViewModel : ObservableObject
             var monthItems = await db.Interventions.Where(x => x.Date >= monthStart && x.Date < monthStart.AddMonths(1)).ToListAsync();
             InterventionsThisMonth = monthItems.Count;
             RevenueThisMonth = monthItems.Where(x => x.IsPaid).Sum(x => x.Price);
-            UnpaidTotal = await db.Interventions.Where(x => !x.IsPaid).SumAsync(x => (decimal?)x.Price) ?? 0m;
+            var unpaidItems = await db.Interventions.Where(x => !x.IsPaid).ToListAsync();
+            UnpaidTotal = unpaidItems.Sum(x => x.Price);
             var upcoming = await db.Appointments.AsNoTracking().Include(x => x.Customer).Include(x => x.InterventionType)
                 .Where(x => x.Date >= now).OrderBy(x => x.Date).Take(8).ToListAsync();
             UpcomingAppointments.Clear();
