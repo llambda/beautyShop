@@ -243,4 +243,78 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+
+    [RelayCommand]
+    private async Task CheckForUpdatesAsync()
+    {
+        IsCheckingUpdates = true;
+        UpdateStatus = "Controllo disponibilità aggiornamenti...";
+        try
+        {
+            var result = await _updateCheckService.CheckAsync();
+            CurrentVersion = result.CurrentVersion;
+            _latestReleaseUrl = result.ReleaseUrl;
+            UpdateStatus = result.Message;
+            ApplicationLog.Write("Aggiornamenti", result.Message);
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Aggiornamenti", ex);
+            UpdateStatus = "Controllo aggiornamenti non riuscito. Consulta il registro applicazione.";
+        }
+        finally
+        {
+            IsCheckingUpdates = false;
+        }
+    }
+
+    [RelayCommand]
+    private void OpenLatestRelease()
+    {
+        try
+        {
+            var url = string.IsNullOrWhiteSpace(_latestReleaseUrl)
+                ? "https://github.com/llambda/beautyShop/releases"
+                : _latestReleaseUrl;
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Apertura pagina aggiornamenti", ex);
+            UpdateStatus = "Impossibile aprire la pagina delle versioni.";
+        }
+    }
+
+    [RelayCommand]
+    private void VerifyBackup()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Verifica un backup BeautyStudio",
+            Filter = "Backup BeautyStudio (*.zip)|*.zip",
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        bool valid = _backupService.ValidateBackup(dialog.FileName, out var message);
+        DataManagementStatus = message;
+        ApplicationLog.Write("Verifica backup", $"{dialog.FileName}: {message}");
+    }
+
+    [RelayCommand]
+    private void OpenLogFolder()
+    {
+        try
+        {
+            var folder = System.IO.Path.Combine(BeautyStudio.Data.AppDbContext.DataDirectory, "Logs");
+            System.IO.Directory.CreateDirectory(folder);
+            Process.Start(new ProcessStartInfo("explorer.exe", $"\\"{folder}\\"") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Apertura registro", ex);
+            DataManagementStatus = "Impossibile aprire la cartella dei registri: " + ex.Message;
+        }
+    }
+
 }
