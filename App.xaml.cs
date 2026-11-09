@@ -115,6 +115,7 @@ public partial class App : Application
             }
             catch (System.Exception backupException)
             {
+                ApplicationLog.Write("Backup automatico all’avvio", backupException);
                 MessageBox.Show($"Backup automatico non riuscito. L'applicazione verrà comunque avviata.\n{backupException.Message}",
                     "Beauty Studio - Backup", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
