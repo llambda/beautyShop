@@ -85,7 +85,7 @@
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <TextBlock Text="Cronologia cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <TextBlock Text="Appuntamenti e interventi in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+                        <TextBlock Text="Appuntamenti, interventi e modifiche alla scheda in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
                         <ItemsControl ItemsSource="{Binding Timeline}">
                             <ItemsControl.ItemTemplate><DataTemplate>
                                 <Grid Margin="0,7">
