@@ -52,7 +52,7 @@
                             ClipToBounds="True">
 
                         <Grid>
-                            <Image Source="{Binding PhotoPath}"
+                            <Image Source="{Binding PhotoPath, Converter={StaticResource PhotoPathToImageConverter}}"
                                    Stretch="UniformToFill"/>
 
                             <TextBlock Text="Nessuna foto"
