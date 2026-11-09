@@ -62,7 +62,15 @@ public partial class App : Application
                 await EnsureColumnAsync("Interventions", "PaidAt", "TEXT NULL");
             }
 
-            new BackupService().CreateAutomaticBackupIfNeeded();
+            try
+            {
+                new BackupService().CreateAutomaticBackupIfNeeded();
+            }
+            catch (System.Exception backupException)
+            {
+                MessageBox.Show($"Backup automatico non riuscito. L'applicazione verrà comunque avviata.\\n{backupException.Message}",
+                    "Beauty Studio - Backup", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
             var customerService = new CustomerService();
             var photoStorageService = new PhotoStorageService();
