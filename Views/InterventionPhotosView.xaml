@@ -35,7 +35,7 @@
                                     <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding BeforePhoto.Path}" Padding="0" BorderThickness="0">
                                         <Image Source="{Binding BeforePhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
-                                    <TextBlock Text="Nessuna foto prima" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    
                                     <TextBlock Text="Data foto" Margin="0,8,0,3"/>
                                     <DatePicker SelectedDate="{Binding BeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
@@ -46,7 +46,7 @@
                                     <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding AfterPhoto.Path}" Padding="0" BorderThickness="0">
                                         <Image Source="{Binding AfterPhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
-                                    <TextBlock Text="Nessuna foto dopo" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    
                                     <TextBlock Text="Data foto" Margin="0,8,0,3"/>
                                     <DatePicker SelectedDate="{Binding AfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
