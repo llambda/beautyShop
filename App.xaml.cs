@@ -114,7 +114,18 @@ public partial class App : Application
         }
         catch (System.Exception ex)
         {
-            MessageBox.Show($"Errore durante l'avvio del programma:\n{ex.Message}", "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
+            string logPath = System.IO.Path.Combine(AppDbContext.DataDirectory, "avvio-errore.log");
+            string message = $"Data: {DateTime.Now:O}{Environment.NewLine}{ex}{Environment.NewLine}";
+            try
+            {
+                System.IO.Directory.CreateDirectory(AppDbContext.DataDirectory);
+                System.IO.File.WriteAllText(logPath, message);
+            }
+            catch { logPath = "Impossibile creare il file di log."; }
+
+            MessageBox.Show(
+                $"Errore durante l'avvio del programma:\n{ex.Message}\n\nDettagli completi: {logPath}",
+                "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown();
         }
     }
