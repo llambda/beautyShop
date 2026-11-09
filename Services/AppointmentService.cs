@@ -44,7 +44,7 @@ public class AppointmentService
     public async Task SaveAsync(Appointment appointment)
     {
         await using var db = new AppDbContext();
-        bool slotTaken = await db.Appointments.AnyAsync(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Date == appointment.Date);
+        bool slotTaken = appointment.Status != "Annullato" && await db.Appointments.AnyAsync(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Date == appointment.Date);
         if (slotTaken)
             throw new InvalidOperationException("Esiste già un appuntamento in questo orario. Scegli un altro orario.");
         if (appointment.Id == 0) db.Add(appointment);
