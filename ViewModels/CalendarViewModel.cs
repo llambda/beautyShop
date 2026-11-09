@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BeautyStudio.ViewModels;
 
@@ -39,6 +40,28 @@ public partial class CalendarViewModel : ObservableObject
 
     [RelayCommand]
     private async Task RefreshAsync() => await LoadAsync();
+
+    [RelayCommand]
+    private void ExportMonthPdf()
+    {
+        try
+        {
+            var path = new ExportService().ExportAppointmentsPdf(_loadedAppointments, DisplayedMonth);
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message, "Esportazione PDF", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error); }
+    }
+
+    [RelayCommand]
+    private void ExportMonthCsv()
+    {
+        try
+        {
+            var path = new ExportService().ExportAppointmentsCsv(_loadedAppointments, DisplayedMonth);
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex) { System.Windows.MessageBox.Show(ex.Message, "Esportazione CSV", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error); }
+    }
 
     private async Task LoadAsync()
     {
