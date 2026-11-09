@@ -165,7 +165,7 @@
                             <ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding HistoryFilterLocation}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per luogo"/>
                             <Button Content="Azzera filtri" Command="{Binding ClearHistoryFiltersCommand}" Padding="10,8" Margin="0,0,0,8" MinHeight="38"/>
                         </WrapPanel>
-                        <DataGrid ItemsSource="{Binding FilteredInterventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
+                        <DataGrid ItemsSource="{Binding FilteredInterventions}" SelectedItem="{Binding SelectedIntervention}" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
                                   Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                                   CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
                             <DataGrid.Columns>
