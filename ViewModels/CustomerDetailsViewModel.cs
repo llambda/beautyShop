@@ -108,6 +108,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedLocation = Locations.FirstOrDefault(x => x.Id == appointment.LocationId);
         SelectedType = Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId);
         InterventionNotes = appointment.Notes;
+        InterventionPrice = 0m;
+        InterventionIsPaid = false;
         BeforePhotos.Clear();
         AfterPhotos.Clear();
         if (appointment.LocationId == null || appointment.InterventionTypeId == null)
