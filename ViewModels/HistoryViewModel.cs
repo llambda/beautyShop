@@ -25,16 +25,12 @@ public partial class HistoryViewModel : ObservableObject
     [ObservableProperty] private Customer? selectedCustomer;
     [ObservableProperty] private InterventionType? selectedType;
     [ObservableProperty] private InterventionLocation? selectedLocation;
-    [ObservableProperty] private DateTime? fromDate;
-    [ObservableProperty] private DateTime? toDate;
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private bool isLoading;
 
     partial void OnSelectedCustomerChanged(Customer? value) => ApplyFilters();
     partial void OnSelectedTypeChanged(InterventionType? value) => ApplyFilters();
     partial void OnSelectedLocationChanged(InterventionLocation? value) => ApplyFilters();
-    partial void OnFromDateChanged(DateTime? value) => ApplyFilters();
-    partial void OnToDateChanged(DateTime? value) => ApplyFilters();
 
     [RelayCommand]
     private async Task RefreshAsync()
@@ -64,26 +60,15 @@ public partial class HistoryViewModel : ObservableObject
         SelectedCustomer = null;
         SelectedType = null;
         SelectedLocation = null;
-        FromDate = null;
-        ToDate = null;
         ApplyFilters();
     }
 
     private void ApplyFilters()
     {
-        if (FromDate.HasValue && ToDate.HasValue && FromDate.Value.Date > ToDate.Value.Date)
-        {
-            FilteredInterventions.Clear();
-            StatusMessage = "La data iniziale non può essere successiva alla data finale.";
-            return;
-        }
-
         var query = Interventions.AsEnumerable();
         if (SelectedCustomer != null) query = query.Where(x => x.CustomerId == SelectedCustomer.Id);
         if (SelectedType != null) query = query.Where(x => x.TypeId == SelectedType.Id);
         if (SelectedLocation != null) query = query.Where(x => x.LocationId == SelectedLocation.Id);
-        if (FromDate.HasValue) query = query.Where(x => x.Date.Date >= FromDate.Value.Date);
-        if (ToDate.HasValue) query = query.Where(x => x.Date.Date <= ToDate.Value.Date);
         var result = query.OrderByDescending(x => x.Date).ToList();
         Replace(FilteredInterventions, result);
         StatusMessage = $"{result.Count} interventi trovati.";
