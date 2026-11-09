@@ -17,6 +17,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SettingsViewModel _settingsViewModel;
     private CalendarViewModel? _calendarViewModel;
     private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
+    private readonly DashboardViewModel _dashboardViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
     public ObservableCollection<Customer> FilteredCustomers { get; } = new();
@@ -78,10 +79,12 @@ public partial class MainViewModel : ObservableObject
         _customerService = customerService;
         _dialogService = dialogService;
         _settingsViewModel = settingsViewModel;
+        _dashboardViewModel = new DashboardViewModel();
         Customers.CollectionChanged += (_, _) => ApplyCustomerFilter();
 
         // All'avvio mostriamo la lista clienti.
-        CurrentViewModel = this;
+        CurrentViewModel = _dashboardViewModel;
+        _ = _dashboardViewModel.RefreshCommand.ExecuteAsync(null);
     }
 
     partial void OnSearchTextChanged(string value) => ApplyCustomerFilter();
@@ -114,6 +117,10 @@ public partial class MainViewModel : ObservableObject
 
         switch (section)
         {
+            case "Panoramica":
+                CurrentViewModel = _dashboardViewModel;
+                _ = _dashboardViewModel.RefreshCommand.ExecuteAsync(null);
+                break;
             case "Clienti":
                 ShowCustomers();
                 break;
