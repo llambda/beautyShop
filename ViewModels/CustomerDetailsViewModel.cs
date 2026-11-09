@@ -41,6 +41,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private InterventionType? selectedAppointmentType;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
+    public decimal TotalRevenue => Interventions.Sum(x => x.Price);
+    public decimal TotalPaid => Interventions.Where(x => x.IsPaid).Sum(x => x.Price);
+    public decimal TotalUnpaid => Interventions.Where(x => !x.IsPaid).Sum(x => x.Price);
     public ObservableCollection<Appointment> Appointments { get; } = new();
     public ObservableCollection<InterventionLocation> Locations { get; } = new();
     public ObservableCollection<InterventionType> Types { get; } = new();
@@ -50,6 +53,12 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false)
     {
         Customer = customer;
+        Interventions.CollectionChanged += (_, _) =>
+        {
+            OnPropertyChanged(nameof(TotalRevenue));
+            OnPropertyChanged(nameof(TotalPaid));
+            OnPropertyChanged(nameof(TotalUnpaid));
+        };
         _mainViewModel = mainViewModel;
         _returnToUpcomingAppointments = returnToUpcomingAppointments;
         if (loadImmediately) _ = LoadAsync();
