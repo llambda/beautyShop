@@ -52,6 +52,9 @@ public class AppointmentService
 
         bool activeAppointment = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
             && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase);
+        if (activeAppointment && !new WorkingHoursService().IsAppointmentWithinWorkingHours(
+            appointment.Date, appointment.DurationMinutes, out var hoursReason))
+            throw new InvalidOperationException(hoursReason);
         var candidates = activeAppointment
             ? await db.Appointments.AsNoTracking()
                 .Where(x => x.Id != appointment.Id
