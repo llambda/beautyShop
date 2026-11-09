@@ -1,0 +1,37 @@
+<UserControl x:Class="BeautyStudio.Views.DashboardView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+ <ScrollViewer VerticalScrollBarVisibility="Auto">
+  <StackPanel Margin="22">
+   <TextBlock Text="Panoramica" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+   <TextBlock Text="{Binding Source={x:Static sys:DateTime.Now}, StringFormat='dddd dd MMMM yyyy'}" xmlns:sys="clr-namespace:System;assembly=mscorlib" Margin="0,4,0,20" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+   <UniformGrid Columns="3" Margin="0,0,0,18">
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18" Margin="0,0,12,0"><StackPanel><TextBlock Text="Clienti" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding TotalCustomers}" FontSize="30" FontWeight="Bold"/></StackPanel></Border>
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18" Margin="0,0,12,0"><StackPanel><TextBlock Text="Appuntamenti oggi" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding AppointmentsToday}" FontSize="30" FontWeight="Bold"/></StackPanel></Border>
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18"><StackPanel><TextBlock Text="Da gestire (passati)" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding OverdueAppointments}" FontSize="30" FontWeight="Bold"/></StackPanel></Border>
+   </UniformGrid>
+   <UniformGrid Columns="3" Margin="0,0,0,20">
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18" Margin="0,0,12,0"><StackPanel><TextBlock Text="Interventi questo mese" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding InterventionsThisMonth}" FontSize="26" FontWeight="Bold"/></StackPanel></Border>
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18" Margin="0,0,12,0"><StackPanel><TextBlock Text="Incassato questo mese" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding RevenueThisMonth, StringFormat={}{0:C2}}" FontSize="26" FontWeight="Bold"/></StackPanel></Border>
+    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}" BorderThickness="1" Padding="18"><StackPanel><TextBlock Text="Da incassare" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding UnpaidTotal, StringFormat={}{0:C2}}" FontSize="26" FontWeight="Bold"/></StackPanel></Border>
+   </UniformGrid>
+   <Grid Margin="0,0,0,10"><TextBlock Text="Prossimi appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/><Button Command="{Binding RefreshCommand}" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignToolButton}" ToolTip="Aggiorna"><materialDesign:PackIcon Kind="Refresh" Width="20" Height="20"/></Button></Grid>
+   <DataGrid ItemsSource="{Binding UpcomingAppointments}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" MinHeight="170" MaxHeight="300">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="110"/>
+     <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="80"/>
+     <DataGridTextColumn Header="Cliente" Binding="{Binding Customer.FirstName}" Width="*"/>
+     <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
+     <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
+    </DataGrid.Columns>
+   </DataGrid>
+   <TextBlock Text="Backup e ripristino" FontSize="20" FontWeight="SemiBold" Margin="0,22,0,10"/>
+   <StackPanel Orientation="Horizontal">
+    <Button Content="Crea backup adesso" Command="{Binding CreateBackupCommand}" Padding="16,9" Margin="0,0,10,0"/>
+    <Button Content="Ripristina backup" Command="{Binding RestoreBackupCommand}" Padding="16,9"/>
+   </StackPanel>
+   <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,12,0,0"/>
+  </StackPanel>
+ </ScrollViewer>
+</UserControl>
