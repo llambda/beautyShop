@@ -18,6 +18,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
 {
     private readonly MainViewModel _mainViewModel;
     private readonly bool _returnToUpcomingAppointments;
+    private bool _convertingAppointmentToIntervention;
     private readonly InterventionService _interventionService = new();
     private readonly AppointmentService _appointmentService = new();
     private readonly InterventionLocationService _locationService = new();
@@ -55,6 +56,24 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         await LoadAsync();
         EditAppointment(appointment);
+    }
+
+    public async Task LoadAndMarkAppointmentAsExecutedAsync(Appointment appointment)
+    {
+        await LoadAsync();
+        SelectedAppointment = appointment;
+        SelectedIntervention = null;
+        InterventionDate = appointment.Date.Date;
+        SelectedLocation = null;
+        SelectedType = Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId);
+        InterventionNotes = appointment.Notes;
+        BeforePhotos.Clear();
+        AfterPhotos.Clear();
+        _convertingAppointmentToIntervention = true;
+        StatusMessage = Locations.Count == 0
+            ? "Prima di registrare l'intervento, aggiungi un luogo nelle Impostazioni."
+            : "Completa il luogo e, se necessario, aggiungi le foto prima e dopo. Salvando, l'appuntamento verrà archiviato come intervento eseguito.";
+        _mainViewModel.ShowInterventionEditor(this);
     }
 
     private void ReturnAfterAppointmentEdit()
@@ -211,9 +230,22 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.AfterPhotosJson = JsonSerializer.Serialize(AfterPhotos.ToArray());
             await _interventionService.SaveAsync(item);
             await ReloadInterventionsAsync();
+
+            bool convertedAppointment = _convertingAppointmentToIntervention;
+            if (convertedAppointment && SelectedAppointment != null)
+            {
+                await _appointmentService.DeleteAsync(SelectedAppointment);
+                await ReloadAppointmentsAsync();
+            }
+
             SelectedIntervention = null;
-            StatusMessage = "Intervento salvato.";
-            _mainViewModel.ShowCustomerDetails(this);
+            SelectedAppointment = null;
+            _convertingAppointmentToIntervention = false;
+            StatusMessage = convertedAppointment ? "Appuntamento registrato nello storico degli interventi." : "Intervento salvato.";
+            if (_returnToUpcomingAppointments)
+                _mainViewModel.ShowUpcomingAppointments();
+            else
+                _mainViewModel.ShowCustomerDetails(this);
         }
         catch (Exception ex) { StatusMessage = $"Salvataggio non riuscito: {ex.Message}"; }
     }
@@ -276,7 +308,15 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void CancelEditor() => ReturnAfterAppointmentEdit();
+    private void CancelEditor()
+    {
+        if (_convertingAppointmentToIntervention)
+        {
+            _convertingAppointmentToIntervention = false;
+            SelectedAppointment = null;
+        }
+        ReturnAfterAppointmentEdit();
+    }
 
     [RelayCommand]
     private void BackToCustomers() => _mainViewModel.ShowCustomers();
