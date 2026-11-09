@@ -99,6 +99,23 @@
                             <TextBlock Text="{Binding TotalPaid, StringFormat='Incassato: {0:C2}'}" Foreground="#2E7D32" Margin="0,0,18,0"/>
                             <TextBlock Text="{Binding TotalUnpaid, StringFormat='Da saldare: {0:C2}'}" Foreground="#B26A00"/>
                         </WrapPanel>
+                        <Grid Margin="0,14,0,0">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Foto prima" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{Binding BeforePhotos}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate><DataTemplate><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill" Margin="0,0,6,6"/></DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Foto dopo" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{Binding AfterPhotos}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate><DataTemplate><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill" Margin="0,0,6,6"/></DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
