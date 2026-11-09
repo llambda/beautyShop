@@ -10,7 +10,6 @@ namespace BeautyStudio.Services;
 
 public class AppointmentService
 {
-    private sealed record AppointmentSlot(DateTime Date, int DurationMinutes);
     public async Task<List<Appointment>> GetForCustomerAsync(int customerId)
     {
         await using var db = new AppDbContext();
@@ -60,9 +59,8 @@ public class AppointmentService
                     && x.Status != "Non presentato"
                     && x.Date >= appointment.Date.AddMinutes(-720)
                     && x.Date <= appointment.Date.AddMinutes(720))
-                 .Select(x => new AppointmentSlot(x.Date, x.DurationMinutes))
-                .ToListAsync()
-            : new List<AppointmentSlot>();
+                 .ToListAsync()
+            : new List<Appointment>();
 
         bool slotTaken = activeAppointment && candidates.Any(x =>
             x.Date < appointment.Date.AddMinutes(appointment.DurationMinutes)
