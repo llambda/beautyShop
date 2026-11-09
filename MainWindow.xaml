@@ -36,6 +36,10 @@
             <views:CustomerDetailsView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:InterventionPhotosViewModel}">
+            <views:InterventionPhotosView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:InterventionEditorViewModel}">
             <views:InterventionEditorView/>
         </DataTemplate>
