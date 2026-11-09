@@ -23,9 +23,6 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty] private int totalCustomers;
     [ObservableProperty] private int appointmentsToday;
     [ObservableProperty] private int overdueAppointments;
-    [ObservableProperty] private int interventionsThisMonth;
-    [ObservableProperty] private decimal revenueThisMonth;
-    [ObservableProperty] private decimal unpaidTotal;
     [ObservableProperty] private string? statusMessage;
 
     [RelayCommand]
@@ -38,12 +35,6 @@ public partial class DashboardViewModel : ObservableObject
             TotalCustomers = await db.Customers.CountAsync();
             AppointmentsToday = await db.Appointments.CountAsync(x => x.Date >= now.Date && x.Date < now.Date.AddDays(1));
             OverdueAppointments = await db.Appointments.CountAsync(x => x.Date < now);
-            var monthStart = new DateTime(now.Year, now.Month, 1);
-            var monthItems = await db.Interventions.Where(x => x.Date >= monthStart && x.Date < monthStart.AddMonths(1)).ToListAsync();
-            InterventionsThisMonth = monthItems.Count;
-            RevenueThisMonth = monthItems.Where(x => x.IsPaid).Sum(x => x.Price);
-            var unpaidItems = await db.Interventions.Where(x => !x.IsPaid).ToListAsync();
-            UnpaidTotal = unpaidItems.Sum(x => x.Price);
             var upcoming = await db.Appointments.AsNoTracking().Include(x => x.Customer).Include(x => x.InterventionType)
                 .Where(x => x.Date >= now).OrderBy(x => x.Date).Take(8).ToListAsync();
             UpcomingAppointments.Clear();
