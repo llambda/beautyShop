@@ -112,17 +112,17 @@ public class InterventionService
         if (appointment == null)
             throw new InvalidOperationException("L'appuntamento da archiviare non è più presente.");
 
-        if (!appointment.InterventionTypeId.HasValue)
-            throw new InvalidOperationException("L'appuntamento non contiene un tipo di intervento valido.");
-
-        // Mantiene il luogo dell'appuntamento se presente; altrimenti usa quello appena aggiunto nella conferma.
+        // Mantiene i dati dell'appuntamento quando presenti; in assenza usa le scelte fatte nella schermata di conferma.
         intervention.CustomerId = appointment.CustomerId;
         if (appointment.LocationId.HasValue)
             intervention.LocationId = appointment.LocationId.Value;
         else if (intervention.LocationId <= 0)
             throw new InvalidOperationException("Aggiungi un luogo prima di confermare lo svolgimento.");
 
-        intervention.TypeId = appointment.InterventionTypeId.Value;
+        if (appointment.InterventionTypeId.HasValue)
+            intervention.TypeId = appointment.InterventionTypeId.Value;
+        else if (intervention.TypeId <= 0)
+            throw new InvalidOperationException("Seleziona un tipo di intervento prima di confermare lo svolgimento.");
 
         db.Appointments.Remove(appointment);
         await db.SaveChangesAsync();
