@@ -37,7 +37,6 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock Text="Nessuna foto prima." Foreground="Gray" Visibility="{Binding BeforePhotos.Count, Converter={StaticResource ZeroToVisibilityConverter}}"/>
                     </StackPanel>
                 </Border>
                 <Border Grid.Column="1" Background="White" Padding="18" Margin="9,0,0,0">
@@ -53,7 +52,6 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock Text="Nessuna foto dopo." Foreground="Gray" Visibility="{Binding AfterPhotos.Count, Converter={StaticResource ZeroToVisibilityConverter}}"/>
                     </StackPanel>
                 </Border>
             </Grid>
