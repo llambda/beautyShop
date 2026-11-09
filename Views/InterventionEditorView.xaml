@@ -9,8 +9,35 @@
   <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
   <Border Background="White" CornerRadius="15" Padding="24"><StackPanel>
    <TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding Parent.InterventionDate}" Margin="0,0,0,16"/>
-   <TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Locations}" SelectedItem="{Binding Parent.SelectedLocation}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
-   <TextBlock Text="Tipo di intervento" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedType}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
+   <StackPanel Margin="0,0,0,16">
+    <StackPanel.Style>
+     <Style TargetType="StackPanel">
+      <Setter Property="Visibility" Value="Visible"/>
+      <Style.Triggers>
+       <DataTrigger Binding="{Binding Parent.IsConvertingAppointment}" Value="True">
+        <Setter Property="Visibility" Value="Collapsed"/>
+       </DataTrigger>
+      </Style.Triggers>
+     </Style>
+    </StackPanel.Style>
+    <TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Locations}" SelectedItem="{Binding Parent.SelectedLocation}" DisplayMemberPath="Name"/>
+    <TextBlock Text="Tipo di intervento" Margin="0,12,0,5"/><ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedType}" DisplayMemberPath="Name"/>
+   </StackPanel>
+   <StackPanel Margin="0,0,0,16">
+    <StackPanel.Style>
+     <Style TargetType="StackPanel">
+      <Setter Property="Visibility" Value="Collapsed"/>
+      <Style.Triggers>
+       <DataTrigger Binding="{Binding Parent.IsConvertingAppointment}" Value="True">
+        <Setter Property="Visibility" Value="Visible"/>
+       </DataTrigger>
+      </Style.Triggers>
+     </Style>
+    </StackPanel.Style>
+    <TextBlock Text="Luogo e tipo recuperati dall'appuntamento" FontWeight="SemiBold"/>
+    <TextBlock Text="{Binding Parent.SelectedLocation.Name}" Margin="0,4,0,0"/>
+    <TextBlock Text="{Binding Parent.SelectedType.Name}" Margin="0,2,0,0"/>
+   </StackPanel>
    <TextBlock Text="Prezzo (€)" Margin="0,0,0,5"/>
    <TextBox Text="{Binding Parent.InterventionPrice, UpdateSourceTrigger=PropertyChanged}" Padding="8" Margin="0,0,0,16"/>
    <CheckBox Content="Pagamento ricevuto" IsChecked="{Binding Parent.InterventionIsPaid}" Margin="0,0,0,16"/>
