@@ -44,7 +44,12 @@ public sealed class BackupService
             ZipFile.ExtractToDirectory(zipPath, temp);
             var database = Path.Combine(temp, "Database", "BeautyStudio.db");
             if (!File.Exists(database)) throw new InvalidDataException("Il backup non contiene il database.");
+            CreateBackup();
             Directory.CreateDirectory(Path.GetDirectoryName(AppDbContext.DatabasePath)!);
+            var walPath = AppDbContext.DatabasePath + "-wal";
+            var shmPath = AppDbContext.DatabasePath + "-shm";
+            if (File.Exists(walPath)) File.Delete(walPath);
+            if (File.Exists(shmPath)) File.Delete(shmPath);
             File.Copy(database, AppDbContext.DatabasePath, true);
             CopyDirectory(Path.Combine(temp, "Photos"), AppDbContext.PhotosDirectory);
             CopyDirectory(Path.Combine(temp, "Documents"), Path.Combine(AppDbContext.DataDirectory, "Documents"));
