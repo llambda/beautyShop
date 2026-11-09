@@ -45,6 +45,9 @@ public partial class CustomerEditorViewModel : ObservableObject
     private string? photoPath;
 
     [ObservableProperty]
+    private string? consentFormPath;
+
+    [ObservableProperty]
     private string? errorMessage;
 
     [ObservableProperty]
@@ -75,6 +78,7 @@ public partial class CustomerEditorViewModel : ObservableObject
             Address = customer.Address;
             Notes = customer.Notes;
             PhotoPath = customer.PhotoPath;
+            ConsentFormPath = customer.ConsentFormPath;
         }
     }
 
@@ -92,6 +96,24 @@ public partial class CustomerEditorViewModel : ObservableObject
             PhotoPath = dialog.FileName;
         }
     }
+
+
+    [RelayCommand]
+    private void SelectConsentForm()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Seleziona il consenso informato firmato",
+            Filter = "Documenti PDF|*.pdf",
+            Multiselect = false
+        };
+
+        if (dialog.ShowDialog() == true)
+            ConsentFormPath = dialog.FileName;
+    }
+
+    [RelayCommand]
+    private void RemoveConsentForm() => ConsentFormPath = null;
 
     [RelayCommand]
     private void Cancel()
@@ -138,6 +160,28 @@ public partial class CustomerEditorViewModel : ObservableObject
                     await _photoStorageService.SaveCustomerPhotoAsync(PhotoPath);
             }
 
+
+            string? finalConsentFormPath = ConsentFormPath;
+            if (!string.IsNullOrWhiteSpace(ConsentFormPath))
+            {
+                if (!File.Exists(ConsentFormPath))
+                    throw new FileNotFoundException("Il PDF del consenso informato selezionato non è più disponibile.");
+
+                string consentDirectory = BeautyStudio.Data.AppDbContext.ConsentsDirectory;
+                Directory.CreateDirectory(consentDirectory);
+                string normalizedConsentPath = Path.GetFullPath(ConsentFormPath);
+                string normalizedConsentDirectory = Path.GetFullPath(consentDirectory)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    + Path.DirectorySeparatorChar;
+
+                if (!normalizedConsentPath.StartsWith(normalizedConsentDirectory, StringComparison.OrdinalIgnoreCase))
+                {
+                    string destination = Path.Combine(consentDirectory, $"{Guid.NewGuid()}.pdf");
+                    await Task.Run(() => File.Copy(ConsentFormPath, destination));
+                    finalConsentFormPath = destination;
+                }
+            }
+
             Customer customer;
 
             if (_customerId.HasValue)
@@ -160,6 +204,7 @@ public partial class CustomerEditorViewModel : ObservableObject
             customer.Address = Address?.Trim();
             customer.Notes = Notes?.Trim();
             customer.PhotoPath = finalPhotoPath;
+            customer.ConsentFormPath = finalConsentFormPath;
 
             if (_customerId.HasValue)
                 await _customerService.UpdateAsync(customer);
