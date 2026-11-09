@@ -15,6 +15,7 @@ public class AppointmentService
         await using var db = new AppDbContext();
         return await db.Set<Appointment>().AsNoTracking()
             .Include(x => x.InterventionType)
+            .Include(x => x.Location)
             .Where(x => x.CustomerId == customerId)
             .OrderBy(x => x.Date)
             .ToListAsync();
