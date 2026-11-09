@@ -27,6 +27,10 @@
         <DataTemplate DataType="{x:Type vm:CalendarViewModel}">
             <views:CalendarView/>
         </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vm:RemindersViewModel}">
+            <views:RemindersView/>
+        </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:UpcomingInterventionsViewModel}">
             <views:UpcomingInterventionsView/>
@@ -164,6 +168,19 @@
 
                     </Button>
 
+
+                    <!-- PROMEMORIA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Promemoria"
+                            Height="48"
+                            HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="BellOutline" Width="24" Height="24"/>
+                            <TextBlock Text="Promemoria" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
 
                     <!-- INTERVENTI -->
 
