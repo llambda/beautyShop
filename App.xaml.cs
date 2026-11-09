@@ -80,6 +80,8 @@ public partial class App : Application
                     "ALTER TABLE Interventions ADD COLUMN IsPaid INTEGER NOT NULL DEFAULT 0;");
                 await EnsureColumnAsync("Interventions", "PaidAt",
                     "ALTER TABLE Interventions ADD COLUMN PaidAt TEXT NULL;");
+                await EnsureColumnAsync("Interventions", "PhotoMetadataJson",
+                    "ALTER TABLE Interventions ADD COLUMN PhotoMetadataJson TEXT NOT NULL DEFAULT '{}';");
                 await EnsureColumnAsync("Appointments", "Status",
                     "ALTER TABLE Appointments ADD COLUMN Status TEXT NOT NULL DEFAULT 'Da confermare';");
                 await EnsureColumnAsync("Appointments", "LocationId",
