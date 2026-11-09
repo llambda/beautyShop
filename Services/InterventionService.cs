@@ -36,11 +36,54 @@ public class InterventionService
     public async Task SaveAsync(Intervention intervention)
     {
         await using var db = new AppDbContext();
+        var previous = intervention.Id == 0
+            ? null
+            : await db.Interventions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == intervention.Id);
+
         if (intervention.Id == 0)
             db.Add(intervention);
         else
             db.Update(intervention);
+
         await db.SaveChangesAsync();
+
+        string action = previous == null ? "Intervento creato" : "Intervento modificato";
+        string details = previous == null
+            ? $"Intervento creato. Prezzo: {intervention.Price:C2}. Pagato: {(intervention.IsPaid ? "sì" : "no")}."
+            : BuildChangeDetails(previous, intervention);
+        db.InterventionHistory.Add(new InterventionHistoryEntry
+        {
+            InterventionId = intervention.Id,
+            CustomerId = intervention.CustomerId,
+            ChangedAt = DateTime.Now,
+            Action = action,
+            Details = details
+        });
+        await db.SaveChangesAsync();
+    }
+
+    public async Task<List<InterventionHistoryEntry>> GetHistoryAsync(int interventionId)
+    {
+        await using var db = new AppDbContext();
+        return await db.InterventionHistory.AsNoTracking()
+            .Where(x => x.InterventionId == interventionId)
+            .OrderByDescending(x => x.ChangedAt)
+            .ToListAsync();
+    }
+
+    private static string BuildChangeDetails(Intervention oldItem, Intervention newItem)
+    {
+        var changes = new List<string>();
+        if (oldItem.Price != newItem.Price) changes.Add($"Prezzo: {oldItem.Price:C2} → {newItem.Price:C2}");
+        if (oldItem.IsPaid != newItem.IsPaid)
+            changes.Add(newItem.IsPaid ? "Pagamento registrato" : "Pagamento revocato");
+        if (oldItem.Date != newItem.Date) changes.Add($"Data modificata: {newItem.Date:dd/MM/yyyy}");
+        if (oldItem.LocationId != newItem.LocationId) changes.Add("Luogo modificato");
+        if (oldItem.TypeId != newItem.TypeId) changes.Add("Tipo di intervento modificato");
+        if (oldItem.Notes != newItem.Notes) changes.Add("Note aggiornate");
+        if (oldItem.BeforePhotosJson != newItem.BeforePhotosJson || oldItem.AfterPhotosJson != newItem.AfterPhotosJson)
+            changes.Add("Fotografie aggiornate");
+        return changes.Count == 0 ? "Dati intervento salvati." : string.Join("; ", changes);
     }
 
     public async Task SaveAndDeleteAppointmentAsync(Intervention intervention, int appointmentId)
@@ -64,13 +107,25 @@ public class InterventionService
 
         db.Appointments.Remove(appointment);
         await db.SaveChangesAsync();
+        db.InterventionHistory.Add(new InterventionHistoryEntry
+        {
+            InterventionId = intervention.Id,
+            CustomerId = intervention.CustomerId,
+            ChangedAt = DateTime.Now,
+            Action = "Intervento creato da appuntamento",
+            Details = $"Appuntamento del {intervention.Date:dd/MM/yyyy HH:mm} registrato come intervento. Prezzo: {intervention.Price:C2}. Pagato: {(intervention.IsPaid ? "sì" : "no")}."
+        });
+        await db.SaveChangesAsync();
         await transaction.CommitAsync();
     }
 
     public async Task DeleteAsync(Intervention intervention)
     {
         await using var db = new AppDbContext();
-        db.Remove(intervention);
+        var existing = await db.Interventions.FirstOrDefaultAsync(x => x.Id == intervention.Id);
+        if (existing == null) return;
+        // Lo storico collegato viene eliminato automaticamente insieme all'intervento (FK cascade).
+        db.Interventions.Remove(existing);
         await db.SaveChangesAsync();
     }
 }
