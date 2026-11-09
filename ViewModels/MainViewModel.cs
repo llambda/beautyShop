@@ -22,6 +22,7 @@ public partial class MainViewModel : ObservableObject
     private CalendarViewModel? _calendarViewModel;
     private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
     private RemindersViewModel? _remindersViewModel;
+    private HistoryViewModel? _historyViewModel;
     private readonly DashboardViewModel _dashboardViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
@@ -142,6 +143,12 @@ public partial class MainViewModel : ObservableObject
                 _remindersViewModel ??= new RemindersViewModel();
                 CurrentViewModel = _remindersViewModel;
                 _ = _remindersViewModel.RefreshCommand.ExecuteAsync(null);
+                break;
+
+            case "Storico":
+                _historyViewModel ??= new HistoryViewModel();
+                CurrentViewModel = _historyViewModel;
+                _ = _historyViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
 
             case "Appuntamenti":
