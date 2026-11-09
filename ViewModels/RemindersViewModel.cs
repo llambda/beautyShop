@@ -21,6 +21,8 @@ public partial class RemindersViewModel : ObservableObject
     public ObservableCollection<Appointment> UnconfirmedAppointments { get; } = new();
     public ObservableCollection<Appointment> IncompleteAppointments { get; } = new();
     public ObservableCollection<Appointment> MissingConsentAppointments { get; } = new();
+    public ObservableCollection<Appointment> OverdueAppointments { get; } = new();
+    public ObservableCollection<Appointment> NoShowAppointments { get; } = new();
     public ObservableCollection<CustomerFollowUpItem> CustomersToReconnect { get; } = new();
 
     [ObservableProperty] private bool isLoading;
@@ -44,6 +46,11 @@ public partial class RemindersViewModel : ObservableObject
             Replace(UnconfirmedAppointments, active.Where(x => string.Equals(x.Status, "Da confermare", StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.Date));
             Replace(IncompleteAppointments, active.Where(x => x.LocationId == null || x.InterventionTypeId == null).OrderBy(x => x.Date));
             Replace(MissingConsentAppointments, active.Where(HasMissingConsent).OrderBy(x => x.Date));
+            Replace(OverdueAppointments, all.Where(x => x.Date < DateTime.Now
+                && !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(x.Status, "Non presentato", StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.Date));
+            Replace(NoShowAppointments, all.Where(x => string.Equals(x.Status, "Non presentato", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(x => x.Date).Take(30));
 
             var interventions = await _interventionService.GetAllAsync();
             List<Customer> customers;
@@ -66,7 +73,11 @@ public partial class RemindersViewModel : ObservableObject
             Replace(CustomersToReconnect, followUps);
             StatusMessage = "Promemoria aggiornati.";
         }
-        catch (Exception ex) { StatusMessage = $"Errore nel caricamento dei promemoria: {ex.Message}"; }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Promemoria", ex);
+            StatusMessage = $"Errore nel caricamento dei promemoria: {ex.Message}";
+        }
         finally { IsLoading = false; }
     }
 
