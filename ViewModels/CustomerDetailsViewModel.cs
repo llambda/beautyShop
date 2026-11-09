@@ -334,7 +334,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             _convertingAppointmentToIntervention = false;
             IsConvertingAppointment = false;
             StatusMessage = convertedAppointment ? "Appuntamento registrato nello storico degli interventi." : "Intervento salvato.";
-            if (_returnToUpcomingAppointments)
+            if (_returnToUpcomingAppointments && !convertedAppointment)
                 _mainViewModel.ShowUpcomingAppointments();
             else
                 _mainViewModel.ShowCustomerDetails(this);
