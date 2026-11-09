@@ -271,28 +271,7 @@
 
         <Grid Grid.Column="1">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-
-            <!-- HEADER -->
-
-            <Border Grid.Row="0"
-                    Background="{DynamicResource MaterialDesign.Brush.Surface}"
-                    BorderBrush="{DynamicResource MaterialDesign.Brush.Divider}"
-                    BorderThickness="0,0,0,1">
-
-
-
-            </Border>
-
-
-            <!-- CONTENUTO DINAMICO -->
-
-            <ContentControl Grid.Row="1"
-                            Content="{Binding CurrentViewModel}"
+            <ContentControl Content="{Binding CurrentViewModel}"
                             Margin="10"/>
 
         </Grid>
