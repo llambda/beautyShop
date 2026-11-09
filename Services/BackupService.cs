@@ -8,10 +8,20 @@ namespace BeautyStudio.Services;
 
 public sealed class BackupService
 {
-    public string CreateBackup()
+    public string? CreateAutomaticBackupIfNeeded()
+    {
+        var folder = Path.Combine(AppDbContext.DataDirectory, "Backups");
+        Directory.CreateDirectory(folder);
+        var today = Path.Combine(folder, "BeautyStudio_" + DateTime.Now.ToString("yyyyMMdd") + "_automatico.zip");
+        if (File.Exists(today)) return null;
+        return CreateBackup(today);
+    }
+
+    public string CreateBackup() => CreateBackup(Path.Combine(AppDbContext.DataDirectory, "Backups", "BeautyStudio_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".zip"));
+
+    private string CreateBackup(string destination)
     {
         Directory.CreateDirectory(Path.Combine(AppDbContext.DataDirectory, "Backups"));
-        var destination = Path.Combine(AppDbContext.DataDirectory, "Backups", $"BeautyStudio_{DateTime.Now:yyyyMMdd_HHmmss}.zip");
         if (File.Exists(AppDbContext.DatabasePath))
             using (var archive = ZipFile.Open(destination, ZipArchiveMode.Create))
                 AddFile(archive, AppDbContext.DatabasePath, "Database/BeautyStudio.db");
