@@ -153,7 +153,7 @@ public partial class MainViewModel : ObservableObject
 
             case "Appuntamenti":
             case "Calendario":
-                _calendarViewModel ??= new CalendarViewModel();
+                _calendarViewModel ??= new CalendarViewModel(this);
                 CurrentViewModel = _calendarViewModel;
                 _ = _calendarViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
@@ -177,6 +177,11 @@ public partial class MainViewModel : ObservableObject
     public void ShowCustomerDetails(CustomerDetailsViewModel viewModel)
     {
         CurrentViewModel = viewModel;
+    }
+
+    public void OpenCustomerDetails(Customer customer)
+    {
+        CurrentViewModel = new CustomerDetailsViewModel(customer, this);
     }
 
     public bool? ShowEditCustomerDialog(Customer customer) => _dialogService.ShowDialog(customer);
