@@ -29,15 +29,6 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string searchText = string.Empty;
 
-    [ObservableProperty] private string treatmentFilter = string.Empty;
-    [ObservableProperty] private string selectedSortOption = "Cognome A-Z";
-    [ObservableProperty] private string selectedConsentFilter = "Tutti";
-    [ObservableProperty] private DateTime? lastInterventionFrom;
-    [ObservableProperty] private DateTime? lastInterventionTo;
-
-    public ObservableCollection<string> SortOptions { get; } = new() { "Cognome A-Z", "Nome A-Z", "Ultimo intervento recente", "Ultimo intervento meno recente" };
-    public ObservableCollection<string> ConsentFilters { get; } = new() { "Tutti", "Consenso presente", "Consenso mancante" };
-
     private bool _isMenuExpanded = true;
 
     public bool IsMenuExpanded
@@ -100,37 +91,19 @@ public partial class MainViewModel : ObservableObject
     }
 
     partial void OnSearchTextChanged(string value) => ApplyCustomerFilter();
-    partial void OnTreatmentFilterChanged(string value) => ApplyCustomerFilter();
-    partial void OnSelectedSortOptionChanged(string value) => ApplyCustomerFilter();
-    partial void OnSelectedConsentFilterChanged(string value) => ApplyCustomerFilter();
-    partial void OnLastInterventionFromChanged(DateTime? value) => ApplyCustomerFilter();
-    partial void OnLastInterventionToChanged(DateTime? value) => ApplyCustomerFilter();
 
     private void ApplyCustomerFilter()
     {
         string term = SearchText?.Trim() ?? string.Empty;
-        string treatment = TreatmentFilter?.Trim() ?? string.Empty;
         var filtered = Customers.Where(customer =>
-            (string.IsNullOrWhiteSpace(term)
-             || $"{customer.FirstName} {customer.LastName}".Contains(term, StringComparison.CurrentCultureIgnoreCase)
-             || (customer.Phone?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
-             || (customer.Email?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
-             || (customer.Address?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false))
-            && (string.IsNullOrWhiteSpace(treatment) || customer.TreatmentNames.Contains(treatment, StringComparison.CurrentCultureIgnoreCase))
-            && (SelectedConsentFilter == "Tutti"
-                || (SelectedConsentFilter == "Consenso presente" && !string.IsNullOrWhiteSpace(customer.ConsentFormPath))
-                || (SelectedConsentFilter == "Consenso mancante" && string.IsNullOrWhiteSpace(customer.ConsentFormPath)))
-            && (!LastInterventionFrom.HasValue || (customer.LastInterventionDate.HasValue && customer.LastInterventionDate.Value.Date >= LastInterventionFrom.Value.Date))
-            && (!LastInterventionTo.HasValue || (customer.LastInterventionDate.HasValue && customer.LastInterventionDate.Value.Date <= LastInterventionTo.Value.Date)))
+            string.IsNullOrWhiteSpace(term)
+            || $"{customer.FirstName} {customer.LastName}".Contains(term, StringComparison.CurrentCultureIgnoreCase)
+            || (customer.Phone?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            || (customer.Email?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
+            || (customer.Address?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false))
+            .OrderBy(customer => customer.LastName)
+            .ThenBy(customer => customer.FirstName)
             .ToList();
-
-        filtered = SelectedSortOption switch
-        {
-            "Nome A-Z" => filtered.OrderBy(x => x.FirstName).ThenBy(x => x.LastName).ToList(),
-            "Ultimo intervento recente" => filtered.OrderByDescending(x => x.LastInterventionDate ?? DateTime.MinValue).ThenBy(x => x.LastName).ToList(),
-            "Ultimo intervento meno recente" => filtered.OrderBy(x => x.LastInterventionDate ?? DateTime.MaxValue).ThenBy(x => x.LastName).ToList(),
-            _ => filtered.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToList()
-        };
 
         FilteredCustomers.Clear();
         foreach (var customer in filtered)
