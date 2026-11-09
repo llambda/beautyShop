@@ -20,7 +20,7 @@ public sealed class WorkingHoursService
             if (File.Exists(SettingsPath))
             {
                 var loaded = JsonSerializer.Deserialize<List<WorkingDaySetting>>(File.ReadAllText(SettingsPath));
-                if (loaded is { Count: 7 }) return loaded.OrderBy(x => (int)x.Day).ToList();
+                if (loaded is { Count: 7 }) return loaded.OrderBy(x => ((int)x.Day + 6) % 7).ToList();
             }
         }
         catch (Exception ex)
@@ -47,12 +47,12 @@ public sealed class WorkingHoursService
             HasBreak = day != DayOfWeek.Saturday,
             BreakStart = "13:00",
             BreakEnd = "14:00"
-        }).OrderBy(x => (int)x.Day).ToList();
+        }).OrderBy(x => ((int)x.Day + 6) % 7).ToList();
     }
 
     public void Save(IEnumerable<WorkingDaySetting> days)
     {
-        var items = days.OrderBy(x => (int)x.Day).ToList();
+        var items = days.OrderBy(x => ((int)x.Day + 6) % 7).ToList();
         if (items.Count != 7 || items.Select(x => x.Day).Distinct().Count() != 7)
             throw new InvalidOperationException("Configura tutti i sette giorni della settimana.");
 
