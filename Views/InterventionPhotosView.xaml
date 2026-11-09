@@ -30,7 +30,7 @@
                         <TextBlock Text="{Binding Intervention.Price, StringFormat='Prezzo: {0:C2}'}" Margin="0,0,24,8"/>
                         <TextBlock Text="{Binding Intervention.IsPaid, StringFormat='Pagato: {0}'}" Margin="0,0,24,8"/>
                     </WrapPanel>
-                    <TextBlock Text="{Binding Intervention.Notes, TargetNullValue='Nessuna nota'}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                    <TextBlock Text="{Binding NotesDisplay}" TextWrapping="Wrap" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
             <Grid Margin="0,0,0,18">
