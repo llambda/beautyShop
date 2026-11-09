@@ -105,7 +105,6 @@
                         </TextBlock>
                     </StackPanel>
                 </Border>
-       </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <Grid Margin="0,0,0,15">
@@ -190,6 +189,7 @@
                         </WrapPanel>
                     </StackPanel>
          
+                </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <TextBlock Text="Esporta scheda cliente" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
