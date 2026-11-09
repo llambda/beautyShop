@@ -237,7 +237,6 @@ public partial class CustomerDetailsViewModel : ObservableObject
             foreach (var item in types) Types.Add(item);
             await ReloadInterventionsAsync();
             await ReloadAppointmentsAsync();
-            await ReloadAuditHistoryAsync();
         }
         catch (Exception ex) { StatusMessage = $"Errore caricamento: {ex.Message}"; }
     }
