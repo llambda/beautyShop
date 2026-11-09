@@ -52,9 +52,12 @@
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <TextBlock Text="Consenso informato" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <TextBlock Text="{Binding Customer.ConsentFormPath, TargetNullValue='Nessun PDF caricato'}"
+                        <TextBlock Text="{Binding Customer.ConsentFormPath, TargetNullValue='ATTENZIONE: consenso informato mancante'}"
                                    Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
-                                   TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                   TextWrapping="Wrap" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding Customer.ConsentAcquiredAt, StringFormat='Acquisito il {0:dd/MM/yyyy HH:mm}', TargetNullValue='Data di acquisizione non disponibile'}"
+                                   Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                   Margin="0,0,0,12"/>
                         <Button Content="Apri PDF firmato"
                                 Command="{Binding OpenConsentFormCommand}"
                                 HorizontalAlignment="Left" Padding="14,8"/>
