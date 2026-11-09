@@ -105,14 +105,14 @@
                                 <TextBlock Text="Foto prima" FontWeight="SemiBold" Margin="0,0,0,6"/>
                                 <ItemsControl ItemsSource="{Binding BeforePhotos}">
                                     <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate><DataTemplate><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill" Margin="0,0,6,6"/></DataTemplate></ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemTemplate><DataTemplate><Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" ToolTip="Apri foto a dimensione intera" Padding="0" BorderThickness="0" Margin="0,0,6,6"><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill"/></Button></DataTemplate></ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="Foto dopo" FontWeight="SemiBold" Margin="0,0,0,6"/>
                                 <ItemsControl ItemsSource="{Binding AfterPhotos}">
                                     <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate><DataTemplate><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill" Margin="0,0,6,6"/></DataTemplate></ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemTemplate><DataTemplate><Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" ToolTip="Apri foto a dimensione intera" Padding="0" BorderThickness="0" Margin="0,0,6,6"><Image Source="{Binding}" Width="92" Height="76" Stretch="UniformToFill"/></Button></DataTemplate></ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
                         </Grid>
