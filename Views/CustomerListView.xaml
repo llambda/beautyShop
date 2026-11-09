@@ -65,7 +65,7 @@
                       HorizontalScrollBarVisibility="Disabled"
                       CanContentScroll="False">
 
-            <ItemsControl ItemsSource="{Binding Customers}"
+            <ItemsControl ItemsSource="{Binding FilteredCustomers}"
                           HorizontalAlignment="Stretch">
 
                 <!-- DISPOSIZIONE CARD -->
