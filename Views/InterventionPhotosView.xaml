@@ -28,71 +28,36 @@
                     <TextBlock Text="Confronto prima / dopo" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
                     <ItemsControl ItemsSource="{Binding PhotoPairs}">
                         <ItemsControl.ItemTemplate><DataTemplate>
-                            <Grid Margin="0,0,0,12">
+                            <Grid Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                 <StackPanel Margin="0,0,8,0">
                                     <TextBlock Text="PRIMA" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding BeforePath}" Padding="0" BorderThickness="0">
-                                        <Image Source="{Binding BeforePath}" Height="220" Stretch="Uniform"/>
+                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding BeforePhoto.Path}" Padding="0" BorderThickness="0">
+                                        <Image Source="{Binding BeforePhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
+                                    <TextBlock Text="Nessuna foto prima" Visibility="{Binding BeforePhoto, Converter={StaticResource NullToVisibilityConverter}}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    <TextBlock Text="Data foto" Margin="0,8,0,3"/>
+                                    <DatePicker SelectedDate="{Binding BeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BeforePhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                                    <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
+                                    <TextBox Text="{Binding BeforePhoto.Description, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BeforePhoto, Converter={StaticResource ObjectToBooleanConverter}}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="DOPO" FontWeight="SemiBold" Margin="0,0,0,6"/>
-                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding AfterPath}" Padding="0" BorderThickness="0">
-                                        <Image Source="{Binding AfterPath}" Height="220" Stretch="Uniform"/>
+                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding AfterPhoto.Path}" Padding="0" BorderThickness="0">
+                                        <Image Source="{Binding AfterPhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
+                                    <TextBlock Text="Nessuna foto dopo" Visibility="{Binding AfterPhoto, Converter={StaticResource NullToVisibilityConverter}}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    <TextBlock Text="Data foto" Margin="0,8,0,3"/>
+                                    <DatePicker SelectedDate="{Binding AfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding AfterPhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                                    <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
+                                    <TextBox Text="{Binding AfterPhoto.Description, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding AfterPhoto, Converter={StaticResource ObjectToBooleanConverter}}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate></ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <TextBlock Text="Le foto sono abbinate nell'ordine in cui sono state caricate." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0"/>
+                    <TextBlock Text="Le foto vengono abbinate nell'ordine in cui sono state caricate." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
-            <Grid>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                <Border Background="White" Padding="18" Margin="0,0,9,0">
-                    <StackPanel>
-                        <TextBlock Text="Foto prima" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <ItemsControl ItemsSource="{Binding BeforePhotos}">
-                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate><DataTemplate>
-                                <Border Margin="0,0,0,14" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
-                                    <StackPanel>
-                                        <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path}" Padding="0" BorderThickness="0" ToolTip="Apri a schermo intero">
-                                            <Image Source="{Binding Path}" Height="210" Stretch="Uniform"/>
-                                        </Button>
-                                        <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                                        <DatePicker SelectedDate="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
-                                        <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
-                                        <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate></ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-                <Border Grid.Column="1" Background="White" Padding="18" Margin="9,0,0,0">
-                    <StackPanel>
-                        <TextBlock Text="Foto dopo" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <ItemsControl ItemsSource="{Binding AfterPhotos}">
-                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate><DataTemplate>
-                                <Border Margin="0,0,0,14" BorderBrush="#DDDDDD" BorderThickness="1" Padding="8">
-                                    <StackPanel>
-                                        <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path}" Padding="0" BorderThickness="0" ToolTip="Apri a schermo intero">
-                                            <Image Source="{Binding Path}" Height="210" Stretch="Uniform"/>
-                                        </Button>
-                                        <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                                        <DatePicker SelectedDate="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
-                                        <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
-                                        <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
-                                    </StackPanel>
-                                </Border>
-                            </DataTemplate></ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </Border>
-            </Grid>
             <Button Content="Salva date e descrizioni foto" Command="{Binding SavePhotoMetadataCommand}" HorizontalAlignment="Left" Padding="16,8" Margin="0,16,0,20"/>
             <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" TextWrapping="Wrap" Margin="0,0,0,16"/>
             <Border Background="White" Padding="18">
