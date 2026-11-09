@@ -52,7 +52,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public int InterventionCount => Interventions.Count;
     public DateTime? LastInterventionDate => Interventions.Count == 0 ? null : Interventions.Max(x => x.Date);
     public DateTime? NextAppointmentDate => Appointments
-        .Where(x => x.Date >= DateTime.Now && !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase))
+        .Where(x => x.Date >= DateTime.Now
+            && !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(x.Status, "Non presentato", StringComparison.OrdinalIgnoreCase))
         .Select(x => (DateTime?)x.Date)
         .OrderBy(x => x)
         .FirstOrDefault();
