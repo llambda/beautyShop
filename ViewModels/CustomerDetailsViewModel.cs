@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -316,6 +317,26 @@ public partial class CustomerDetailsViewModel : ObservableObject
             SelectedAppointment = null;
         }
         ReturnAfterAppointmentEdit();
+    }
+
+
+    [RelayCommand]
+    private void OpenConsentForm()
+    {
+        if (string.IsNullOrWhiteSpace(Customer.ConsentFormPath) || !File.Exists(Customer.ConsentFormPath))
+        {
+            MessageBox.Show("Per questo cliente non è disponibile un PDF del consenso informato.", "Consenso informato", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(Customer.ConsentFormPath) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Impossibile aprire il PDF: {ex.Message}", "Consenso informato", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     [RelayCommand]
