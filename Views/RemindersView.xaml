@@ -76,6 +76,31 @@
      </TextBlock>
     </StackPanel>
    </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Clienti da ricontattare" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,4"/>
+     <TextBlock Text="Clienti senza appuntamenti futuri e senza interventi negli ultimi 90 giorni." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding CustomersToReconnect}">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <Border BorderBrush="{DynamicResource MaterialDesign.Brush.Divider}" BorderThickness="0,0,0,1" Padding="0,8">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel>
+           <TextBlock FontWeight="SemiBold"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+           <TextBlock Text="{Binding LastInterventionLabel, StringFormat='Ultimo intervento: {0}'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+          </StackPanel>
+          <TextBlock Grid.Column="1" Text="{Binding DaysSinceLastIntervention, StringFormat='{}{0} giorni'}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+         </Grid>
+        </Border>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun cliente da ricontattare." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding CustomersToReconnect.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
   </StackPanel>
  </ScrollViewer>
 </UserControl>
