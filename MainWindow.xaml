@@ -73,6 +73,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="110"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="55"/>
                 </Grid.RowDefinitions>
 
@@ -106,17 +107,7 @@
                 <StackPanel Grid.Row="1"
                             Margin="8,15">
 
-                    <!-- PANORAMICA -->
-                    <Button Style="{StaticResource MaterialDesignFlatButton}"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="Panoramica"
-                            Height="48" HorizontalContentAlignment="Center">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="ViewDashboard" Width="24" Height="24"/>
-                            <TextBlock Text="Panoramica" Margin="15,0,0,0" VerticalAlignment="Center"
-                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                        </StackPanel>
-                    </Button>
+
 
                     <!-- CLIENTI -->
 
@@ -195,25 +186,42 @@
 
                     </Button>
 
-                    <!-- IMPOSTAZIONI -->
+                    <!-- PANORAMICA -->
                     <Button Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Impostazioni"
-                            Height="48"
-                            HorizontalContentAlignment="Center">
+                            CommandParameter="Panoramica"
+                            Height="48" HorizontalContentAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Cog" Width="24" Height="24"/>
-                            <TextBlock Text="Impostazioni" Margin="15,0,0,0" VerticalAlignment="Center"
+                            <materialDesign:PackIcon Kind="ViewDashboard" Width="24" Height="24"/>
+                            <TextBlock Text="Panoramica" Margin="15,0,0,0" VerticalAlignment="Center"
                                        Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </StackPanel>
                     </Button>
 
+
+
+
                 </StackPanel>
 
 
+                <!-- IMPOSTAZIONI IN FONDO AL MENU -->
+                <Button Grid.Row="2"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Impostazioni"
+                        Height="48"
+                        Margin="8,4"
+                        HorizontalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Cog" Width="24" Height="24"/>
+                        <TextBlock Text="Impostazioni" Margin="15,0,0,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Button>
+
                 <!-- COMPRESSIONE MENU -->
 
-                <Button Grid.Row="2"
+                <Button Grid.Row="3"
                         Command="{Binding ToggleMenuCommand}"
                         Style="{StaticResource MaterialDesignToolButton}"
                         HorizontalAlignment="Center"
@@ -264,7 +272,7 @@
         <Grid Grid.Column="1">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="0"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -276,21 +284,7 @@
                     BorderBrush="{DynamicResource MaterialDesign.Brush.Divider}"
                     BorderThickness="0,0,0,1">
 
-                <Button HorizontalAlignment="Right"
-                        Margin="0"
-                        Width="36"
-                        Height="36"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Impostazioni"
-                        ToolTip="Impostazioni"
-                        Style="{StaticResource MaterialDesignToolButton}">
 
-                    <materialDesign:PackIcon
-                        Kind="Cog"
-                        Width="20"
-                        Height="20"/>
-
-                </Button>
 
             </Border>
 
