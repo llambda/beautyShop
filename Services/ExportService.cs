@@ -30,6 +30,11 @@ public sealed class ExportService
             $"Cliente: {customer.FirstName} {customer.LastName}",
             $"Telefono: {customer.Phone ?? "-"}",
             $"Email: {customer.Email ?? "-"}",
+            $"Indirizzo: {customer.Address ?? "-"}",
+            $"Data di nascita: {customer.BirthDate:dd/MM/yyyy}",
+            $"Allergie: {customer.Allergies ?? "-"}",
+            $"Sensibilità: {customer.Sensitivities ?? "-"}",
+            $"Note: {customer.Notes ?? "-"}",
             $"Data esportazione: {DateTime.Now:dd/MM/yyyy HH:mm}",
             "",
             "STORICO INTERVENTI"
