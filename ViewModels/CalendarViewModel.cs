@@ -109,6 +109,14 @@ public partial class CalendarViewModel : ObservableObject
         try
         {
             var appointments = await _appointmentService.GetAllAsync();
+            var hoursService = new WorkingHoursService();
+            foreach (var appointment in appointments)
+            {
+                appointment.IsOutsideWorkingHours = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase)
+                    && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason);
+                appointment.WorkingHoursWarning = appointment.IsOutsideWorkingHours ? reason : string.Empty;
+            }
             BuildCalendar(appointments);
         }
         finally { IsLoading = false; }
@@ -132,7 +140,8 @@ public partial class CalendarViewModel : ObservableObject
                     appointment.Date.ToString("HH:mm"),
                     customer == null ? "Cliente" : $"{customer.FirstName} {customer.LastName}",
                     appointment.InterventionType?.Name ?? "Tipo non specificato",
-                    appointment.Status));
+                    appointment.Status,
+                    appointment.IsOutsideWorkingHours));
             }
             Days.Add(day);
         }
@@ -172,11 +181,13 @@ public sealed class AppointmentReminderViewModel
     public string CustomerName { get; }
     public string InterventionType { get; }
     public string Status { get; }
-    public AppointmentReminderViewModel(string time, string customerName, string interventionType, string status)
+    public bool IsOutsideWorkingHours { get; }
+    public AppointmentReminderViewModel(string time, string customerName, string interventionType, string status, bool isOutsideWorkingHours)
     {
         Time = time;
         CustomerName = customerName;
         InterventionType = interventionType;
         Status = status;
+        IsOutsideWorkingHours = isOutsideWorkingHours;
     }
 }
