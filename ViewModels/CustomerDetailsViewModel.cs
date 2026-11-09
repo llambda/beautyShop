@@ -104,6 +104,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (appointment.LocationId == null || appointment.InterventionTypeId == null)
         {
             StatusMessage = "Questo appuntamento non contiene luogo e tipo di intervento. Modificalo prima di confermare lo svolgimento.";
+            MessageBox.Show(StatusMessage, "Dati appuntamento mancanti", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -112,6 +113,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (SelectedLocation == null || SelectedType == null)
         {
             StatusMessage = "Il luogo o il tipo associato all'appuntamento non è più disponibile nelle Impostazioni.";
+            MessageBox.Show(StatusMessage, "Dati appuntamento non disponibili", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -310,8 +312,11 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.BeforePhotosJson = JsonSerializer.Serialize(BeforePhotos.ToArray());
             item.AfterPhotosJson = JsonSerializer.Serialize(AfterPhotos.ToArray());
             bool convertedAppointment = _convertingAppointmentToIntervention;
-            if (convertedAppointment && SelectedAppointment != null)
+            if (convertedAppointment)
             {
+                if (SelectedAppointment == null)
+                    throw new InvalidOperationException("Non è stato possibile recuperare l'appuntamento da confermare.");
+
                 await _interventionService.SaveAndDeleteAppointmentAsync(item, SelectedAppointment.Id);
                 await ReloadAppointmentsAsync();
             }
