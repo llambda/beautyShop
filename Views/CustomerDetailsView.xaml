@@ -78,6 +78,41 @@
                     <StackPanel>
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="Appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button Command="{Binding NewAppointmentCommand}" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
+                                <Button Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}" x:Name="EditAppointmentButton" IsEnabled="False" ToolTip="Modifica appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
+                                <Button Command="{Binding DeleteAppointmentCommand}" x:Name="DeleteAppointmentButton" IsEnabled="False" ToolTip="Elimina appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
+                            </StackPanel>
+                        </Grid>
+                        <DataGrid ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}" SelectionChanged="Appointments_SelectionChanged" AutoGenerateColumns="False"
+                                  Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="100" MaxHeight="220" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
+                                <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
+                                <DataGridTemplateColumn Header="Azioni" Width="160">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Conferma svolgimento"
+                                                    Command="{Binding DataContext.ConfirmAppointmentExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"
+                                                    Padding="8,5"
+                                                    ToolTip="Registra l'appuntamento nello storico degli interventi"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+<Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
                                 <Button Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
@@ -105,30 +140,6 @@
                             <TextBlock Text="{Binding TotalPaid, StringFormat='Incassato: {0:C2}'}" Foreground="#2E7D32" Margin="0,0,18,0"/>
                             <TextBlock Text="{Binding TotalUnpaid, StringFormat='Da saldare: {0:C2}'}" Foreground="#B26A00"/>
                         </WrapPanel>
-                    </StackPanel>
-                </Border>
-                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBlock Text="Appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewAppointmentCommand}" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
-                                <Button Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}" x:Name="EditAppointmentButton" IsEnabled="False" ToolTip="Modifica appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
-                                <Button Command="{Binding DeleteAppointmentCommand}" x:Name="DeleteAppointmentButton" IsEnabled="False" ToolTip="Elimina appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
-                            </StackPanel>
-                        </Grid>
-                        <DataGrid ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}" SelectionChanged="Appointments_SelectionChanged" AutoGenerateColumns="False"
-                                  Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
-                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="100" MaxHeight="220" SelectionMode="Single">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
-                                <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="Auto"/>
-                                <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
-                                <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
-                                <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
                     </StackPanel>
                 </Border>
             </StackPanel>
