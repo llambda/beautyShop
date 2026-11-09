@@ -195,7 +195,7 @@ public partial class SettingsViewModel : ObservableObject
         {
             var path = _backupService.CreateBackup();
             DataManagementStatus = "Backup creato: " + path;
-            Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
         }
         catch (Exception ex)
         {
