@@ -28,11 +28,11 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                             <Button Grid.Column="0" Content="Primary" Tag="{Binding Hex}"
-                                                    Click="PrimaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Click="PrimaryPalette_Click" MinHeight="34" Padding="8,8" BorderThickness="0"
                                                     Background="{Binding Hex}" Foreground="{Binding PrimaryText}"
                                                     ToolTip="Imposta colore primario"/>
                                             <Button Grid.Column="1" Content="Secondary" Tag="{Binding SecondaryHex}"
-                                                    Click="SecondaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Click="SecondaryPalette_Click" MinHeight="34" Padding="8,8" BorderThickness="0"
                                                     Background="{Binding SecondaryHex}" Foreground="{Binding SecondaryText}"
                                                     ToolTip="Imposta colore secondario"/>
                                         </Grid>
