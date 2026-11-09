@@ -1,5 +1,5 @@
 using MessageBox = BeautyStudio.Services.StyledMessageBox;
-﻿
+
 using BeautyStudio.Models;
 using BeautyStudio.Data;
 using Microsoft.EntityFrameworkCore;
