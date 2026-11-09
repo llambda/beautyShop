@@ -19,7 +19,7 @@
                 </Button>
             </Grid>
             <Button Content="Modifica dati e consenso informato" Command="{Binding EditCustomerCommand}"
-                    HorizontalAlignment="Left" Padding="12,7" Margin="0,8,0,0"/>
+                    HorizontalAlignment="Left" Padding="12,8" Margin="0,8,0,0"/ MinHeight="38">
         </StackPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
@@ -70,7 +70,7 @@
                                    Margin="0,0,0,12"/>
                         <Button Content="Apri PDF firmato"
                                 Command="{Binding OpenConsentFormCommand}"
-                                HorizontalAlignment="Left" Padding="14,8"/>
+                                HorizontalAlignment="Left" Padding="14,8"/ MinHeight="38">
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
@@ -100,8 +100,8 @@
                     <StackPanel>
                         <TextBlock Text="Esporta scheda cliente" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,7" Margin="0,0,8,0"/>
-                            <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,7"/>
+                            <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,8" Margin="0,0,8,0"/ MinHeight="38">
+                            <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,8"/ MinHeight="38">
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -132,8 +132,8 @@
                                             <Button Content="Conferma svolgimento"
                                                     Command="{Binding DataContext.ConfirmAppointmentExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                     CommandParameter="{Binding}"
-                                                    Padding="8,5"
-                                                    ToolTip="Registra l'appuntamento nello storico degli interventi"/>
+                                                    Padding="8,8"
+                                                    ToolTip="Registra l'appuntamento nello storico degli interventi"/ MinHeight="38">
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
@@ -158,7 +158,7 @@
                             <ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding HistoryFilterLocation}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per luogo"/>
                             <DatePicker SelectedDate="{Binding HistoryFromDate}" Width="140" Margin="0,0,8,8" ToolTip="Dal"/>
                             <DatePicker SelectedDate="{Binding HistoryToDate}" Width="140" Margin="0,0,8,8" ToolTip="Al"/>
-                            <Button Content="Azzera filtri" Command="{Binding ClearHistoryFiltersCommand}" Padding="10,5" Margin="0,0,0,8"/>
+                            <Button Content="Azzera filtri" Command="{Binding ClearHistoryFiltersCommand}" Padding="10,8" Margin="0,0,0,8"/ MinHeight="38">
                         </WrapPanel>
                         <DataGrid ItemsSource="{Binding FilteredInterventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
                                   Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
