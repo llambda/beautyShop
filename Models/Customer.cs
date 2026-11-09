@@ -29,6 +29,8 @@ public class Customer
 
     public string? PhotoPath { get; set; }
 
+    public string? ConsentFormPath { get; set; }
+
     public string? Notes { get; set; }
 
     public DateTime CreatedAt { get; set; }
