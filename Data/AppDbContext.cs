@@ -38,5 +38,15 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Intervention>().ToTable("Interventions");
         modelBuilder.Entity<Appointment>().ToTable("Appointments");
         modelBuilder.Entity<InterventionHistoryEntry>().ToTable("InterventionHistory");
+        modelBuilder.Entity<InterventionHistoryEntry>()
+            .HasOne<Intervention>()
+            .WithMany()
+            .HasForeignKey(x => x.InterventionId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<InterventionHistoryEntry>()
+            .HasOne<Customer>()
+            .WithMany()
+            .HasForeignKey(x => x.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
