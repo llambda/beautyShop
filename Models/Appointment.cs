@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeautyStudio.Models;
 
@@ -15,4 +16,6 @@ public class Appointment
     public Customer? Customer { get; set; }
     public InterventionType? InterventionType { get; set; }
     public InterventionLocation? Location { get; set; }
+    [NotMapped] public bool IsOutsideWorkingHours { get; set; }
+    [NotMapped] public string WorkingHoursWarning { get; set; } = string.Empty;
 }
