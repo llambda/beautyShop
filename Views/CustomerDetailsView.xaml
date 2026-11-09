@@ -138,11 +138,14 @@
                                 <DataGridTemplateColumn Header="Azioni" Width="160">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Button Content="Conferma svolgimento"
-                                                    Command="{Binding DataContext.ConfirmAppointmentExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            <Button Command="{Binding DataContext.ConfirmAppointmentExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                     CommandParameter="{Binding}"
-                                                    Padding="8,8"
-                                                    ToolTip="Registra l'appuntamento nello storico degli interventi" MinHeight="38"/>
+                                                    Style="{StaticResource MaterialDesignToolButton}"
+                                                    Width="40" Height="40"
+                                                    ToolTip="Conferma svolgimento e registra l'intervento"
+                                                    AutomationProperties.Name="Conferma svolgimento appuntamento">
+                                                <materialDesign:PackIcon Kind="Check" Width="22" Height="22"/>
+                                            </Button>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
