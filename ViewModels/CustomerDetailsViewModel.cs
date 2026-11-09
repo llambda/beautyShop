@@ -263,15 +263,17 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.PaidAt = InterventionIsPaid ? (item.PaidAt ?? DateTime.Now) : null;
             item.BeforePhotosJson = JsonSerializer.Serialize(BeforePhotos.ToArray());
             item.AfterPhotosJson = JsonSerializer.Serialize(AfterPhotos.ToArray());
-            await _interventionService.SaveAsync(item);
-            await ReloadInterventionsAsync();
-
             bool convertedAppointment = _convertingAppointmentToIntervention;
             if (convertedAppointment && SelectedAppointment != null)
             {
-                await _appointmentService.DeleteAsync(SelectedAppointment);
+                await _interventionService.SaveAndDeleteAppointmentAsync(item, SelectedAppointment.Id);
                 await ReloadAppointmentsAsync();
             }
+            else
+            {
+                await _interventionService.SaveAsync(item);
+            }
+            await ReloadInterventionsAsync();
 
             SelectedIntervention = null;
             SelectedAppointment = null;
