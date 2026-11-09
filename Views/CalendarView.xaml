@@ -26,15 +26,17 @@
   </Grid>
   <Grid Grid.Row="2">
    <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
-   <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="6" Margin="0,0,12,0">
+   <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="6" Margin="0,0,12,0" ClipToBounds="False">
     <Grid>
      <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
      <UniformGrid Grid.Row="0" Columns="7">
       <TextBlock Text="Lunedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Martedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Mercoledì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Giovedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Venerdì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Sabato" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Domenica" HorizontalAlignment="Center" FontWeight="SemiBold"/>
      </UniformGrid>
-     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}" MinHeight="360"
+     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}"
+                   MinHeight="0"
                    VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                   ClipToBounds="False">
       <ItemsControl.ItemsPanel>
        <ItemsPanelTemplate>
         <UniformGrid Columns="7" Rows="6"/>
