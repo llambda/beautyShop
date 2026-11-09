@@ -83,6 +83,8 @@ public class InterventionService
         if (oldItem.Notes != newItem.Notes) changes.Add("Note aggiornate");
         if (oldItem.BeforePhotosJson != newItem.BeforePhotosJson || oldItem.AfterPhotosJson != newItem.AfterPhotosJson)
             changes.Add("Fotografie aggiornate");
+        if (oldItem.PhotoMetadataJson != newItem.PhotoMetadataJson)
+            changes.Add("Date o descrizioni delle fotografie aggiornate");
         return changes.Count == 0 ? "Dati intervento salvati." : string.Join("; ", changes);
     }
 
