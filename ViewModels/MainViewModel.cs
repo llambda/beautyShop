@@ -48,7 +48,7 @@ public partial class MainViewModel : ObservableObject
         set => SetProperty(ref _menuWidth, value);
     }
 
-    private string _selectedSection = "Panoramica";
+    private string _selectedSection = "Clienti";
 
     public string SelectedSection
     {
@@ -83,9 +83,8 @@ public partial class MainViewModel : ObservableObject
         _dashboardViewModel = new DashboardViewModel();
         Customers.CollectionChanged += (_, _) => ApplyCustomerFilter();
 
-        // All'avvio mostriamo la lista clienti.
-        CurrentViewModel = _dashboardViewModel;
-        _ = _dashboardViewModel.RefreshCommand.ExecuteAsync(null);
+        // All'avvio mostriamo direttamente la lista clienti.
+        CurrentViewModel = this;
     }
 
     partial void OnSearchTextChanged(string value) => ApplyCustomerFilter();
