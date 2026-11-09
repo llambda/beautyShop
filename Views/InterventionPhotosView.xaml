@@ -20,7 +20,7 @@
                         <TextBlock Text="{Binding Intervention.IsPaid, StringFormat='Pagato: {0}'}" Margin="0,0,24,8"/>
                     </WrapPanel>
                     <TextBlock Text="{Binding Intervention.Notes, TargetNullValue='Nessuna nota'}" TextWrapping="Wrap" Margin="0,8,0,0"/>
-                    <Button Content="Modifica intervento / aggiungi o rimuovi foto" Command="{Binding EditCommand}" HorizontalAlignment="Left" Padding="14,8" Margin="0,16,0,0"/ MinHeight="38">
+                    <Button Content="Modifica intervento / aggiungi o rimuovi foto" Command="{Binding EditCommand}" HorizontalAlignment="Left" Padding="14,8" Margin="0,16,0,0" MinHeight="38"/>
                 </StackPanel>
             </Border>
             <Border Background="White" Padding="18" Margin="0,0,0,18">
@@ -58,7 +58,7 @@
                     <TextBlock Text="Le foto vengono abbinate nell'ordine in cui sono state caricate." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0"/>
                 </StackPanel>
             </Border>
-            <Button Content="Salva date e descrizioni foto" Command="{Binding SavePhotoMetadataCommand}" HorizontalAlignment="Left" Padding="16,8" Margin="0,16,0,20"/ MinHeight="38">
+            <Button Content="Salva date e descrizioni foto" Command="{Binding SavePhotoMetadataCommand}" HorizontalAlignment="Left" Padding="16,8" Margin="0,16,0,20" MinHeight="38"/>
             <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" TextWrapping="Wrap" Margin="0,0,0,16"/>
             <Border Background="White" Padding="18">
                 <StackPanel>
