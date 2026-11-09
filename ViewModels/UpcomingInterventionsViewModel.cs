@@ -35,6 +35,14 @@ public partial class UpcomingInterventionsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task MarkAppointmentAsExecutedAsync(Appointment? appointment)
+    {
+        if (appointment?.Customer == null) return;
+        var details = new CustomerDetailsViewModel(appointment.Customer, _mainViewModel, loadImmediately: false, returnToUpcomingAppointments: true);
+        await details.LoadAndMarkAppointmentAsExecutedAsync(appointment);
+    }
+
+    [RelayCommand]
     private async Task RefreshAsync() => await LoadAsync();
 
     private async Task LoadAsync()
