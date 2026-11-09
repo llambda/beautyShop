@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 
 namespace BeautyStudio.ViewModels;
 
@@ -207,6 +208,20 @@ public partial class MainViewModel : ObservableObject
 
         if (result == true)
             await LoadCustomersAsync();
+    }
+
+    [RelayCommand]
+    private void ExportCustomers()
+    {
+        try
+        {
+            var path = new ExportService().ExportCustomersCsv(Customers);
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (System.Exception ex)
+        {
+            MessageBox.Show($"Esportazione clienti non riuscita: {ex.Message}", "Esportazione CSV", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     // Ora il clic sulla card apre i dettagli
