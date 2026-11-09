@@ -35,22 +35,22 @@
                                     <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding BeforePhoto.Path}" Padding="0" BorderThickness="0">
                                         <Image Source="{Binding BeforePhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
-                                    <TextBlock Text="Nessuna foto prima" Visibility="{Binding BeforePhoto, Converter={StaticResource NullToVisibilityConverter}}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    <TextBlock Text="Nessuna foto prima" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
                                     <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                                    <DatePicker SelectedDate="{Binding BeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BeforePhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                                    <DatePicker SelectedDate="{Binding BeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
-                                    <TextBox Text="{Binding BeforePhoto.Description, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BeforePhoto, Converter={StaticResource ObjectToBooleanConverter}}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
+                                    <TextBox Text="{Binding BeforePhoto.Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
                                 </StackPanel>
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="DOPO" FontWeight="SemiBold" Margin="0,0,0,6"/>
                                     <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding AfterPhoto.Path}" Padding="0" BorderThickness="0">
                                         <Image Source="{Binding AfterPhoto.Path}" Height="220" Stretch="Uniform"/>
                                     </Button>
-                                    <TextBlock Text="Nessuna foto dopo" Visibility="{Binding AfterPhoto, Converter={StaticResource NullToVisibilityConverter}}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    <TextBlock Text="Nessuna foto dopo" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
                                     <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                                    <DatePicker SelectedDate="{Binding AfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding AfterPhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                                    <DatePicker SelectedDate="{Binding AfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Text="Descrizione (facoltativa)" Margin="0,8,0,3"/>
-                                    <TextBox Text="{Binding AfterPhoto.Description, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding AfterPhoto, Converter={StaticResource ObjectToBooleanConverter}}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
+                                    <TextBox Text="{Binding AfterPhoto.Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="48"/>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate></ItemsControl.ItemTemplate>
