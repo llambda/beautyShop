@@ -44,6 +44,37 @@ public sealed class ExportService
         return path;
     }
 
+    public string ExportCustomersCsv(IEnumerable<Customer> customers)
+    {
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Clienti_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+        var rows = new List<string> { "Nome;Cognome;Telefono;Email;Indirizzo;Data di nascita" };
+        foreach (var customer in customers.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
+            rows.Add(string.Join(";", Csv(customer.FirstName), Csv(customer.LastName), Csv(customer.Phone), Csv(customer.Email), Csv(customer.Address), Csv(customer.BirthDate?.ToString("dd/MM/yyyy"))));
+        File.WriteAllText(path, "\uFEFF" + string.Join(Environment.NewLine, rows), Encoding.UTF8);
+        return path;
+    }
+
+    public string ExportAppointmentsPdf(IEnumerable<Appointment> appointments, DateTime month)
+    {
+        var items = appointments.Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month).OrderBy(x => x.Date).ToList();
+        var lines = new List<string> { "BEAUTY STUDIO - CALENDARIO APPUNTAMENTI", month.ToString("MMMM yyyy"), "" };
+        foreach (var item in items)
+            lines.Add($"{item.Date:dd/MM/yyyy HH:mm} | {item.Customer?.FirstName} {item.Customer?.LastName} | {item.InterventionType?.Name ?? "Trattamento"} | {item.Notes}");
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Calendario_{month:yyyyMM}.pdf");
+        MinimalPdf.Write(path, lines);
+        return path;
+    }
+
+    public string ExportAppointmentsCsv(IEnumerable<Appointment> appointments, DateTime month)
+    {
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Calendario_{month:yyyyMM}.csv");
+        var rows = new List<string> { "Data;Ora;Cliente;Tipo;Note" };
+        foreach (var item in appointments.Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month).OrderBy(x => x.Date))
+            rows.Add(string.Join(";", Csv(item.Date.ToString("dd/MM/yyyy")), Csv(item.Date.ToString("HH:mm")), Csv($"{item.Customer?.FirstName} {item.Customer?.LastName}"), Csv(item.InterventionType?.Name), Csv(item.Notes)));
+        File.WriteAllText(path, "\uFEFF" + string.Join(Environment.NewLine, rows), Encoding.UTF8);
+        return path;
+    }
+
     private static string Csv(string? value) => "\"" + (value ?? "").Replace("\"", "\"\"").Replace("\r", " ").Replace("\n", " ") + "\"";
 }
 
