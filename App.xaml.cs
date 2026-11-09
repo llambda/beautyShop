@@ -72,6 +72,8 @@ public partial class App : Application
                     "ALTER TABLE Interventions ADD COLUMN PaidAt TEXT NULL;");
                 await EnsureColumnAsync("Appointments", "Status",
                     "ALTER TABLE Appointments ADD COLUMN Status TEXT NOT NULL DEFAULT 'Da confermare';");
+                await EnsureColumnAsync("Appointments", "LocationId",
+                    "ALTER TABLE Appointments ADD COLUMN LocationId INTEGER NULL;");
                 await EnsureColumnAsync("Customers", "ConsentAcquiredAt",
                     "ALTER TABLE Customers ADD COLUMN ConsentAcquiredAt TEXT NULL;");
             }
