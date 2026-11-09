@@ -82,7 +82,7 @@
             <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="Account" Width="17" Height="17"/><TextBlock Text="Cliente" Margin="5,0,0,0" VerticalAlignment="Center"/></StackPanel>
            </Button>
           </Grid>
-          <TextBlock Text="{Binding Customer.FirstName} {Binding Customer.LastName}" FontWeight="SemiBold" Margin="0,3,0,0"/>
+          <TextBlock FontWeight="SemiBold" Margin="0,3,0,0"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
           <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,2,0,0"/>
           <TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
           <TextBlock Text="{Binding DurationMinutes, StringFormat='Durata: {0} minuti'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
