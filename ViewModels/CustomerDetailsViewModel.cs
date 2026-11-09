@@ -31,6 +31,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private InterventionLocation? selectedLocation;
     [ObservableProperty] private InterventionType? selectedType;
     [ObservableProperty] private string? interventionNotes;
+    [ObservableProperty] private decimal interventionPrice;
+    [ObservableProperty] private bool interventionIsPaid;
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private Appointment? selectedAppointment;
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
@@ -190,6 +192,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedLocation = Locations.FirstOrDefault();
         SelectedType = Types.FirstOrDefault();
         InterventionNotes = string.Empty;
+        InterventionPrice = 0;
+        InterventionIsPaid = false;
         BeforePhotos.Clear();
         AfterPhotos.Clear();
         StatusMessage = null;
@@ -205,6 +209,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedLocation = Locations.FirstOrDefault(x => x.Id == item.LocationId);
         SelectedType = Types.FirstOrDefault(x => x.Id == item.TypeId);
         InterventionNotes = item.Notes;
+        InterventionPrice = item.Price;
+        InterventionIsPaid = item.IsPaid;
         SetPhotos(BeforePhotos, item.BeforePhotosJson);
         SetPhotos(AfterPhotos, item.AfterPhotosJson);
         StatusMessage = null;
@@ -227,6 +233,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.LocationId = SelectedLocation.Id;
             item.TypeId = SelectedType.Id;
             item.Notes = InterventionNotes?.Trim();
+            item.Price = InterventionPrice;
+            item.IsPaid = InterventionIsPaid;
+            item.PaidAt = InterventionIsPaid ? (item.PaidAt ?? DateTime.Now) : null;
             item.BeforePhotosJson = JsonSerializer.Serialize(BeforePhotos.ToArray());
             item.AfterPhotosJson = JsonSerializer.Serialize(AfterPhotos.ToArray());
             await _interventionService.SaveAsync(item);
@@ -319,6 +328,30 @@ public partial class CustomerDetailsViewModel : ObservableObject
         ReturnAfterAppointmentEdit();
     }
 
+
+    [RelayCommand]
+    private void ExportCustomerCsv()
+    {
+        try
+        {
+            var path = new ExportService().ExportCustomerCsv(Customer, Interventions);
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+            StatusMessage = "Storico esportato in CSV.";
+        }
+        catch (Exception ex) { StatusMessage = $"Esportazione CSV non riuscita: {ex.Message}"; }
+    }
+
+    [RelayCommand]
+    private void ExportCustomerPdf()
+    {
+        try
+        {
+            var path = new ExportService().ExportCustomerPdf(Customer, Interventions);
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+            StatusMessage = "Scheda esportata in PDF.";
+        }
+        catch (Exception ex) { StatusMessage = $"Esportazione PDF non riuscita: {ex.Message}"; }
+    }
 
     [RelayCommand]
     private void OpenConsentForm()
