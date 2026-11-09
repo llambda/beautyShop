@@ -4,6 +4,7 @@ using BeautyStudio.Services;
 using BeautyStudio.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace BeautyStudio;
 
@@ -12,6 +13,21 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            ApplicationLog.Write("Errore non gestito", args.ExceptionObject as System.Exception
+                ?? new System.Exception(Convert.ToString(args.ExceptionObject)));
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            ApplicationLog.Write("Attività asincrona non gestita", args.Exception);
+            args.SetObserved();
+        };
+        DispatcherUnhandledException += (_, args) =>
+        {
+            ApplicationLog.Write("Interfaccia WPF", args.Exception);
+            MessageBox.Show("Si è verificato un errore inatteso. I dettagli sono stati salvati nel registro dell'applicazione.",
+                "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
+            args.Handled = true;
+        };
         try
         {
             await using (var db = new AppDbContext())
@@ -117,14 +133,8 @@ public partial class App : Application
         }
         catch (System.Exception ex)
         {
-            string logPath = System.IO.Path.Combine(AppDbContext.DataDirectory, "avvio-errore.log");
-            string message = $"Data: {DateTime.Now:O}{Environment.NewLine}{ex}{Environment.NewLine}";
-            try
-            {
-                System.IO.Directory.CreateDirectory(AppDbContext.DataDirectory);
-                System.IO.File.WriteAllText(logPath, message);
-            }
-            catch { logPath = "Impossibile creare il file di log."; }
+            ApplicationLog.Write("Avvio", ex);
+            string logPath = System.IO.Path.Combine(AppDbContext.DataDirectory, "Logs", $"BeautyStudio_{DateTime.Now:yyyyMMdd}.log");
 
             MessageBox.Show(
                 $"Errore durante l'avvio del programma:\n{ex.Message}\n\nDettagli completi: {logPath}",
