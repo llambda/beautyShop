@@ -107,7 +107,7 @@
                                         Background="{DynamicResource MaterialDesign.Brush.Surface}"
                                         BorderBrush="{DynamicResource MaterialDesign.Brush.Primary}"
                                         BorderThickness="1"
-                                        CornerRadius="14"
+                                        CornerRadius="0"
                                         ClipToBounds="True">
 
                                         <ContentPresenter
