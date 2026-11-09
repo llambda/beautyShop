@@ -175,7 +175,7 @@
                                 <DataGridTextColumn Header="Prezzo" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="Auto"/>
                                 <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding IsPaid}" IsReadOnly="True" Width="Auto"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
-                                <DataGridTemplateColumn Header="Azioni" Width="135">
+                                <DataGridTemplateColumn Header="Azioni" Width="95">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -184,12 +184,6 @@
                                                         Width="38" Height="38" ToolTip="Visualizza dettagli e fotografie"
                                                         AutomationProperties.Name="Visualizza dettagli intervento">
                                                     <materialDesign:PackIcon Kind="ImageMultiple" Width="20" Height="20"/>
-                                                </Button>
-                                                <Button Command="{Binding DataContext.EditInterventionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
-                                                        Width="38" Height="38" ToolTip="Modifica intervento"
-                                                        AutomationProperties.Name="Modifica intervento">
-                                                    <materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/>
                                                 </Button>
                                                 <Button Command="{Binding DataContext.DeleteInterventionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
