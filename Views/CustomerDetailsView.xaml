@@ -9,12 +9,17 @@
             <Button Command="{Binding BackToCustomersCommand}" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" Padding="5,5">
                 <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/><TextBlock Text="Torna ai clienti" Margin="8,0,0,0" VerticalAlignment="Center"/></StackPanel>
             </Button>
-            <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="0,10,0,0"/>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Command="{Binding DeleteCustomerCommand}"
+                        Style="{StaticResource MaterialDesignToolButton}" Width="42" Height="42"
+                        ToolTip="Elimina cliente e tutti i dati collegati" Foreground="#B3261E">
+                    <materialDesign:PackIcon Kind="Delete" Width="23" Height="23"/>
+                </Button>
+            </Grid>
             <Button Content="Modifica dati e consenso informato" Command="{Binding EditCustomerCommand}"
-                    HorizontalAlignment="Left" Padding="12,7" Margin="0,10,0,0"/>
-            <Button Content="Elimina cliente e dati collegati" Command="{Binding DeleteCustomerCommand}"
-                    HorizontalAlignment="Left" Padding="12,7" Margin="0,8,0,0"
-                    Background="#B3261E" Foreground="White"/>
+                    HorizontalAlignment="Left" Padding="12,7" Margin="0,8,0,0"/>
         </StackPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
@@ -66,6 +71,29 @@
                         <Button Content="Apri PDF firmato"
                                 Command="{Binding OpenConsentFormCommand}"
                                 HorizontalAlignment="Left" Padding="14,8"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Cronologia cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Appuntamenti e interventi in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Timeline}">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Grid Margin="0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="125"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Category}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Detail}" />
+                                        <TextBlock Text="{Binding PrimaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                        <TextBlock Text="{Binding SecondaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nessuna attività registrata." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Timeline.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
@@ -124,7 +152,14 @@
                                 <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
                             </StackPanel>
                         </Grid>
-                        <DataGrid ItemsSource="{Binding Interventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
+                        <WrapPanel Margin="0,0,0,12">
+                            <ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding HistoryFilterType}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per tipo di intervento"/>
+                            <ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding HistoryFilterLocation}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per luogo"/>
+                            <DatePicker SelectedDate="{Binding HistoryFromDate}" Width="140" Margin="0,0,8,8" ToolTip="Dal"/>
+                            <DatePicker SelectedDate="{Binding HistoryToDate}" Width="140" Margin="0,0,8,8" ToolTip="Al"/>
+                            <Button Content="Azzera filtri" Command="{Binding ClearHistoryFiltersCommand}" Padding="10,5" Margin="0,0,0,8"/>
+                        </WrapPanel>
+                        <DataGrid ItemsSource="{Binding FilteredInterventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
                                   Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                                   CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
                             <DataGrid.Columns>
