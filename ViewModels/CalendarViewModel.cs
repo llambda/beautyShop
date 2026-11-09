@@ -96,7 +96,8 @@ public partial class CalendarViewModel : ObservableObject
                 day.Appointments.Add(new AppointmentReminderViewModel(
                     appointment.Date.ToString("HH:mm"),
                     customer == null ? "Cliente" : $"{customer.FirstName} {customer.LastName}",
-                    appointment.InterventionType?.Name ?? "Tipo non specificato"));
+                    appointment.InterventionType?.Name ?? "Tipo non specificato",
+                    appointment.Status));
             }
             Days.Add(day);
         }
@@ -125,10 +126,12 @@ public sealed class AppointmentReminderViewModel
     public string Time { get; }
     public string CustomerName { get; }
     public string InterventionType { get; }
-    public AppointmentReminderViewModel(string time, string customerName, string interventionType)
+    public string Status { get; }
+    public AppointmentReminderViewModel(string time, string customerName, string interventionType, string status)
     {
         Time = time;
         CustomerName = customerName;
         InterventionType = interventionType;
+        Status = status;
     }
 }
