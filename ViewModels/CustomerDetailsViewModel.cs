@@ -254,7 +254,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         int interventionCount = Interventions.Count;
         string impact = $"Stai per eliminare {Customer.FirstName} {Customer.LastName}.\n\n"
             + $"Saranno eliminati definitivamente anche {appointmentCount} appuntamenti e {interventionCount} interventi, "
-            + "incluse le fotografie e lo storico collegato. Questa operazione non può essere annullata.\n\nContinuare?";
+            + "le fotografie archiviate nell'app e lo storico collegato. Questa operazione non può essere annullata.\n\nContinuare?";
         if (MessageBox.Show(impact, "Eliminazione cliente e dati collegati", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
 
