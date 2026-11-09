@@ -87,7 +87,7 @@ public partial class RemindersViewModel : ObservableObject
         return string.IsNullOrWhiteSpace(path) || !File.Exists(path);
     }
 
-    private static void Replace(ObservableCollection<Appointment> target, System.Collections.Generic.IEnumerable<Appointment> items)
+    private static void Replace<T>(ObservableCollection<T> target, System.Collections.Generic.IEnumerable<T> items)
     {
         target.Clear();
         foreach (var item in items) target.Add(item);
