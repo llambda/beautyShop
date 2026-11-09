@@ -53,7 +53,6 @@
             <TextBlock Text="{Binding Appointments.Count, StringFormat={}{0} appuntamenti}" FontSize="9" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextTrimming="CharacterEllipsis"/>
            </StackPanel>
           </Grid>
-         </Grid>
          </Border>
         </Button>
        </DataTemplate>
