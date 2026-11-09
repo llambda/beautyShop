@@ -22,10 +22,4 @@ public partial class CustomerDetailsView : UserControl
             viewModel.OpenInterventionDetailsCommand.Execute(grid.SelectedItem);
     }
 
-    private void Appointments_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        bool hasSelection = ((DataGrid)sender).SelectedItem != null;
-        EditAppointmentButton.IsEnabled = hasSelection;
-        DeleteAppointmentButton.IsEnabled = hasSelection;
-    }
 }
