@@ -199,6 +199,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            ApplicationLog.Write("Creazione backup", ex);
             DataManagementStatus = "Backup non riuscito: " + ex.Message;
         }
     }
@@ -223,6 +224,7 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            ApplicationLog.Write("Ripristino backup", ex);
             DataManagementStatus = "Ripristino non riuscito: " + ex.Message;
         }
     }
@@ -296,7 +298,7 @@ public partial class SettingsViewModel : ObservableObject
         };
         if (dialog.ShowDialog() != true) return;
 
-        bool valid = _backupService.ValidateBackup(dialog.FileName, out var message);
+        _backupService.ValidateBackup(dialog.FileName, out var message);
         DataManagementStatus = message;
         ApplicationLog.Write("Verifica backup", $"{dialog.FileName}: {message}");
     }
