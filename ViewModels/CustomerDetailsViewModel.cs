@@ -38,6 +38,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private Appointment? selectedAppointment;
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
+    [ObservableProperty] private int appointmentDurationMinutes = 60;
+    public ObservableCollection<int> AppointmentDurationOptions { get; } = new() { 15, 30, 45, 60, 90, 120, 180 };
     [ObservableProperty] private string appointmentTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private string? appointmentNotes;
     [ObservableProperty] private string selectedAppointmentStatus = "Da confermare";
@@ -232,6 +234,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         SelectedAppointment = null;
         AppointmentDate = DateTime.Today;
+        AppointmentDurationMinutes = 60;
         AppointmentTime = DateTime.Now.ToString("HH:mm");
         AppointmentNotes = string.Empty;
         SelectedAppointmentStatus = "Da confermare";
@@ -247,6 +250,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (item == null) return;
         SelectedAppointment = item;
         AppointmentDate = item.Date.Date;
+        AppointmentDurationMinutes = item.DurationMinutes <= 0 ? 60 : item.DurationMinutes;
         AppointmentTime = item.Date.ToString("HH:mm");
         AppointmentNotes = item.Notes;
         SelectedAppointmentStatus = string.IsNullOrWhiteSpace(item.Status) ? "Da confermare" : item.Status;
@@ -274,6 +278,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
                 return;
             }
             item.Date = AppointmentDate.Date.Add(time);
+            item.DurationMinutes = AppointmentDurationMinutes;
             item.Notes = AppointmentNotes?.Trim();
             item.Status = SelectedAppointmentStatus;
             item.InterventionTypeId = SelectedAppointmentType.Id;
