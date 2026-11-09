@@ -25,6 +25,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
     public Intervention Intervention { get; }
     public ObservableCollection<InterventionPhotoItem> BeforePhotos { get; } = new();
     public ObservableCollection<InterventionPhotoItem> AfterPhotos { get; } = new();
+    public ObservableCollection<PhotoComparisonPair> PhotoPairs { get; } = new();
     public ObservableCollection<InterventionHistoryEntry> History { get; } = new();
     public string CustomerName => $"{_parent.Customer.FirstName} {_parent.Customer.LastName}".Trim();
 
@@ -44,6 +45,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
         catch { }
         LoadPhotos(BeforePhotos, intervention.BeforePhotosJson);
         LoadPhotos(AfterPhotos, intervention.AfterPhotosJson);
+        BuildPhotoPairs();
         _ = LoadHistoryAsync();
     }
 
@@ -59,6 +61,16 @@ public partial class InterventionPhotosViewModel : ObservableObject
             }
         }
         catch { }
+    }
+
+    private void BuildPhotoPairs()
+    {
+        PhotoPairs.Clear();
+        int count = Math.Max(BeforePhotos.Count, AfterPhotos.Count);
+        for (int i = 0; i < count; i++)
+            PhotoPairs.Add(new PhotoComparisonPair(
+                i < BeforePhotos.Count ? BeforePhotos[i].Path : null,
+                i < AfterPhotos.Count ? AfterPhotos[i].Path : null));
     }
 
     private static DateTime? SafeFileDate(string path)
@@ -147,5 +159,16 @@ public partial class InterventionPhotoItem : ObservableObject
         Path = path;
         this.date = date;
         this.description = description;
+    }
+}
+
+public sealed class PhotoComparisonPair
+{
+    public string? BeforePath { get; }
+    public string? AfterPath { get; }
+    public PhotoComparisonPair(string? beforePath, string? afterPath)
+    {
+        BeforePath = beforePath;
+        AfterPath = afterPath;
     }
 }
