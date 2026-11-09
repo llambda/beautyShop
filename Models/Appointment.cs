@@ -18,4 +18,5 @@ public class Appointment
     public InterventionLocation? Location { get; set; }
     [NotMapped] public bool IsOutsideWorkingHours { get; set; }
     [NotMapped] public string WorkingHoursWarning { get; set; } = string.Empty;
+    [NotMapped] public bool HasOverlapWarning { get; set; }
 }
