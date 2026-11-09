@@ -204,18 +204,13 @@ public partial class CustomerDetailsViewModel : ObservableObject
             return;
         }
 
-        if (SelectedType == null)
-        {
-            StatusMessage = "L'appuntamento non ha un tipo di intervento valido. Selezionalo modificando l'appuntamento prima di confermare.";
-            MessageBox.Show(StatusMessage, "Tipo di intervento mancante", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
         _convertingAppointmentToIntervention = true;
         IsConvertingAppointment = true;
-        StatusMessage = appointment.LocationId.HasValue
-            ? "Luogo e tipo sono stati recuperati dall'appuntamento. Puoi completare note, prezzo e fotografie."
-            : "Nuovo luogo aggiunto e selezionato. Puoi completare prezzo, pagamento e fotografie.";
+        StatusMessage = SelectedType == null
+            ? "Seleziona il tipo di intervento per completare la conferma. Puoi anche inserire prezzo, pagamento e fotografie."
+            : appointment.LocationId.HasValue
+                ? "Luogo e tipo sono stati recuperati dall'appuntamento. Puoi completare note, prezzo e fotografie."
+                : "Nuovo luogo aggiunto e selezionato. Puoi completare prezzo, pagamento e fotografie.";
         _mainViewModel.ShowInterventionEditor(this);
     }
 
@@ -443,7 +438,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         {
             if (SelectedAppointment.LocationId.HasValue)
                 SelectedLocation = Locations.FirstOrDefault(x => x.Id == SelectedAppointment.LocationId.Value);
-            SelectedType = Types.FirstOrDefault(x => x.Id == SelectedAppointment.InterventionTypeId);
+            if (SelectedAppointment.InterventionTypeId.HasValue)
+                SelectedType = Types.FirstOrDefault(x => x.Id == SelectedAppointment.InterventionTypeId.Value);
         }
 
         if (SelectedLocation == null || SelectedType == null)
