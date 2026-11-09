@@ -1,3 +1,4 @@
+using MessageBox = BeautyStudio.Services.StyledMessageBox;
 using BeautyStudio.Data;
 using BeautyStudio.Models;
 using BeautyStudio.Services;
