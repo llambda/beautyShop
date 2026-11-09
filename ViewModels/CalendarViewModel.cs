@@ -56,6 +56,13 @@ public partial class CalendarViewModel : ObservableObject
         if (DisplayedMonth != selectedMonth)
             DisplayedMonth = selectedMonth;
         BuildDailyAgenda();
+        foreach (var day in Days) day.IsSelected = day.Date.Date == SelectedAgendaDate.Date;
+    }
+
+    [RelayCommand]
+    private void SelectDate(DateTime date)
+    {
+        SelectedAgendaDate = date.Date;
     }
 
     [RelayCommand]
@@ -147,7 +154,10 @@ public partial class CalendarViewModel : ObservableObject
         for (int i = 0; i < 42; i++)
         {
             var date = start.AddDays(i);
-            var day = new CalendarDayViewModel(date, date.Month == DisplayedMonth.Month);
+            var day = new CalendarDayViewModel(date, date.Month == DisplayedMonth.Month)
+            {
+                IsSelected = date.Date == SelectedAgendaDate.Date
+            };
             foreach (var appointment in _loadedAppointments.Where(x => x.Date.Date == date.Date))
             {
                 var customer = appointment.Customer;
@@ -177,12 +187,14 @@ public partial class CalendarViewModel : ObservableObject
     private System.Collections.Generic.List<Appointment> _loadedAppointments = new();
 }
 
-public sealed class CalendarDayViewModel
+public sealed class CalendarDayViewModel : ObservableObject
 {
+    private bool _isSelected;
     public DateTime Date { get; }
     public string DayNumber => Date.Day.ToString();
     public bool IsCurrentMonth { get; }
     public bool IsToday => Date.Date == DateTime.Today;
+    public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
     public ObservableCollection<AppointmentReminderViewModel> Appointments { get; } = new();
     public CalendarDayViewModel(DateTime date, bool isCurrentMonth)
     {
