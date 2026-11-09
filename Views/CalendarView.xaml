@@ -32,13 +32,41 @@
      <UniformGrid Grid.Row="0" Columns="7">
       <TextBlock Text="Lunedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Martedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Mercoledì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Giovedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Venerdì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Sabato" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Domenica" HorizontalAlignment="Center" FontWeight="SemiBold"/>
      </UniformGrid>
-     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-      <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}" MinHeight="360"
+                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+      <ItemsControl.ItemsPanel>
+       <ItemsPanelTemplate>
+        <UniformGrid Columns="7" Rows="6"/>
+       </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemContainerStyle>
+       <Style TargetType="{x:Type ContentPresenter}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="0"/>
+       </Style>
+      </ItemsControl.ItemContainerStyle>
       <ItemsControl.ItemTemplate>
        <DataTemplate>
-        <Button Padding="0" Margin="0" MinHeight="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        <Button Padding="0" Margin="0" MinHeight="0"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                BorderThickness="0" Background="Transparent"
+                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                 Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 CommandParameter="{Binding Date}" ToolTip="Seleziona questo giorno">
+         <Button.Template>
+          <ControlTemplate TargetType="{x:Type Button}">
+           <Border Background="{TemplateBinding Background}"
+                   BorderBrush="{TemplateBinding BorderBrush}"
+                   BorderThickness="{TemplateBinding BorderThickness}"
+                   Padding="{TemplateBinding Padding}">
+            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                              RecognizesAccessKey="True"/>
+           </Border>
+          </ControlTemplate>
+         </Button.Template>
          <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="4" MinHeight="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers>
            <DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger>
