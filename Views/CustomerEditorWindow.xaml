@@ -137,7 +137,9 @@
                              Height="60" TextWrapping="Wrap" AcceptsReturn="True"
                              VerticalScrollBarVisibility="Auto" Margin="0,5,0,15" Padding="8"/>
 
-                    <TextBlock Text="Note personali"/>
+                    <TextBlock Text="Note personali (uso interno)" FontWeight="SemiBold"/>
+                    <TextBlock Text="Annotazioni riservate alla gestione del cliente, separate dalle note dei singoli appuntamenti e interventi."
+                               Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" FontSize="12" Margin="0,3,0,4"/>
                     <TextBox Text="{Binding Notes,
                                     UpdateSourceTrigger=PropertyChanged}"
                              Height="90"
