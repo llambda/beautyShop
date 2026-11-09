@@ -75,6 +75,15 @@ public class InterventionService
         await transaction.CommitAsync();
     }
 
+    public async Task<List<InterventionHistoryEntry>> GetHistoryForCustomerAsync(int customerId)
+    {
+        await using var db = new AppDbContext();
+        return await db.InterventionHistory.AsNoTracking()
+            .Where(x => x.CustomerId == customerId)
+            .OrderByDescending(x => x.ChangedAt)
+            .ToListAsync();
+    }
+
     public async Task<List<InterventionHistoryEntry>> GetHistoryAsync(int interventionId)
     {
         await using var db = new AppDbContext();
