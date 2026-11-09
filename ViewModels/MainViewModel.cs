@@ -24,6 +24,7 @@ public partial class MainViewModel : ObservableObject
     private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
     private RemindersViewModel? _remindersViewModel;
     private HistoryViewModel? _historyViewModel;
+    private GalleryViewModel? _galleryViewModel;
     private readonly DashboardViewModel _dashboardViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
@@ -152,6 +153,12 @@ public partial class MainViewModel : ObservableObject
                 _ = _historyViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
 
+            case "Galleria":
+                _galleryViewModel ??= new GalleryViewModel(this);
+                CurrentViewModel = _galleryViewModel;
+                _ = _galleryViewModel.RefreshCommand.ExecuteAsync(null);
+                break;
+
             case "Appuntamenti":
             case "Calendario":
                 _calendarViewModel ??= new CalendarViewModel(this);
@@ -190,6 +197,13 @@ public partial class MainViewModel : ObservableObject
     public void ShowInterventionPhotos(CustomerDetailsViewModel parent, Intervention intervention)
     {
         CurrentViewModel = new InterventionPhotosViewModel(parent, intervention, this);
+    }
+
+    public void OpenGalleryIntervention(Intervention intervention)
+    {
+        if (intervention.Customer is null) return;
+        var customerDetails = new CustomerDetailsViewModel(intervention.Customer, this);
+        ShowInterventionPhotos(customerDetails, intervention);
     }
 
     public void ShowInterventionEditor(CustomerDetailsViewModel viewModel)
