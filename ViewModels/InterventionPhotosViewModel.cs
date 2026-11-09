@@ -130,6 +130,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
 
     private sealed class PhotoMetadata
     {
+        public PhotoMetadata() { }
         public DateTime? Date { get; set; }
         public string Description { get; set; } = string.Empty;
     }
