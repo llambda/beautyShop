@@ -143,6 +143,13 @@ public class InterventionService
             Action = "Intervento creato da appuntamento",
             Details = $"Appuntamento del {intervention.Date:dd/MM/yyyy HH:mm} registrato come intervento. Prezzo: {intervention.Price:C2}. Pagato: {(intervention.IsPaid ? "sì" : "no")}."
         });
+        db.CustomerActivities.Add(new CustomerActivity
+        {
+            CustomerId = intervention.CustomerId,
+            OccurredAt = DateTime.Now,
+            Category = "Appuntamento completato",
+            Detail = $"Appuntamento del {intervention.Date:dd/MM/yyyy HH:mm} convertito in intervento."
+        });
         await db.SaveChangesAsync();
         await transaction.CommitAsync();
     }
@@ -152,6 +159,13 @@ public class InterventionService
         await using var db = new AppDbContext();
         var existing = await db.Interventions.FirstOrDefaultAsync(x => x.Id == intervention.Id);
         if (existing == null) return;
+        db.CustomerActivities.Add(new CustomerActivity
+        {
+            CustomerId = existing.CustomerId,
+            OccurredAt = DateTime.Now,
+            Category = "Intervento eliminato",
+            Detail = $"Intervento del {existing.Date:dd/MM/yyyy} eliminato. Anche le relative fotografie e lo storico collegato sono stati rimossi."
+        });
         // Lo storico collegato viene eliminato automaticamente insieme all'intervento (FK cascade).
         db.Interventions.Remove(existing);
         await db.SaveChangesAsync();
