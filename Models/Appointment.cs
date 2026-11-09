@@ -7,6 +7,7 @@ public class Appointment
     public int Id { get; set; }
     public int CustomerId { get; set; }
     public DateTime Date { get; set; } = DateTime.Now;
+    public int DurationMinutes { get; set; } = 60;
     public int? InterventionTypeId { get; set; }
     public int? LocationId { get; set; }
     public string? Notes { get; set; }
