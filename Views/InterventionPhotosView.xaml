@@ -1,0 +1,62 @@
+<UserControl x:Class="BeautyStudio.Views.InterventionPhotosView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F7F5F6">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+            <Button Command="{Binding BackCommand}" HorizontalAlignment="Left" Padding="10,6" Margin="0,0,0,16">
+                <TextBlock Text="← Torna alla scheda cliente"/>
+            </Button>
+            <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding CustomerName}" FontSize="16" Margin="0,5,0,16"/>
+            <Border Background="White" Padding="20" Margin="0,0,0,18">
+                <StackPanel>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding Intervention.Date, StringFormat='Data: {0:dd/MM/yyyy}'}" Margin="0,0,24,8"/>
+                        <TextBlock Text="{Binding Intervention.Type.Name, StringFormat='Tipo: {0}'}" Margin="0,0,24,8"/>
+                        <TextBlock Text="{Binding Intervention.Location.Name, StringFormat='Luogo: {0}'}" Margin="0,0,24,8"/>
+                        <TextBlock Text="{Binding Intervention.Price, StringFormat='Prezzo: {0:C2}'}" Margin="0,0,24,8"/>
+                        <TextBlock Text="{Binding Intervention.IsPaid, StringFormat='Pagato: {0}'}" Margin="0,0,24,8"/>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding Intervention.Notes, TargetNullValue='Nessuna nota'}" TextWrapping="Wrap" Margin="0,8,0,0"/>
+                    <Button Content="Modifica intervento" Command="{Binding EditCommand}" HorizontalAlignment="Left" Padding="14,7" Margin="0,16,0,0"/>
+                </StackPanel>
+            </Border>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                <Border Background="White" Padding="18" Margin="0,0,9,0">
+                    <StackPanel>
+                        <TextBlock Text="Foto prima" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <ItemsControl ItemsSource="{Binding BeforePhotos}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,10,10" BorderBrush="#DDDDDD" BorderThickness="1">
+                                        <Image Source="{Binding}" Width="250" Height="210" Stretch="Uniform"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nessuna foto prima." Foreground="Gray" Visibility="{Binding BeforePhotos.Count, Converter={StaticResource ZeroToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Background="White" Padding="18" Margin="9,0,0,0">
+                    <StackPanel>
+                        <TextBlock Text="Foto dopo" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <ItemsControl ItemsSource="{Binding AfterPhotos}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,10,10" BorderBrush="#DDDDDD" BorderThickness="1">
+                                        <Image Source="{Binding}" Width="250" Height="210" Stretch="Uniform"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nessuna foto dopo." Foreground="Gray" Visibility="{Binding AfterPhotos.Count, Converter={StaticResource ZeroToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
