@@ -10,6 +10,7 @@ public partial class CustomerDetailsView : UserControl
     {
         bool hasSelection = ((DataGrid)sender).SelectedItem != null;
         EditInterventionButton.IsEnabled = hasSelection;
+        OpenInterventionDetailsButton.IsEnabled = hasSelection;
         DeleteInterventionButton.IsEnabled = hasSelection;
     }
 
