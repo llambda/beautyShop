@@ -34,6 +34,8 @@ public sealed class ExportService
             $"Data di nascita: {customer.BirthDate:dd/MM/yyyy}",
             $"Allergie: {customer.Allergies ?? "-"}",
             $"Sensibilità: {customer.Sensitivities ?? "-"}",
+            $"Consenso informato: {(string.IsNullOrWhiteSpace(customer.ConsentFormPath) ? "MANCANTE" : "Presente")}",
+            $"Consenso acquisito il: {customer.ConsentAcquiredAt?.ToString("dd/MM/yyyy HH:mm") ?? "Data non disponibile"}",
             $"Note: {customer.Notes ?? "-"}",
             $"Data esportazione: {DateTime.Now:dd/MM/yyyy HH:mm}",
             "",
@@ -52,9 +54,9 @@ public sealed class ExportService
     public string ExportCustomersCsv(IEnumerable<Customer> customers)
     {
         var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Clienti_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
-        var rows = new List<string> { "Nome;Cognome;Telefono;Email;Indirizzo;Data di nascita" };
+        var rows = new List<string> { "Nome;Cognome;Telefono;Email;Indirizzo;Data di nascita;Consenso informato;Data acquisizione consenso" };
         foreach (var customer in customers.OrderBy(x => x.LastName).ThenBy(x => x.FirstName))
-            rows.Add(string.Join(";", Csv(customer.FirstName), Csv(customer.LastName), Csv(customer.Phone), Csv(customer.Email), Csv(customer.Address), Csv(customer.BirthDate?.ToString("dd/MM/yyyy"))));
+            rows.Add(string.Join(";", Csv(customer.FirstName), Csv(customer.LastName), Csv(customer.Phone), Csv(customer.Email), Csv(customer.Address), Csv(customer.BirthDate?.ToString("dd/MM/yyyy")), Csv(string.IsNullOrWhiteSpace(customer.ConsentFormPath) ? "Mancante" : "Presente"), Csv(customer.ConsentAcquiredAt?.ToString("dd/MM/yyyy HH:mm"))));
         File.WriteAllText(path, "\uFEFF" + string.Join(Environment.NewLine, rows), Encoding.UTF8);
         return path;
     }
@@ -64,7 +66,7 @@ public sealed class ExportService
         var items = appointments.Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month).OrderBy(x => x.Date).ToList();
         var lines = new List<string> { "BEAUTY STUDIO - CALENDARIO APPUNTAMENTI", month.ToString("MMMM yyyy"), "" };
         foreach (var item in items)
-            lines.Add($"{item.Date:dd/MM/yyyy HH:mm} | {item.Customer?.FirstName} {item.Customer?.LastName} | {item.InterventionType?.Name ?? "Trattamento"} | {item.Notes}");
+            lines.Add($"{item.Date:dd/MM/yyyy HH:mm} | {item.Customer?.FirstName} {item.Customer?.LastName} | {item.InterventionType?.Name ?? "Trattamento"} | {item.Status} | {item.Notes}");
         var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Calendario_{month:yyyyMM}.pdf");
         MinimalPdf.Write(path, lines);
         return path;
@@ -73,9 +75,9 @@ public sealed class ExportService
     public string ExportAppointmentsCsv(IEnumerable<Appointment> appointments, DateTime month)
     {
         var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"BeautyStudio_Calendario_{month:yyyyMM}.csv");
-        var rows = new List<string> { "Data;Ora;Cliente;Tipo;Note" };
+        var rows = new List<string> { "Data;Ora;Cliente;Tipo;Stato;Note" };
         foreach (var item in appointments.Where(x => x.Date.Year == month.Year && x.Date.Month == month.Month).OrderBy(x => x.Date))
-            rows.Add(string.Join(";", Csv(item.Date.ToString("dd/MM/yyyy")), Csv(item.Date.ToString("HH:mm")), Csv($"{item.Customer?.FirstName} {item.Customer?.LastName}"), Csv(item.InterventionType?.Name), Csv(item.Notes)));
+            rows.Add(string.Join(";", Csv(item.Date.ToString("dd/MM/yyyy")), Csv(item.Date.ToString("HH:mm")), Csv($"{item.Customer?.FirstName} {item.Customer?.LastName}"), Csv(item.InterventionType?.Name), Csv(item.Status), Csv(item.Notes)));
         File.WriteAllText(path, "\uFEFF" + string.Join(Environment.NewLine, rows), Encoding.UTF8);
         return path;
     }
