@@ -41,6 +41,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private string selectedAppointmentStatus = "Da confermare";
     public ObservableCollection<string> AppointmentStatuses { get; } = new() { "Da confermare", "Confermato", "Annullato", "Non presentato" };
     [ObservableProperty] private InterventionType? selectedAppointmentType;
+    [ObservableProperty] private InterventionLocation? selectedAppointmentLocation;
 
     public ObservableCollection<Intervention> Interventions { get; } = new();
     public decimal TotalRevenue => Interventions.Sum(x => x.Price);
@@ -94,15 +95,15 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedAppointment = appointment;
         SelectedIntervention = null;
         InterventionDate = appointment.Date.Date;
-        SelectedLocation = null;
+        SelectedLocation = Locations.FirstOrDefault(x => x.Id == appointment.LocationId);
         SelectedType = Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId);
         InterventionNotes = appointment.Notes;
         BeforePhotos.Clear();
         AfterPhotos.Clear();
         _convertingAppointmentToIntervention = true;
-        StatusMessage = Locations.Count == 0
-            ? "Prima di registrare l'intervento, aggiungi un luogo nelle Impostazioni."
-            : "Completa il luogo e, se necessario, aggiungi le foto prima e dopo. Salvando, l'appuntamento verrà archiviato come intervento eseguito.";
+        StatusMessage = SelectedLocation == null
+            ? "Questo appuntamento non ha un luogo associato. Modificalo e seleziona il luogo prima di confermare lo svolgimento."
+            : "Controlla i dati e, se necessario, aggiungi le foto prima e dopo. Salvando, l'appuntamento verrà archiviato come intervento eseguito.";
         _mainViewModel.ShowInterventionEditor(this);
     }
 
@@ -153,6 +154,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentNotes = string.Empty;
         SelectedAppointmentStatus = "Da confermare";
         SelectedAppointmentType = Types.FirstOrDefault();
+        SelectedAppointmentLocation = Locations.FirstOrDefault();
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
     }
@@ -167,6 +169,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AppointmentNotes = item.Notes;
         SelectedAppointmentStatus = string.IsNullOrWhiteSpace(item.Status) ? "Da confermare" : item.Status;
         SelectedAppointmentType = Types.FirstOrDefault(x => x.Id == item.InterventionTypeId);
+        SelectedAppointmentLocation = Locations.FirstOrDefault(x => x.Id == item.LocationId);
         StatusMessage = null;
         _mainViewModel.ShowAppointmentEditor(this);
     }
@@ -174,9 +177,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAppointmentAsync()
     {
-        if (SelectedAppointmentType == null)
+        if (SelectedAppointmentType == null || SelectedAppointmentLocation == null)
         {
-            StatusMessage = "Seleziona il tipo di intervento per l'appuntamento.";
+            StatusMessage = "Seleziona il luogo e il tipo di intervento per l'appuntamento.";
             return;
         }
 
@@ -191,7 +194,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
             item.Date = AppointmentDate.Date.Add(time);
             item.Notes = AppointmentNotes?.Trim();
             item.Status = SelectedAppointmentStatus;
-            item.InterventionTypeId = SelectedAppointmentType?.Id;
+            item.InterventionTypeId = SelectedAppointmentType.Id;
+            item.LocationId = SelectedAppointmentLocation.Id;
             await _appointmentService.SaveAsync(item);
             await ReloadAppointmentsAsync();
             SelectedAppointment = null;
@@ -228,6 +232,13 @@ public partial class CustomerDetailsViewModel : ObservableObject
         AfterPhotos.Clear();
         StatusMessage = null;
         _mainViewModel.ShowInterventionEditor(this);
+    }
+
+    [RelayCommand]
+    private void OpenInterventionDetails(Intervention? item)
+    {
+        if (item == null) return;
+        _mainViewModel.ShowInterventionPhotos(this, item);
     }
 
     [RelayCommand]
@@ -286,6 +297,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
                 await _interventionService.SaveAsync(item);
             }
             await ReloadInterventionsAsync();
+            await _mainViewModel.RefreshCustomersAsync();
             DeleteRemovedPhotos(oldBeforePhotos, BeforePhotos);
             DeleteRemovedPhotos(oldAfterPhotos, AfterPhotos);
 
