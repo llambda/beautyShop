@@ -10,6 +10,7 @@
   <Border Background="White" CornerRadius="15" Padding="24"><StackPanel>
    <TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding Parent.AppointmentDate}" Margin="0,0,0,16"/>
    <TextBlock Text="Ora (HH:mm)" Margin="0,0,0,5"/><TextBox Text="{Binding Parent.AppointmentTime, UpdateSourceTrigger=PropertyChanged}" Padding="9" Margin="0,0,0,16"/>
+   <TextBlock Text="Luogo" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Locations}" SelectedItem="{Binding Parent.SelectedAppointmentLocation}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
    <TextBlock Text="Tipo di intervento" Margin="0,0,0,5"/><ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedAppointmentType}" DisplayMemberPath="Name" Margin="0,0,0,16"/>
    <TextBlock Text="Stato appuntamento" Margin="0,0,0,5"/>
    <ComboBox ItemsSource="{Binding Parent.AppointmentStatuses}" SelectedItem="{Binding Parent.SelectedAppointmentStatus}" Margin="0,0,0,16"/>
