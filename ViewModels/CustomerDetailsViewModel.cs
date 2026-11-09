@@ -448,5 +448,16 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task EditCustomerAsync()
+    {
+        if (_mainViewModel.ShowEditCustomerDialog(Customer) == true)
+        {
+            var updated = await new CustomerService().GetByIdAsync(Customer.Id);
+            if (updated != null) Customer = updated;
+            await LoadAsync();
+        }
+    }
+
+    [RelayCommand]
     private void BackToCustomers() => _mainViewModel.ShowCustomers();
 }
