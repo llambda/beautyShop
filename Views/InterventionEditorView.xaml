@@ -45,9 +45,34 @@
       </Style.Triggers>
      </Style>
     </StackPanel.Style>
-    <TextBlock Text="Luogo e tipo recuperati dall'appuntamento" FontWeight="SemiBold"/>
-    <TextBlock Text="{Binding Parent.SelectedLocation.Name}" Margin="0,4,0,0"/>
-    <TextBlock Text="{Binding Parent.SelectedType.Name}" Margin="0,2,0,0"/>
+    <TextBlock Text="Luogo" FontWeight="SemiBold"/>
+    <TextBlock Text="{Binding Parent.SelectedLocation.Name}" Margin="0,4,0,8"/>
+    <TextBlock Text="Tipo di intervento" FontWeight="SemiBold"/>
+    <TextBlock Text="{Binding Parent.SelectedType.Name}" Margin="0,4,0,0">
+     <TextBlock.Style>
+      <Style TargetType="TextBlock">
+       <Setter Property="Visibility" Value="Visible"/>
+       <Style.Triggers>
+        <DataTrigger Binding="{Binding Parent.SelectedType}" Value="{x:Null}">
+         <Setter Property="Visibility" Value="Collapsed"/>
+        </DataTrigger>
+       </Style.Triggers>
+      </Style>
+     </TextBlock.Style>
+    </TextBlock>
+    <ComboBox ItemsSource="{Binding Parent.Types}" SelectedItem="{Binding Parent.SelectedType}"
+              DisplayMemberPath="Name" Margin="0,4,0,0">
+     <ComboBox.Style>
+      <Style TargetType="ComboBox">
+       <Setter Property="Visibility" Value="Collapsed"/>
+       <Style.Triggers>
+        <DataTrigger Binding="{Binding Parent.SelectedType}" Value="{x:Null}">
+         <Setter Property="Visibility" Value="Visible"/>
+        </DataTrigger>
+       </Style.Triggers>
+      </Style>
+     </ComboBox.Style>
+    </ComboBox>
    </StackPanel>
    <TextBlock Text="Prezzo (€)" Margin="0,0,0,5"/>
    <TextBox Text="{Binding Parent.InterventionPrice, UpdateSourceTrigger=PropertyChanged}" Padding="8" Margin="0,0,0,16"/>
