@@ -264,6 +264,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         try
         {
             var item = SelectedIntervention ?? new Intervention { CustomerId = Customer.Id };
+            var oldBeforePhotos = SelectedIntervention == null ? Array.Empty<string>() : DeserializePhotos(SelectedIntervention.BeforePhotosJson);
+            var oldAfterPhotos = SelectedIntervention == null ? Array.Empty<string>() : DeserializePhotos(SelectedIntervention.AfterPhotosJson);
             item.Date = InterventionDate;
             item.LocationId = SelectedLocation.Id;
             item.TypeId = SelectedType.Id;
@@ -284,6 +286,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
                 await _interventionService.SaveAsync(item);
             }
             await ReloadInterventionsAsync();
+            DeleteRemovedPhotos(oldBeforePhotos, BeforePhotos);
+            DeleteRemovedPhotos(oldAfterPhotos, AfterPhotos);
 
             SelectedIntervention = null;
             SelectedAppointment = null;
@@ -303,7 +307,10 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (SelectedIntervention == null) return;
         if (MessageBox.Show("Eliminare questo intervento?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
+        var photosToDelete = DeserializePhotos(SelectedIntervention.BeforePhotosJson)
+            .Concat(DeserializePhotos(SelectedIntervention.AfterPhotosJson)).ToArray();
         await _interventionService.DeleteAsync(SelectedIntervention);
+        DeleteRemovedPhotos(photosToDelete, Array.Empty<string>());
         await ReloadInterventionsAsync();
         SelectedIntervention = null;
         StatusMessage = "Intervento eliminato.";
@@ -339,6 +346,29 @@ public partial class CustomerDetailsViewModel : ObservableObject
             string target = Path.Combine(folder, $"{Guid.NewGuid()}{Path.GetExtension(source)}");
             File.Copy(source, target, true);
             destination.Add(target);
+        }
+    }
+
+    private static string[] DeserializePhotos(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json)) return Array.Empty<string>();
+        try { return JsonSerializer.Deserialize<string[]>(json) ?? Array.Empty<string>(); }
+        catch { return Array.Empty<string>(); }
+    }
+
+    private static void DeleteRemovedPhotos(System.Collections.Generic.IEnumerable<string> oldPaths, System.Collections.Generic.IEnumerable<string> retainedPaths)
+    {
+        var retained = new System.Collections.Generic.HashSet<string>(retainedPaths, StringComparer.OrdinalIgnoreCase);
+        string root = Path.GetFullPath(Path.Combine(AppDbContext.PhotosDirectory, "Treatments")) + Path.DirectorySeparatorChar;
+        foreach (var path in oldPaths.Where(p => !retained.Contains(p)))
+        {
+            try
+            {
+                string fullPath = Path.GetFullPath(path);
+                if (fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase) && File.Exists(fullPath))
+                    File.Delete(fullPath);
+            }
+            catch { }
         }
     }
 
