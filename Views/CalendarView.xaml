@@ -24,22 +24,22 @@
     <Button Command="{Binding RefreshCommand}" Style="{StaticResource MaterialDesignToolButton}" ToolTip="Aggiorna calendario" Width="40" Height="40"><materialDesign:PackIcon Kind="Refresh" Width="20" Height="20"/></Button>
    </StackPanel>
   </Grid>
-  <Grid Grid.Row="2">
+  <Grid Grid.Row="2" ClipToBounds="True">
    <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="10" Margin="0,0,12,0">
     <Grid>
-     <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
      <UniformGrid Grid.Row="0" Columns="7">
       <TextBlock Text="Lunedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Martedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Mercoledì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Giovedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Venerdì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Sabato" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Domenica" HorizontalAlignment="Center" FontWeight="SemiBold"/>
      </UniformGrid>
-     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}">
+     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate>
        <DataTemplate>
-        <Button Padding="0" Margin="0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        <Button Padding="0" Margin="0" MinHeight="0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                 Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 CommandParameter="{Binding Date}" ToolTip="Seleziona questo giorno">
-         <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="75">
+         <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="4" MinHeight="0" VerticalAlignment="Stretch">
           <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers>
            <DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger>
            <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="Background" Value="#F1DCE7"/><Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/><Setter Property="BorderThickness" Value="2"/></DataTrigger>
@@ -47,7 +47,7 @@
          <Grid>
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
           <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/><Style.Triggers><DataTrigger Binding="{Binding IsCurrentMonth}" Value="False"><Setter Property="Foreground" Value="#B8AFB4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
            <ItemsControl ItemsSource="{Binding Appointments}">
             <ItemsControl.ItemTemplate><DataTemplate>
              <Border Background="#F4EAF0" CornerRadius="5" Padding="4" Margin="0,3,0,0">
