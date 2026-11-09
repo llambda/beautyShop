@@ -16,12 +16,14 @@ public class AppDbContext : DbContext
     public static string DataDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "BeautyStudio");
     public static string DatabasePath => Path.Combine(DataDirectory, "Database", "BeautyStudio.db");
     public static string PhotosDirectory => Path.Combine(DataDirectory, "Photos");
+    public static string ConsentsDirectory => Path.Combine(DataDirectory, "Documents", "ConsensiInformati");
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(DatabasePath)!);
         Directory.CreateDirectory(Path.Combine(PhotosDirectory, "Customers"));
         Directory.CreateDirectory(Path.Combine(PhotosDirectory, "Treatments"));
+        Directory.CreateDirectory(ConsentsDirectory);
         Directory.CreateDirectory(Path.Combine(DataDirectory, "Backups"));
         optionsBuilder.UseSqlite($"Data Source={DatabasePath}");
     }
