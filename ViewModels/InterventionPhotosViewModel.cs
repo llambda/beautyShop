@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -153,6 +156,47 @@ public partial class InterventionPhotosViewModel : ObservableObject
             window.ShowDialog();
         }
         catch (Exception ex) { StatusMessage = $"Impossibile aprire la fotografia: {ex.Message}"; }
+    }
+
+    [RelayCommand]
+    private void ExportComparison()
+    {
+        try
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var file = Path.Combine(folder, $"BeautyStudio_Confronto_{Intervention.Id}_{DateTime.Now:yyyyMMdd_HHmmss}.html");
+            var html = new StringBuilder();
+            html.AppendLine("<!doctype html><html lang='it'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>");
+            html.AppendLine("<title>Confronto prima e dopo - Beauty Studio</title><style>body{font-family:Segoe UI,Arial,sans-serif;margin:28px;color:#222}h1{font-size:24px}.meta{color:#555;margin-bottom:22px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.photo{border:1px solid #ddd;padding:12px;break-inside:avoid}.photo img{width:100%;height:auto;max-height:650px;object-fit:contain}.caption{margin-top:8px;color:#555}@media(max-width:700px){.grid{grid-template-columns:1fr}}@media print{body{margin:10mm}}</style></head><body>");
+            html.AppendLine("<h1>Confronto fotografico prima e dopo</h1>");
+            html.AppendLine("<div class='meta'>" + WebUtility.HtmlEncode(CustomerName) + " · " + Intervention.Date.ToString("dd/MM/yyyy") + " · " + WebUtility.HtmlEncode(Intervention.Type?.Name ?? "Trattamento") + "</div>");
+            html.AppendLine("<div class='grid'><section><h2>Prima</h2>" + BuildExportPhotos(BeforePhotos) + "</section><section><h2>Dopo</h2>" + BuildExportPhotos(AfterPhotos) + "</section></div>");
+            html.AppendLine("<h2>Note</h2><p>" + WebUtility.HtmlEncode(NotesDisplay) + "</p></body></html>");
+            File.WriteAllText(file, html.ToString(), Encoding.UTF8);
+            Process.Start(new ProcessStartInfo(file) { UseShellExecute = true });
+            StatusMessage = "Confronto esportato: " + file;
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Esportazione confronto fotografico", ex);
+            StatusMessage = "Esportazione del confronto non riuscita: " + ex.Message;
+        }
+    }
+
+    private static string BuildExportPhotos(IEnumerable<InterventionPhotoItem> photos)
+    {
+        var html = new StringBuilder();
+        foreach (var photo in photos)
+        {
+            if (!File.Exists(photo.Path)) continue;
+            var extension = Path.GetExtension(photo.Path).ToLowerInvariant();
+            var mime = extension switch { ".png" => "image/png", ".gif" => "image/gif", ".webp" => "image/webp", ".bmp" => "image/bmp", _ => "image/jpeg" };
+            var data = Convert.ToBase64String(File.ReadAllBytes(photo.Path));
+            html.Append("<figure class='photo'><img src='data:").Append(mime).Append(";base64,").Append(data).Append("'><figcaption class='caption'>")
+                .Append(WebUtility.HtmlEncode(photo.Date?.ToString("dd/MM/yyyy") ?? string.Empty)).Append(" ")
+                .Append(WebUtility.HtmlEncode(photo.Description)).Append("</figcaption></figure>");
+        }
+        return html.Length == 0 ? "<p>Nessuna fotografia disponibile.</p>" : html.ToString();
     }
 
     [RelayCommand]
