@@ -241,6 +241,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         _mainViewModel.ShowInterventionPhotos(this, item);
     }
 
+    public void EditInterventionFromDetails(Intervention item) => EditIntervention(item);
+
     [RelayCommand]
     private void EditIntervention(Intervention? item)
     {
