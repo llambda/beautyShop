@@ -30,7 +30,10 @@
      <DataGridTemplateColumn Header="Azioni" Width="110">
       <DataGridTemplateColumn.CellTemplate>
        <DataTemplate>
-        <Button Content="Modifica" Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="10,5" ToolTip="Modifica appuntamento"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+         <Button Content="Modifica" Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="9,5" Margin="0,0,5,0" ToolTip="Modifica appuntamento"/>
+         <Button Content="Segna eseguito" Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="9,5" ToolTip="Registra l'appuntamento nello storico interventi"/>
+        </StackPanel>
        </DataTemplate>
       </DataGridTemplateColumn.CellTemplate>
      </DataGridTemplateColumn>
