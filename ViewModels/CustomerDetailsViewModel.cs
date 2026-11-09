@@ -44,6 +44,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public decimal TotalRevenue => Interventions.Sum(x => x.Price);
     public decimal TotalPaid => Interventions.Where(x => x.IsPaid).Sum(x => x.Price);
     public decimal TotalUnpaid => Interventions.Where(x => !x.IsPaid).Sum(x => x.Price);
+    public int InterventionCount => Interventions.Count;
+    public DateTime? LastInterventionDate => Interventions.Count == 0 ? null : Interventions.Max(x => x.Date);
     public ObservableCollection<Appointment> Appointments { get; } = new();
     public ObservableCollection<InterventionLocation> Locations { get; } = new();
     public ObservableCollection<InterventionType> Types { get; } = new();
@@ -58,6 +60,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
             OnPropertyChanged(nameof(TotalRevenue));
             OnPropertyChanged(nameof(TotalPaid));
             OnPropertyChanged(nameof(TotalUnpaid));
+            OnPropertyChanged(nameof(InterventionCount));
+            OnPropertyChanged(nameof(LastInterventionDate));
         };
         _mainViewModel = mainViewModel;
         _returnToUpcomingAppointments = returnToUpcomingAppointments;
