@@ -222,6 +222,52 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task ConfirmAppointmentExecutedAsync(Appointment? appointment)
+    {
+        if (appointment == null) return;
+
+        if (appointment.LocationId == null || appointment.InterventionTypeId == null)
+        {
+            MessageBox.Show("L'appuntamento non contiene un luogo e un tipo di intervento. Modificalo prima di confermare lo svolgimento.",
+                "Dati appuntamento mancanti", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (MessageBox.Show(
+            $"Confermi lo svolgimento dell'appuntamento del {appointment.Date:dd/MM/yyyy} alle {appointment.Date:HH:mm}? Verrà spostato nello storico degli interventi.",
+            "Conferma svolgimento", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            var intervention = new Intervention
+            {
+                CustomerId = Customer.Id,
+                Date = appointment.Date,
+                LocationId = appointment.LocationId.Value,
+                TypeId = appointment.InterventionTypeId.Value,
+                Notes = appointment.Notes,
+                Price = 0m,
+                IsPaid = false,
+                BeforePhotosJson = "[]",
+                AfterPhotosJson = "[]"
+            };
+
+            await _interventionService.SaveAndDeleteAppointmentAsync(intervention, appointment.Id);
+            await ReloadAppointmentsAsync();
+            await ReloadInterventionsAsync();
+            await _mainViewModel.RefreshCustomersAsync();
+            SelectedAppointment = null;
+            StatusMessage = "Appuntamento confermato e inserito nello storico degli interventi. Puoi aggiungere prezzo e fotografie modificando l'intervento.";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Conferma appuntamento non riuscita: {ex.Message}";
+            MessageBox.Show(StatusMessage, "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
     private async Task DeleteAppointmentAsync()
     {
         if (SelectedAppointment == null) return;
