@@ -19,8 +19,11 @@ public sealed class BackupService
     {
         Directory.CreateDirectory(BackupFolder);
         var today = Path.Combine(BackupFolder, $"BeautyStudio_{DateTime.Now:yyyyMMdd}_automatico.zip");
-        if (File.Exists(today)) return null;
-        return CreateBackup(today);
+        if (File.Exists(today) && ValidateBackup(today, out _)) return null;
+        var destination = File.Exists(today)
+            ? Path.Combine(BackupFolder, $"BeautyStudio_{DateTime.Now:yyyyMMdd}_automatico_{DateTime.Now:HHmmss}.zip")
+            : today;
+        return CreateBackup(destination);
     }
 
     public string CreateBackup() =>
@@ -31,8 +34,22 @@ public sealed class BackupService
         try
         {
             using var archive = ZipFile.OpenRead(zipPath);
-            var manifestEntry = archive.GetEntry(ManifestName)
-                ?? throw new InvalidDataException("Manifest del backup mancante.");
+            foreach (var archiveEntry in archive.Entries)
+            {
+                var normalized = archiveEntry.FullName.Replace('\\\\', '/');
+                if (Path.IsPathRooted(normalized) || normalized.Split('/').Any(x => x == ".."))
+                    throw new InvalidDataException("Il backup contiene un percorso non consentito.");
+            }
+
+            var manifestEntry = archive.GetEntry(ManifestName);
+            if (manifestEntry == null)
+            {
+                // Compatibilità con i backup ZIP creati dalle versioni precedenti, senza manifest/checksum.
+                if (archive.GetEntry("Database/BeautyStudio.db") == null)
+                    throw new InvalidDataException("Il backup non contiene il database.");
+                message = "Backup precedente al sistema di checksum. Il database verrà comunque controllato durante il ripristino.";
+                return true;
+            }
             using var stream = manifestEntry.Open();
             var manifest = JsonSerializer.Deserialize<BackupManifest>(stream)
                 ?? throw new InvalidDataException("Manifest del backup non valido.");
