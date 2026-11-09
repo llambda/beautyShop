@@ -5,6 +5,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace BeautyStudio.ViewModels;
 
@@ -14,6 +16,8 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly InterventionLocationService _locationService;
     private readonly InterventionTypeService _typeService;
+    private readonly CustomerService _customerService;
+    private readonly BackupService _backupService = new();
     private readonly ThemeSettingsService _themeService = new();
     private bool _loadingTheme;
 
@@ -48,11 +52,13 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private InterventionLocation? selectedLocation;
     [ObservableProperty] private ObservableCollection<InterventionType> interventionTypes = new();
     [ObservableProperty] private InterventionType? selectedInterventionType;
+    [ObservableProperty] private string? dataManagementStatus;
 
-    public SettingsViewModel(InterventionLocationService locationService, InterventionTypeService typeService)
+    public SettingsViewModel(InterventionLocationService locationService, InterventionTypeService typeService, CustomerService customerService)
     {
         _locationService = locationService;
         _typeService = typeService;
+        _customerService = customerService;
 
         var settings = _themeService.Load();
         _loadingTheme = true;
@@ -176,4 +182,59 @@ public partial class SettingsViewModel : ObservableObject
         SelectedInterventionType = null;
         await LoadInterventionTypesAsync();
     }
+    [RelayCommand]
+    private void CreateBackup()
+    {
+        try
+        {
+            var path = _backupService.CreateBackup();
+            DataManagementStatus = "Backup creato: " + path;
+            Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{path}\"") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Backup non riuscito: " + ex.Message;
+        }
+    }
+
+    [RelayCommand]
+    private void RestoreBackup()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Seleziona un backup BeautyStudio",
+            Filter = "Backup BeautyStudio (*.zip)|*.zip",
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog() != true) return;
+        if (MessageBox.Show("Il ripristino sostituirà il database e i documenti attuali. Continuare?",
+            "Ripristino backup", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+        try
+        {
+            _backupService.RestoreBackup(dialog.FileName);
+            DataManagementStatus = "Backup ripristinato. Riavvia l'applicazione per ricaricare tutti i dati.";
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Ripristino non riuscito: " + ex.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExportCustomersAsync()
+    {
+        try
+        {
+            var customers = await _customerService.GetAllAsync();
+            var path = new ExportService().ExportCustomersCsv(customers);
+            DataManagementStatus = "Elenco clienti esportato: " + path;
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Esportazione clienti non riuscita: " + ex.Message;
+        }
+    }
+
 }
