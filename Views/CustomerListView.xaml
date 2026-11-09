@@ -36,7 +36,6 @@
                          Margin="0,14,0,0"
                          materialDesign:HintAssist.Hint="Cerca per nome, telefono, email o indirizzo"
                          ToolTip="La lista si aggiorna mentre digiti"/>
-    </WrapPanel>
             </StackPanel>
 
             <!-- NUOVO CLIENTE -->
