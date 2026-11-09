@@ -6,6 +6,7 @@ using BeautyStudio.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -68,6 +69,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public ObservableCollection<string> BeforePhotos { get; } = new();
     public ObservableCollection<string> AfterPhotos { get; } = new();
     public ObservableCollection<CustomerTimelineEntry> Timeline { get; } = new();
+    private System.Collections.Generic.List<CustomerActivity> _customerActivities = new();
+    private System.Collections.Generic.List<InterventionHistoryEntry> _interventionHistory = new();
     public ObservableCollection<Intervention> FilteredInterventions { get; } = new();
     [ObservableProperty] private InterventionType? historyFilterType;
     [ObservableProperty] private InterventionLocation? historyFilterLocation;
@@ -103,6 +106,10 @@ public partial class CustomerDetailsViewModel : ObservableObject
         foreach (var item in Interventions)
             Timeline.Add(new CustomerTimelineEntry(item.Date, "Intervento", item.Type?.Name ?? "Tipo non specificato",
                 item.Location?.Name ?? "Luogo non specificato", item.IsPaid ? "Pagato" : "Non pagato"));
+        foreach (var item in _customerActivities)
+            Timeline.Add(new CustomerTimelineEntry(item.OccurredAt, item.Category, item.Detail, "Attività scheda cliente", string.Empty));
+        foreach (var item in _interventionHistory)
+            Timeline.Add(new CustomerTimelineEntry(item.ChangedAt, item.Action, item.Details, "Storico intervento", string.Empty));
         var ordered = Timeline.OrderByDescending(item => item.Date).ToList();
         Timeline.Clear();
         foreach (var item in ordered) Timeline.Add(item);
@@ -228,6 +235,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             foreach (var item in types) Types.Add(item);
             await ReloadInterventionsAsync();
             await ReloadAppointmentsAsync();
+            await ReloadAuditHistoryAsync();
         }
         catch (Exception ex) { StatusMessage = $"Errore caricamento: {ex.Message}"; }
     }
@@ -245,6 +253,17 @@ public partial class CustomerDetailsViewModel : ObservableObject
         Interventions.Clear();
         foreach (var item in items) Interventions.Add(item);
         ApplyHistoryFilter();
+        RebuildTimeline();
+    }
+
+    private async Task ReloadAuditHistoryAsync()
+    {
+        await using var db = new AppDbContext();
+        _customerActivities = await db.CustomerActivities.AsNoTracking()
+            .Where(x => x.CustomerId == Customer.Id)
+            .OrderByDescending(x => x.OccurredAt)
+            .ToListAsync();
+        _interventionHistory = await _interventionService.GetHistoryForCustomerAsync(Customer.Id);
         RebuildTimeline();
     }
 
