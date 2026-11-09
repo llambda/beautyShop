@@ -167,6 +167,11 @@ public partial class MainViewModel : ObservableObject
 
     public bool? ShowEditCustomerDialog(Customer customer) => _dialogService.ShowDialog(customer);
 
+    public void ShowInterventionPhotos(CustomerDetailsViewModel parent, Intervention intervention)
+    {
+        CurrentViewModel = new InterventionPhotosViewModel(parent, intervention, this);
+    }
+
     public void ShowInterventionEditor(CustomerDetailsViewModel viewModel)
     {
         CurrentViewModel = new InterventionEditorViewModel(viewModel);
