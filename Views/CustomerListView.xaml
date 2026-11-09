@@ -40,15 +40,7 @@
 
             <!-- NUOVO CLIENTE -->
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-            <Button Command="{Binding ExportCustomersCommand}"
-                    Padding="14,10" MinHeight="44" Margin="0,0,10,0"
-                    ToolTip="Esporta l'elenco clienti in CSV">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="FileDelimited" Width="18" Height="18"/>
-                    <TextBlock Text="Esporta CSV" Margin="7,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button Command="{Binding AddCustomerCommand}"
+<Button Command="{Binding AddCustomerCommand}"
                     Background="{DynamicResource MaterialDesign.Brush.Primary}"
                     Foreground="White"
                     BorderThickness="0"
