@@ -28,6 +28,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
     public ObservableCollection<PhotoComparisonPair> PhotoPairs { get; } = new();
     public ObservableCollection<InterventionHistoryEntry> History { get; } = new();
     public string CustomerName => $"{_parent.Customer.FirstName} {_parent.Customer.LastName}".Trim();
+    public string NotesDisplay => string.IsNullOrWhiteSpace(Intervention.Notes) ? "Nessuna nota presente" : Intervention.Notes;
 
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private int beforeIndex;
