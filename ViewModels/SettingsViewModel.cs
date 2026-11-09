@@ -19,6 +19,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly InterventionTypeService _typeService;
     private readonly CustomerService _customerService;
     private readonly BackupService _backupService = new();
+    private readonly UpdateCheckService _updateCheckService = new();
     private readonly ThemeSettingsService _themeService = new();
     private bool _loadingTheme;
 
@@ -54,6 +55,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private ObservableCollection<InterventionType> interventionTypes = new();
     [ObservableProperty] private InterventionType? selectedInterventionType;
     [ObservableProperty] private string? dataManagementStatus;
+    [ObservableProperty] private string updateStatus = "Non hai ancora controllato gli aggiornamenti.";
+    [ObservableProperty] private bool isCheckingUpdates;
+    [ObservableProperty] private string currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+    private string? _latestReleaseUrl;
 
     public SettingsViewModel(InterventionLocationService locationService, InterventionTypeService typeService, CustomerService customerService)
     {
