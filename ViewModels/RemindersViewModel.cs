@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace BeautyStudio.ViewModels;
@@ -38,7 +39,9 @@ public partial class RemindersViewModel : ObservableObject
             Replace(TomorrowAppointments, active.Where(x => x.Date.Date == DateTime.Today.AddDays(1)).OrderBy(x => x.Date));
             Replace(UnconfirmedAppointments, active.Where(x => string.Equals(x.Status, "Da confermare", StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.Date));
             Replace(IncompleteAppointments, active.Where(x => x.LocationId == null || x.InterventionTypeId == null).OrderBy(x => x.Date));
-            Replace(MissingConsentAppointments, active.Where(x => string.IsNullOrWhiteSpace(x.Customer?.ConsentFormPath)).OrderBy(x => x.Date));
+            Replace(MissingConsentAppointments, active.Where(x =>
+                string.IsNullOrWhiteSpace(x.Customer?.ConsentFormPath)
+                || !File.Exists(x.Customer.ConsentFormPath)).OrderBy(x => x.Date));
             StatusMessage = "Promemoria aggiornati.";
         }
         catch (Exception ex) { StatusMessage = $"Errore nel caricamento dei promemoria: {ex.Message}"; }
