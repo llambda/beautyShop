@@ -86,6 +86,33 @@
 
             <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
                 <StackPanel>
+                    <TextBlock Text="Orari di lavoro e disponibilità" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Imposta i giorni di apertura, gli orari e le eventuali pause. I nuovi appuntamenti non potranno essere salvati fuori da queste fasce o durante le pause."
+                               TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,12"/>
+                    <DataGrid ItemsSource="{Binding WorkingDays}" AutoGenerateColumns="False" CanUserAddRows="False"
+                              HeadersVisibility="Column" IsReadOnly="False" MinHeight="210" MaxHeight="260"
+                              Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Giorno" Binding="{Binding DisplayName}" IsReadOnly="True" Width="*"/>
+                            <DataGridCheckBoxColumn Header="Aperto" Binding="{Binding IsWorkingDay, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                            <DataGridTextColumn Header="Apertura" Binding="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
+                            <DataGridTextColumn Header="Chiusura" Binding="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
+                            <DataGridCheckBoxColumn Header="Pausa" Binding="{Binding HasBreak, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                            <DataGridTextColumn Header="Inizio pausa" Binding="{Binding BreakStart, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                            <DataGridTextColumn Header="Fine pausa" Binding="{Binding BreakEnd, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Command="{Binding SaveWorkingHoursCommand}" HorizontalAlignment="Left" Padding="16,9" Margin="0,12,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSave" Width="18" Height="18"/>
+                            <TextBlock Text="Salva orari" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
+                <StackPanel>
                     <Grid Margin="0,0,0,12">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <StackPanel>
