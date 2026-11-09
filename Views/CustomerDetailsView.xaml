@@ -35,7 +35,7 @@
                 <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,0,18">
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <Border Width="140" Height="160" CornerRadius="12" Background="#F3E8ED" ClipToBounds="True">
-                            <Image Source="{Binding Customer.PhotoPath}" Stretch="UniformToFill"/>
+                            <Image Source="{Binding Customer.PhotoPath, Converter={StaticResource PhotoPathToImageConverter}}" Stretch="UniformToFill"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,0">
                             <TextBlock Text="{Binding Customer.FirstName}" FontSize="25" FontWeight="SemiBold"/>
