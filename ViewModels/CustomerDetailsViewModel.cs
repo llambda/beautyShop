@@ -21,6 +21,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     private readonly bool _returnToUpcomingAppointments;
     private bool _convertingAppointmentToIntervention;
     private readonly InterventionService _interventionService = new();
+    private readonly CustomerService _customerService = new();
     private readonly AppointmentService _appointmentService = new();
     private readonly InterventionLocationService _locationService = new();
     private readonly InterventionTypeService _typeService = new();
@@ -247,10 +248,33 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task DeleteCustomerAsync()
+    {
+        int appointmentCount = Appointments.Count;
+        int interventionCount = Interventions.Count;
+        string impact = $"Stai per eliminare {Customer.FirstName} {Customer.LastName}.\\n\\n"
+            + $"Saranno eliminati definitivamente anche {appointmentCount} appuntamenti e {interventionCount} interventi, "
+            + "incluse le fotografie e lo storico collegato. Questa operazione non può essere annullata.\\n\\nContinuare?";
+        if (MessageBox.Show(impact, "Eliminazione cliente e dati collegati", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            await _customerService.DeleteAsync(Customer.Id);
+            await _mainViewModel.RefreshCustomersAsync();
+            _mainViewModel.ShowCustomers();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Eliminazione cliente non riuscita: {ex.Message}", "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
     private async Task DeleteAppointmentAsync()
     {
         if (SelectedAppointment == null) return;
-        if (MessageBox.Show("Eliminare questo appuntamento?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        if (MessageBox.Show($"Eliminare l'appuntamento del {SelectedAppointment.Date:dd/MM/yyyy} alle {SelectedAppointment.Date:HH:mm}?\\nNon verrà creato alcun intervento nello storico.", "Elimina appuntamento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
         await _appointmentService.DeleteAsync(SelectedAppointment);
         await ReloadAppointmentsAsync();
@@ -371,7 +395,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     private async Task DeleteInterventionAsync()
     {
         if (SelectedIntervention == null) return;
-        if (MessageBox.Show("Eliminare questo intervento?", "Conferma", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        if (MessageBox.Show($"Eliminare l'intervento del {SelectedIntervention.Date:dd/MM/yyyy}? Verranno eliminate anche le fotografie prima/dopo e lo storico delle modifiche collegato.", "Elimina intervento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
         var photosToDelete = DeserializePhotos(SelectedIntervention.BeforePhotosJson)
             .Concat(DeserializePhotos(SelectedIntervention.AfterPhotosJson)).ToArray();
