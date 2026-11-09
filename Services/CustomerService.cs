@@ -95,13 +95,6 @@ public class CustomerService
         if (customer is null)
             return;
 
-        db.CustomerActivities.Add(new CustomerActivity
-        {
-            CustomerId = id,
-            OccurredAt = DateTime.Now,
-            Category = "Cliente eliminato",
-            Detail = "La scheda cliente e i dati collegati sono stati eliminati."
-        });
         db.Customers.Remove(customer);
         await db.SaveChangesAsync();
     }
