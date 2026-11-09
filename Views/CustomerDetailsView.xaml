@@ -158,12 +158,7 @@
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
-                                <Button Command="{Binding OpenInterventionDetailsCommand}" CommandParameter="{Binding SelectedIntervention}" x:Name="OpenInterventionDetailsButton" IsEnabled="False" ToolTip="Apri dettagli e fotografie" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ImageMultiple" Width="20" Height="20"/></Button>
-                                <Button Command="{Binding EditInterventionCommand}" CommandParameter="{Binding SelectedIntervention}" x:Name="EditInterventionButton" IsEnabled="False" ToolTip="Modifica intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
-                                <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
-                            </StackPanel>
+                            <Button Grid.Column="1" Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
                         </Grid>
                         <WrapPanel Margin="0,0,0,12">
                             <ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding HistoryFilterType}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per tipo di intervento"/>
@@ -180,6 +175,32 @@
                                 <DataGridTextColumn Header="Prezzo" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="Auto"/>
                                 <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding IsPaid}" IsReadOnly="True" Width="Auto"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
+                                <DataGridTemplateColumn Header="Azioni" Width="135">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button Command="{Binding DataContext.OpenInterventionDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="38" Height="38" ToolTip="Visualizza dettagli e fotografie"
+                                                        AutomationProperties.Name="Visualizza dettagli intervento">
+                                                    <materialDesign:PackIcon Kind="ImageMultiple" Width="20" Height="20"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.EditInterventionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="38" Height="38" ToolTip="Modifica intervento"
+                                                        AutomationProperties.Name="Modifica intervento">
+                                                    <materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.DeleteInterventionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="38" Height="38" ToolTip="Elimina intervento"
+                                                        AutomationProperties.Name="Elimina intervento" Foreground="#B3261E">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
                         <WrapPanel Margin="0,12,0,0">
