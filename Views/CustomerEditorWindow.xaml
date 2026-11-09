@@ -158,6 +158,9 @@
                         <Button Content="Rimuovi" Command="{Binding RemoveConsentFormCommand}"
                                 Padding="12,7"/>
                     </StackPanel>
+                    <TextBlock Text="{Binding ConsentAcquiredAt, StringFormat='Data acquisizione: {0:dd/MM/yyyy HH:mm}', TargetNullValue='Data acquisizione non disponibile'}"
+                               Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                               Margin="0,0,0,15"/>
 
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="#C62828"
