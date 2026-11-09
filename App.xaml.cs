@@ -87,7 +87,7 @@ public partial class App : Application
             var dialogService = new CustomerDialogService(customerService, photoStorageService);
             var locationService = new InterventionLocationService();
             var typeService = new InterventionTypeService();
-            var settingsViewModel = new SettingsViewModel(locationService, typeService);
+            var settingsViewModel = new SettingsViewModel(locationService, typeService, customerService);
             var mainViewModel = new MainViewModel(customerService, dialogService, settingsViewModel);
             var mainWindow = new MainWindow(mainViewModel);
             MainWindow = mainWindow;
