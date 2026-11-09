@@ -14,13 +14,13 @@
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <StackPanel Orientation="Horizontal">
     <Button Command="{Binding PreviousMonthCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronLeft" Width="22" Height="22"/></Button>
-    <Button Command="{Binding TodayCommand}" Content="Oggi" Margin="5,0" Padding="12,5"/>
+    <Button Command="{Binding TodayCommand}" Content="Oggi" Margin="5,0" Padding="12,8"/ MinHeight="38">
     <Button Command="{Binding NextMonthCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronRight" Width="22" Height="22"/></Button>
    </StackPanel>
    <TextBlock Grid.Column="1" Text="{Binding MonthTitle}" FontSize="21" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
    <StackPanel Grid.Column="2" Orientation="Horizontal">
-    <Button Content="PDF" Command="{Binding ExportMonthPdfCommand}" Padding="10,5" Margin="0,0,5,0" ToolTip="Esporta il mese in PDF"/>
-    <Button Content="CSV" Command="{Binding ExportMonthCsvCommand}" Padding="10,5" Margin="0,0,5,0" ToolTip="Esporta il mese in CSV"/>
+    <Button Content="PDF" Command="{Binding ExportMonthPdfCommand}" Padding="10,8" Margin="0,0,5,0" ToolTip="Esporta il mese in PDF"/ MinHeight="38">
+    <Button Content="CSV" Command="{Binding ExportMonthCsvCommand}" Padding="10,8" Margin="0,0,5,0" ToolTip="Esporta il mese in CSV"/ MinHeight="38">
     <Button Command="{Binding RefreshCommand}" Style="{StaticResource MaterialDesignToolButton}" ToolTip="Aggiorna calendario" Width="40" Height="40"><materialDesign:PackIcon Kind="Refresh" Width="20" Height="20"/></Button>
    </StackPanel>
   </Grid>
