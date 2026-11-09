@@ -127,6 +127,16 @@
                              Margin="0,5,0,15"
                              Padding="8"/>
 
+                    <TextBlock Text="Allergie" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Allergies, UpdateSourceTrigger=PropertyChanged}"
+                             Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto" Margin="0,5,0,15" Padding="8"/>
+
+                    <TextBlock Text="Sensibilità e intolleranze" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding Sensitivities, UpdateSourceTrigger=PropertyChanged}"
+                             Height="60" TextWrapping="Wrap" AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto" Margin="0,5,0,15" Padding="8"/>
+
                     <TextBlock Text="Note personali"/>
                     <TextBox Text="{Binding Notes,
                                     UpdateSourceTrigger=PropertyChanged}"
