@@ -16,6 +16,10 @@
 
     <Window.Resources>
 
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <views:CustomerListView/>
         </DataTemplate>
@@ -101,6 +105,18 @@
 
                 <StackPanel Grid.Row="1"
                             Margin="8,15">
+
+                    <!-- PANORAMICA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Panoramica"
+                            Height="48" HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ViewDashboard" Width="24" Height="24"/>
+                            <TextBlock Text="Panoramica" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
 
                     <!-- CLIENTI -->
 
