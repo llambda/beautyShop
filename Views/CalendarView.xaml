@@ -53,6 +53,9 @@
                <TextBlock Text="⚠ Fuori orario di lavoro" FontSize="9" FontWeight="Bold" Foreground="#B3261E" TextWrapping="Wrap">
                 <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsOutsideWorkingHours}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
                </TextBlock>
+               <TextBlock Text="⚠ Sovrapposto" FontSize="9" FontWeight="Bold" Foreground="#B3261E" TextWrapping="Wrap">
+                <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasOverlapWarning}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+               </TextBlock>
               </StackPanel>
              </Border>
             </DataTemplate></ItemsControl.ItemTemplate>
@@ -92,6 +95,9 @@
           <TextBlock Text="{Binding Status}" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,3,0,0"/>
           <TextBlock Text="{Binding WorkingHoursWarning}" Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsOutsideWorkingHours}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+          </TextBlock>
+          <TextBlock Text="Attenzione: appuntamento sovrapposto a un altro." Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
+           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasOverlapWarning}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
           </TextBlock>
           <TextBlock Text="{Binding Notes, TargetNullValue=''}" TextWrapping="Wrap" Margin="0,3,0,0"/>
          </StackPanel>
