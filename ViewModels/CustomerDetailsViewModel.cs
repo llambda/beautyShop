@@ -1,6 +1,7 @@
 using BeautyStudio.Data;
 using BeautyStudio.Models;
 using BeautyStudio.Services;
+using BeautyStudio.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
@@ -165,25 +166,56 @@ public partial class CustomerDetailsViewModel : ObservableObject
         InterventionIsPaid = false;
         BeforePhotos.Clear();
         AfterPhotos.Clear();
-        if (appointment.LocationId == null || appointment.InterventionTypeId == null)
+        SelectedType = appointment.InterventionTypeId.HasValue
+            ? Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId.Value)
+            : null;
+
+        // Se l'appuntamento non ha un luogo, permette di crearlo subito senza interrompere la conferma.
+        if (!appointment.LocationId.HasValue)
         {
-            StatusMessage = "Questo appuntamento non contiene luogo e tipo di intervento. Modificalo prima di confermare lo svolgimento.";
-            MessageBox.Show(StatusMessage, "Dati appuntamento mancanti", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (MessageBox.Show("Questo appuntamento non ha un luogo. Vuoi aggiungerlo adesso?",
+                "Luogo mancante", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
+                return;
+
+            var locationDialog = new LocationEditorWindow(null) { Owner = Application.Current.MainWindow };
+            if (locationDialog.ShowDialog() != true)
+                return;
+
+            var newLocation = new InterventionLocation
+            {
+                Name = locationDialog.LocationName,
+                Address = locationDialog.LocationAddress,
+                Notes = locationDialog.LocationNotes
+            };
+            await _locationService.SaveAsync(newLocation);
+            await LoadLocationsOnlyAsync();
+            SelectedLocation = Locations.FirstOrDefault(x => x.Id == newLocation.Id)
+                ?? Locations.FirstOrDefault(x => string.Equals(x.Name, newLocation.Name, StringComparison.OrdinalIgnoreCase));
+        }
+        else
+        {
+            SelectedLocation = Locations.FirstOrDefault(x => x.Id == appointment.LocationId.Value);
+        }
+
+        if (SelectedLocation == null)
+        {
+            StatusMessage = "Seleziona o aggiungi un luogo prima di confermare lo svolgimento.";
+            MessageBox.Show(StatusMessage, "Luogo mancante", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
-        SelectedLocation = Locations.FirstOrDefault(x => x.Id == appointment.LocationId);
-        SelectedType = Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId);
-        if (SelectedLocation == null || SelectedType == null)
+        if (SelectedType == null)
         {
-            StatusMessage = "Il luogo o il tipo associato all'appuntamento non è più disponibile nelle Impostazioni.";
-            MessageBox.Show(StatusMessage, "Dati appuntamento non disponibili", MessageBoxButton.OK, MessageBoxImage.Warning);
+            StatusMessage = "L'appuntamento non ha un tipo di intervento valido. Selezionalo modificando l'appuntamento prima di confermare.";
+            MessageBox.Show(StatusMessage, "Tipo di intervento mancante", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
         _convertingAppointmentToIntervention = true;
         IsConvertingAppointment = true;
-        StatusMessage = "Luogo e tipo sono già stati recuperati dall'appuntamento. Puoi completare note, prezzo e fotografie.";
+        StatusMessage = appointment.LocationId.HasValue
+            ? "Luogo e tipo sono stati recuperati dall'appuntamento. Puoi completare note, prezzo e fotografie."
+            : "Nuovo luogo aggiunto e selezionato. Puoi completare prezzo, pagamento e fotografie.";
         _mainViewModel.ShowInterventionEditor(this);
     }
 
@@ -209,6 +241,13 @@ public partial class CustomerDetailsViewModel : ObservableObject
             await ReloadAppointmentsAsync();
         }
         catch (Exception ex) { StatusMessage = $"Errore caricamento: {ex.Message}"; }
+    }
+
+    private async Task LoadLocationsOnlyAsync()
+    {
+        var items = await _locationService.GetAllAsync();
+        Locations.Clear();
+        foreach (var item in items) Locations.Add(item);
     }
 
     private async Task ReloadInterventionsAsync()
@@ -402,7 +441,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         if (_convertingAppointmentToIntervention && SelectedAppointment != null)
         {
-            SelectedLocation = Locations.FirstOrDefault(x => x.Id == SelectedAppointment.LocationId);
+            if (SelectedAppointment.LocationId.HasValue)
+                SelectedLocation = Locations.FirstOrDefault(x => x.Id == SelectedAppointment.LocationId.Value);
             SelectedType = Types.FirstOrDefault(x => x.Id == SelectedAppointment.InterventionTypeId);
         }
 
