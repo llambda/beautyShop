@@ -50,7 +50,6 @@
             <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/><Style.Triggers><DataTrigger Binding="{Binding IsCurrentMonth}" Value="False"><Setter Property="Foreground" Value="#B8AFB4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
            </TextBlock>
            <StackPanel Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Orientation="Horizontal">
-            <Ellipse Width="7" Height="7" Fill="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,0,4,0"/>
             <TextBlock Text="{Binding Appointments.Count, StringFormat={}{0} appuntamenti}" FontSize="9" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextTrimming="CharacterEllipsis"/>
            </StackPanel>
           </Grid>
