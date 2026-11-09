@@ -55,7 +55,21 @@
                             </Grid>
                         </DataTemplate></ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <TextBlock Text="Le foto vengono abbinate nell'ordine in cui sono state caricate." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0"/>
+                    <TextBlock Text="Non sono ancora state caricate fotografie per questo intervento."
+                               Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PhotoPairs.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text="Le foto prima/dopo sono affiancate per posizione di caricamento; puoi aprirle a schermo intero e salvare data e descrizione per ciascuna."
+                               Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0" TextWrapping="Wrap"/>
                 </StackPanel>
             </Border>
             <Button Content="Salva date e descrizioni foto" Command="{Binding SavePhotoMetadataCommand}" HorizontalAlignment="Left" Padding="16,8" Margin="0,16,0,20" MinHeight="38"/>
