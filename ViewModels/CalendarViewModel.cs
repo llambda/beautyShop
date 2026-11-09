@@ -51,6 +51,9 @@ public partial class CalendarViewModel : ObservableObject
     partial void OnSelectedAgendaDateChanged(DateTime value)
     {
         OnPropertyChanged(nameof(AgendaTitle));
+        var selectedMonth = new DateTime(value.Year, value.Month, 1);
+        if (DisplayedMonth != selectedMonth)
+            DisplayedMonth = selectedMonth;
         BuildDailyAgenda();
     }
 
