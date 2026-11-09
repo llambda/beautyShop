@@ -32,6 +32,10 @@
             <views:RemindersView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+            <views:HistoryView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:UpcomingInterventionsViewModel}">
             <views:UpcomingInterventionsView/>
         </DataTemplate>
@@ -205,6 +209,18 @@
 
                         </StackPanel>
 
+                    </Button>
+
+                    <!-- STORICO -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Storico"
+                            Height="48" HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="History" Width="24" Height="24"/>
+                            <TextBlock Text="Storico" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
                     </Button>
 
                     <!-- PANORAMICA -->
