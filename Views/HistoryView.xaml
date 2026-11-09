@@ -18,7 +18,7 @@
       <StackPanel Margin="0,0,10,10"><TextBlock Text="Dal" Margin="0,0,0,4"/><DatePicker SelectedDate="{Binding FromDate}" Width="135"/></StackPanel>
       <StackPanel Margin="0,0,10,10"><TextBlock Text="Al" Margin="0,0,0,4"/><DatePicker SelectedDate="{Binding ToDate}" Width="135"/></StackPanel>
      </WrapPanel>
-     <Button Content="Azzera filtri" Command="{Binding ClearFiltersCommand}" HorizontalAlignment="Left" Padding="12,6"/>
+     <Button Content="Azzera filtri" Command="{Binding ClearFiltersCommand}" HorizontalAlignment="Left" Padding="12,8"/ MinHeight="38">
     </StackPanel>
    </Border>
    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,10"/>
