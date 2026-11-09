@@ -50,6 +50,11 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public decimal TotalUnpaid => Interventions.Where(x => !x.IsPaid).Sum(x => x.Price);
     public int InterventionCount => Interventions.Count;
     public DateTime? LastInterventionDate => Interventions.Count == 0 ? null : Interventions.Max(x => x.Date);
+    public DateTime? NextAppointmentDate => Appointments
+        .Where(x => x.Date >= DateTime.Now && !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase))
+        .Select(x => (DateTime?)x.Date)
+        .OrderBy(x => x)
+        .FirstOrDefault();
     public ObservableCollection<Appointment> Appointments { get; } = new();
     public ObservableCollection<InterventionLocation> Locations { get; } = new();
     public ObservableCollection<InterventionType> Types { get; } = new();
@@ -71,6 +76,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false)
     {
         Customer = customer;
+        Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(NextAppointmentDate));
         Interventions.CollectionChanged += (_, _) =>
         {
             OnPropertyChanged(nameof(TotalRevenue));
@@ -159,6 +165,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         var items = await _appointmentService.GetForCustomerAsync(Customer.Id);
         Appointments.Clear();
         foreach (var item in items) Appointments.Add(item);
+        OnPropertyChanged(nameof(NextAppointmentDate));
     }
 
     [RelayCommand]
@@ -229,50 +236,14 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
             || string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase))
         {
-            MessageBox.Show("Non puoi confermare lo svolgimento di un appuntamento annullato o con stato Non presentato.",
+            MessageBox.Show("Non puoi registrare lo svolgimento di un appuntamento annullato o con stato Non presentato.",
                 "Appuntamento non confermabile", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        if (appointment.LocationId == null || appointment.InterventionTypeId == null)
-        {
-            MessageBox.Show("L'appuntamento non contiene un luogo e un tipo di intervento. Modificalo prima di confermare lo svolgimento.",
-                "Dati appuntamento mancanti", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        if (MessageBox.Show(
-            $"Confermi lo svolgimento dell'appuntamento del {appointment.Date:dd/MM/yyyy} alle {appointment.Date:HH:mm}? Verrà spostato nello storico degli interventi.",
-            "Conferma svolgimento", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes)
-            return;
-
-        try
-        {
-            var intervention = new Intervention
-            {
-                CustomerId = Customer.Id,
-                Date = appointment.Date,
-                LocationId = appointment.LocationId.Value,
-                TypeId = appointment.InterventionTypeId.Value,
-                Notes = appointment.Notes,
-                Price = 0m,
-                IsPaid = false,
-                BeforePhotosJson = "[]",
-                AfterPhotosJson = "[]"
-            };
-
-            await _interventionService.SaveAndDeleteAppointmentAsync(intervention, appointment.Id);
-            await ReloadAppointmentsAsync();
-            await ReloadInterventionsAsync();
-            await _mainViewModel.RefreshCustomersAsync();
-            SelectedAppointment = null;
-            StatusMessage = "Appuntamento confermato e inserito nello storico degli interventi. Puoi aggiungere prezzo e fotografie modificando l'intervento.";
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"Conferma appuntamento non riuscita: {ex.Message}";
-            MessageBox.Show(StatusMessage, "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        // Apre la schermata dedicata di registrazione: data, luogo, tipo e note sono precompilati;
+        // prezzo e stato del pagamento vengono richiesti prima di creare l'intervento.
+        await LoadAndMarkAppointmentAsExecutedAsync(appointment);
     }
 
     [RelayCommand]
