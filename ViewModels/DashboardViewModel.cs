@@ -9,6 +9,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,7 @@ public partial class DashboardViewModel : ObservableObject
 {
     private readonly BackupService _backupService = new();
     public ObservableCollection<Appointment> UpcomingAppointments { get; } = new();
+    public string TodayLabel => DateTime.Now.ToString("dddd dd MMMM yyyy", CultureInfo.GetCultureInfo("it-IT"));
     [ObservableProperty] private int totalCustomers;
     [ObservableProperty] private int appointmentsToday;
     [ObservableProperty] private int overdueAppointments;
