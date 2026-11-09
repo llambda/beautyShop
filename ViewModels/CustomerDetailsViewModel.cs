@@ -33,6 +33,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private string? interventionNotes;
     [ObservableProperty] private decimal interventionPrice;
     [ObservableProperty] private bool interventionIsPaid;
+    [ObservableProperty] private bool isConvertingAppointment;
     [ObservableProperty] private string? statusMessage;
     [ObservableProperty] private Appointment? selectedAppointment;
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
@@ -100,10 +101,23 @@ public partial class CustomerDetailsViewModel : ObservableObject
         InterventionNotes = appointment.Notes;
         BeforePhotos.Clear();
         AfterPhotos.Clear();
+        if (appointment.LocationId == null || appointment.InterventionTypeId == null)
+        {
+            StatusMessage = "Questo appuntamento non contiene luogo e tipo di intervento. Modificalo prima di confermare lo svolgimento.";
+            return;
+        }
+
+        SelectedLocation = Locations.FirstOrDefault(x => x.Id == appointment.LocationId);
+        SelectedType = Types.FirstOrDefault(x => x.Id == appointment.InterventionTypeId);
+        if (SelectedLocation == null || SelectedType == null)
+        {
+            StatusMessage = "Il luogo o il tipo associato all'appuntamento non è più disponibile nelle Impostazioni.";
+            return;
+        }
+
         _convertingAppointmentToIntervention = true;
-        StatusMessage = SelectedLocation == null
-            ? "Questo appuntamento non ha un luogo associato. Modificalo e seleziona il luogo prima di confermare lo svolgimento."
-            : "Controlla i dati e, se necessario, aggiungi le foto prima e dopo. Salvando, l'appuntamento verrà archiviato come intervento eseguito.";
+        IsConvertingAppointment = true;
+        StatusMessage = "Luogo e tipo sono già stati recuperati dall'appuntamento. Puoi completare note, prezzo e fotografie.";
         _mainViewModel.ShowInterventionEditor(this);
     }
 
@@ -263,9 +277,15 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveInterventionAsync()
     {
+        if (_convertingAppointmentToIntervention && SelectedAppointment != null)
+        {
+            SelectedLocation = Locations.FirstOrDefault(x => x.Id == SelectedAppointment.LocationId);
+            SelectedType = Types.FirstOrDefault(x => x.Id == SelectedAppointment.InterventionTypeId);
+        }
+
         if (SelectedLocation == null || SelectedType == null)
         {
-            StatusMessage = "Seleziona luogo e tipo di intervento nelle Impostazioni.";
+            StatusMessage = "Il luogo o il tipo di intervento associato all'appuntamento non è disponibile. Verifica le Impostazioni.";
             return;
         }
         if (InterventionPrice < 0)
@@ -277,6 +297,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         try
         {
             var item = SelectedIntervention ?? new Intervention { CustomerId = Customer.Id };
+            item.CustomerId = Customer.Id;
             var oldBeforePhotos = SelectedIntervention == null ? Array.Empty<string>() : DeserializePhotos(SelectedIntervention.BeforePhotosJson);
             var oldAfterPhotos = SelectedIntervention == null ? Array.Empty<string>() : DeserializePhotos(SelectedIntervention.AfterPhotosJson);
             item.Date = InterventionDate;
@@ -306,6 +327,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
             SelectedIntervention = null;
             SelectedAppointment = null;
             _convertingAppointmentToIntervention = false;
+            IsConvertingAppointment = false;
             StatusMessage = convertedAppointment ? "Appuntamento registrato nello storico degli interventi." : "Intervento salvato.";
             if (_returnToUpcomingAppointments)
                 _mainViewModel.ShowUpcomingAppointments();
@@ -412,6 +434,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (_convertingAppointmentToIntervention)
         {
             _convertingAppointmentToIntervention = false;
+            IsConvertingAppointment = false;
             SelectedAppointment = null;
         }
         ReturnAfterAppointmentEdit();
