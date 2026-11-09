@@ -47,6 +47,19 @@ public partial class App : Application
                 var appointmentTypeColumn = await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('Appointments') WHERE name = 'InterventionTypeId'").SingleAsync();
                 if (appointmentTypeColumn == 0)
                     await db.Database.ExecuteSqlRawAsync("ALTER TABLE Appointments ADD COLUMN InterventionTypeId INTEGER NULL;");
+
+                async Task EnsureColumnAsync(string table, string column, string sqlType)
+                {
+                    var count = await db.Database.SqlQueryRaw<int>($"SELECT COUNT(*) AS Value FROM pragma_table_info('{table}') WHERE name = '{column}'").SingleAsync();
+                    if (count == 0)
+                        await db.Database.ExecuteSqlRawAsync($"ALTER TABLE {table} ADD COLUMN {column} {sqlType};");
+                }
+
+                await EnsureColumnAsync("Customers", "Allergies", "TEXT NULL");
+                await EnsureColumnAsync("Customers", "Sensitivities", "TEXT NULL");
+                await EnsureColumnAsync("Interventions", "Price", "TEXT NOT NULL DEFAULT '0'");
+                await EnsureColumnAsync("Interventions", "IsPaid", "INTEGER NOT NULL DEFAULT 0");
+                await EnsureColumnAsync("Interventions", "PaidAt", "TEXT NULL");
             }
 
             var customerService = new CustomerService();
