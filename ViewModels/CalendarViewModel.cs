@@ -112,11 +112,13 @@ public partial class CalendarViewModel : ObservableObject
             var hoursService = new WorkingHoursService();
             foreach (var appointment in appointments)
             {
+                bool active = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase);
                 appointment.IsOutsideWorkingHours = false;
                 appointment.WorkingHoursWarning = string.Empty;
-                if (!string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
-                    && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase)
-                    && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason))
+                appointment.HasOverlapWarning = active && AppointmentOverlapValidator.HasOverlap(
+                    appointment.Date, appointment.DurationMinutes, appointments.Where(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Status != "Non presentato"));
+                if (active && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason))
                 {
                     appointment.IsOutsideWorkingHours = true;
                     appointment.WorkingHoursWarning = reason;
@@ -146,7 +148,8 @@ public partial class CalendarViewModel : ObservableObject
                     customer == null ? "Cliente" : $"{customer.FirstName} {customer.LastName}",
                     appointment.InterventionType?.Name ?? "Tipo non specificato",
                     appointment.Status,
-                    appointment.IsOutsideWorkingHours));
+                    appointment.IsOutsideWorkingHours,
+                    appointment.HasOverlapWarning));
             }
             Days.Add(day);
         }
@@ -187,12 +190,14 @@ public sealed class AppointmentReminderViewModel
     public string InterventionType { get; }
     public string Status { get; }
     public bool IsOutsideWorkingHours { get; }
-    public AppointmentReminderViewModel(string time, string customerName, string interventionType, string status, bool isOutsideWorkingHours)
+    public bool HasOverlapWarning { get; }
+    public AppointmentReminderViewModel(string time, string customerName, string interventionType, string status, bool isOutsideWorkingHours, bool hasOverlapWarning)
     {
         Time = time;
         CustomerName = customerName;
         InterventionType = interventionType;
         Status = status;
         IsOutsideWorkingHours = isOutsideWorkingHours;
+        HasOverlapWarning = hasOverlapWarning;
     }
 }
