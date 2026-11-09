@@ -21,6 +21,17 @@ public class InterventionService
             .ToListAsync();
     }
 
+    public async Task<List<Intervention>> GetAllAsync()
+    {
+        await using var db = new AppDbContext();
+        return await db.Interventions.AsNoTracking()
+            .Include(x => x.Customer)
+            .Include(x => x.Location)
+            .Include(x => x.Type)
+            .OrderByDescending(x => x.Date)
+            .ToListAsync();
+    }
+
     public async Task<List<Intervention>> GetUpcomingAsync()
     {
         await using var db = new AppDbContext();
