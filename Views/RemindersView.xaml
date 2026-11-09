@@ -29,7 +29,7 @@
     <StackPanel>
      <TextBlock Text="Domani" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
      <ItemsControl ItemsSource="{Binding TomorrowAppointments}">
-      <ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,3" Text="{Binding Date, StringFormat='{}{0:HH:mm}'}"><TextBlock.ToolTip><TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/><Run Text=" · "/><Run Text="{Binding InterventionType.Name}"/></TextBlock></TextBlock.ToolTip></TextBlock></DataTemplate></ItemsControl.ItemTemplate>
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}"/><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
      <TextBlock Text="Nessun appuntamento per domani." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
       <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding TomorrowAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
@@ -51,7 +51,7 @@
     <StackPanel>
      <TextBlock Text="Dati mancanti" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
      <ItemsControl ItemsSource="{Binding IncompleteAppointments}">
-      <ItemsControl.ItemTemplate><DataTemplate><TextBlock Margin="0,3" Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}"><TextBlock.ToolTip><TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/><Run Text=" · Luogo o tipo non specificato"/></TextBlock></TextBlock.ToolTip></TextBlock></DataTemplate></ItemsControl.ItemTemplate>
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}"/><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
      </ItemsControl>
      <TextBlock Text="Tutti gli appuntamenti hanno luogo e tipo." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
       <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IncompleteAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
