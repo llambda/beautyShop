@@ -92,7 +92,14 @@ public sealed class BackupService
                 DataSource = AppDbContext.DatabasePath,
                 Mode = SqliteOpenMode.ReadOnly
             }.ToString()))
-            using (var target = new SqliteConnection($"Data Source={tempDatabase}"))
+            // Disabilita il pooling per il database temporaneo: al Dispose la connessione
+            // deve rilasciare subito il file, altrimenti il pool SQLite può mantenerlo bloccato
+            // e impedire la pulizia del file temporaneo.
+            using (var target = new SqliteConnection(new SqliteConnectionStringBuilder
+            {
+                DataSource = tempDatabase,
+                Pooling = false
+            }.ToString()))
             {
                 source.Open();
                 target.Open();
