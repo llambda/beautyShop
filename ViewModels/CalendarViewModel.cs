@@ -20,6 +20,15 @@ public partial class CalendarViewModel : ObservableObject
 
     public ObservableCollection<CalendarDayViewModel> Days { get; } = new();
     public string MonthTitle => DisplayedMonth.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("it-IT"));
+    public string ReminderMessage
+    {
+        get
+        {
+            var limit = DateTime.Now.AddHours(24);
+            int count = _loadedAppointments.Count(x => x.Status != "Annullato" && x.Date >= DateTime.Now && x.Date <= limit);
+            return count == 0 ? "Nessun promemoria nelle prossime 24 ore." : $"Promemoria: {count} appuntamenti nelle prossime 24 ore.";
+        }
+    }
 
     public CalendarViewModel() => _ = LoadAsync();
 
@@ -102,6 +111,7 @@ public partial class CalendarViewModel : ObservableObject
             Days.Add(day);
         }
         if (appointments != null) _loadedAppointments = appointments;
+        OnPropertyChanged(nameof(ReminderMessage));
     }
 
     private System.Collections.Generic.List<Appointment> _loadedAppointments = new();
