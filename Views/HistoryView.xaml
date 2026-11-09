@@ -9,15 +9,14 @@
    <TextBlock Text="Cerca gli interventi per cliente, tipo, luogo e periodo." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,18"/>
    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="18" Margin="0,0,0,16">
     <StackPanel>
-     <WrapPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Cliente" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" Width="190">
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <StackPanel Grid.Column="0" Margin="0,0,10,10"><TextBlock Text="Cliente" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" HorizontalAlignment="Stretch">
        <ComboBox.ItemTemplate><DataTemplate><TextBlock><Run Text="{Binding LastName}"/><Run Text=" "/><Run Text="{Binding FirstName}"/></TextBlock></DataTemplate></ComboBox.ItemTemplate>
       </ComboBox></StackPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Tipo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Name" Width="170"/></StackPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Luogo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" DisplayMemberPath="Name" Width="170"/></StackPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Dal" Margin="0,0,0,4"/><DatePicker SelectedDate="{Binding FromDate}" Width="135"/></StackPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Al" Margin="0,0,0,4"/><DatePicker SelectedDate="{Binding ToDate}" Width="135"/></StackPanel>
-     </WrapPanel>
+      <StackPanel Grid.Column="1" Margin="0,0,10,10"><TextBlock Text="Tipo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Name" HorizontalAlignment="Stretch"/></StackPanel>
+      <StackPanel Grid.Column="2" Margin="0,0,0,10"><TextBlock Text="Luogo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" DisplayMemberPath="Name" HorizontalAlignment="Stretch"/></StackPanel>
+     </Grid>
      <Button Content="Azzera filtri" Command="{Binding ClearFiltersCommand}" HorizontalAlignment="Left" Padding="12,8" MinHeight="38"/>
     </StackPanel>
    </Border>
