@@ -122,6 +122,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Durata" Binding="{Binding DurationMinutes, StringFormat='{}{0} min'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
                                 <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
