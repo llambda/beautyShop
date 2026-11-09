@@ -173,9 +173,9 @@ public sealed class BackupService
 
     private static void AddFile(ZipArchive archive, string file, string entryName, IDictionary<string, string> hashes)
     {
-        var entry = archive.CreateEntryFromFile(file, entryName, CompressionLevel.Optimal);
-        using var stream = entry.Open();
-        hashes[entryName] = Convert.ToHexString(SHA256.HashData(stream));
+        using (var input = File.OpenRead(file))
+            hashes[entryName] = Convert.ToHexString(SHA256.HashData(input));
+        archive.CreateEntryFromFile(file, entryName, CompressionLevel.Optimal);
     }
 
     private static void AddDirectory(ZipArchive archive, string source, string root, IDictionary<string, string> hashes)
