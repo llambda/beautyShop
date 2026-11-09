@@ -253,7 +253,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         Interventions.Clear();
         foreach (var item in items) Interventions.Add(item);
         ApplyHistoryFilter();
-        RebuildTimeline();
+        await ReloadAuditHistoryAsync();
     }
 
     private async Task ReloadAuditHistoryAsync()
@@ -273,7 +273,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         Appointments.Clear();
         foreach (var item in items) Appointments.Add(item);
         OnPropertyChanged(nameof(NextAppointmentDate));
-        RebuildTimeline();
+        await ReloadAuditHistoryAsync();
     }
 
     [RelayCommand]
