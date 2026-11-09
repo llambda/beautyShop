@@ -10,16 +10,25 @@
                 <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/><TextBlock Text="Torna ai clienti" Margin="8,0,0,0" VerticalAlignment="Center"/></StackPanel>
             </Button>
             <Grid Margin="0,10,0,0">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" VerticalAlignment="Center"/>
-                <Button Grid.Column="1" Command="{Binding DeleteCustomerCommand}"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold"
+                           Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Command="{Binding EditCustomerCommand}"
                         Style="{StaticResource MaterialDesignToolButton}" Width="42" Height="42"
-                        ToolTip="Elimina cliente e tutti i dati collegati" Foreground="#B3261E">
+                        Margin="0,0,6,0" ToolTip="Modifica cliente" AutomationProperties.Name="Modifica cliente">
+                    <materialDesign:PackIcon Kind="Pencil" Width="22" Height="22"/>
+                </Button>
+                <Button Grid.Column="2" Command="{Binding DeleteCustomerCommand}"
+                        Style="{StaticResource MaterialDesignToolButton}" Width="42" Height="42"
+                        ToolTip="Elimina cliente e tutti i dati collegati" AutomationProperties.Name="Elimina cliente"
+                        Foreground="#B3261E">
                     <materialDesign:PackIcon Kind="Delete" Width="23" Height="23"/>
                 </Button>
             </Grid>
-            <Button Content="Modifica dati e consenso informato" Command="{Binding EditCustomerCommand}"
-                    HorizontalAlignment="Left" Padding="12,8" Margin="0,8,0,0"/ MinHeight="38">
         </StackPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
