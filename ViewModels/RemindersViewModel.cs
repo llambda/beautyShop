@@ -30,7 +30,8 @@ public partial class RemindersViewModel : ObservableObject
         try
         {
             var all = await _appointmentService.GetAllAsync();
-            var active = all.Where(x => !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+            var active = all.Where(x => x.Date.Date >= DateTime.Today
+                                     && !string.Equals(x.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
                                      && !string.Equals(x.Status, "Non presentato", StringComparison.OrdinalIgnoreCase)).ToList();
             Replace(TodayAppointments, active.Where(x => x.Date.Date == DateTime.Today).OrderBy(x => x.Date));
             Replace(TomorrowAppointments, active.Where(x => x.Date.Date == DateTime.Today.AddDays(1)).OrderBy(x => x.Date));
