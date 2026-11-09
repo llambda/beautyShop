@@ -36,8 +36,14 @@
       <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
       <ItemsControl.ItemTemplate>
        <DataTemplate>
-        <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="75">
-         <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers><DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger></Style.Triggers></Style></Border.Style>
+        <Button Padding="0" Margin="0" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                CommandParameter="{Binding Date}" ToolTip="Seleziona questo giorno">
+         <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="75">
+          <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers>
+           <DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger>
+           <DataTrigger Binding="{Binding IsSelected}" Value="True"><Setter Property="Background" Value="#F1DCE7"/><Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/><Setter Property="BorderThickness" Value="2"/></DataTrigger>
+          </Style.Triggers></Style></Border.Style>
          <Grid>
           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
           <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/><Style.Triggers><DataTrigger Binding="{Binding IsCurrentMonth}" Value="False"><Setter Property="Foreground" Value="#B8AFB4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
@@ -62,7 +68,8 @@
            </ItemsControl>
           </ScrollViewer>
          </Grid>
-        </Border>
+         </Border>
+        </Button>
        </DataTemplate>
       </ItemsControl.ItemTemplate>
      </ItemsControl>
