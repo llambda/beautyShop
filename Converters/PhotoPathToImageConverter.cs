@@ -46,7 +46,7 @@ public class PhotoPathToImageConverter : IValueConverter
         catch (Exception)
         {
             // File inesistente, corrotto o formato non supportato.
-            return null!;
+            return DependencyProperty.UnsetValue;
         }
     }
 
