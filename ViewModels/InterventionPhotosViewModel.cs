@@ -57,7 +57,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
             if (stored != null)
                 foreach (var pair in stored) _metadata[pair.Key] = pair.Value;
         }
-        catch { }
+        catch (Exception ex) { ApplicationLog.Write("Lettura metadati fotografie", ex); }
         LoadPhotos(BeforePhotos, intervention.BeforePhotosJson);
         LoadPhotos(AfterPhotos, intervention.AfterPhotosJson);
         BuildPhotoPairs();
@@ -82,7 +82,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
                 target.Add(new InterventionPhotoItem(path, info?.Date ?? SafeFileDate(path), info?.Description ?? string.Empty));
             }
         }
-        catch { }
+        catch (Exception ex) { ApplicationLog.Write("Caricamento fotografie intervento", ex); }
     }
 
     private void BuildPhotoPairs()
@@ -109,7 +109,11 @@ public partial class InterventionPhotosViewModel : ObservableObject
             History.Clear();
             foreach (var item in items) History.Add(item);
         }
-        catch (Exception ex) { StatusMessage = $"Impossibile caricare lo storico: {ex.Message}"; }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Storico fotografie intervento", ex);
+            StatusMessage = $"Impossibile caricare lo storico: {ex.Message}";
+        }
     }
 
     [RelayCommand]
@@ -155,7 +159,11 @@ public partial class InterventionPhotosViewModel : ObservableObject
             };
             window.ShowDialog();
         }
-        catch (Exception ex) { StatusMessage = $"Impossibile aprire la fotografia: {ex.Message}"; }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Apertura fotografia intervento", ex);
+            StatusMessage = $"Impossibile aprire la fotografia: {ex.Message}";
+        }
     }
 
     [RelayCommand]
@@ -212,7 +220,11 @@ public partial class InterventionPhotosViewModel : ObservableObject
             await LoadHistoryAsync();
             StatusMessage = "Date e descrizioni delle fotografie salvate.";
         }
-        catch (Exception ex) { StatusMessage = $"Salvataggio metadati non riuscito: {ex.Message}"; }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Salvataggio metadati fotografie", ex);
+            StatusMessage = $"Salvataggio metadati non riuscito: {ex.Message}";
+        }
     }
 
     private sealed class PhotoMetadata
