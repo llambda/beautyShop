@@ -30,6 +30,15 @@ public partial class InterventionPhotosViewModel : ObservableObject
     public string CustomerName => $"{_parent.Customer.FirstName} {_parent.Customer.LastName}".Trim();
 
     [ObservableProperty] private string? statusMessage;
+    [ObservableProperty] private int beforeIndex;
+    [ObservableProperty] private int afterIndex;
+
+    public InterventionPhotoItem? CurrentBeforePhoto => BeforePhotos.Count == 0 ? null : BeforePhotos[Math.Clamp(BeforeIndex, 0, BeforePhotos.Count - 1)];
+    public InterventionPhotoItem? CurrentAfterPhoto => AfterPhotos.Count == 0 ? null : AfterPhotos[Math.Clamp(AfterIndex, 0, AfterPhotos.Count - 1)];
+    public string BeforeCounter => BeforePhotos.Count == 0 ? "0 / 0" : $"{BeforeIndex + 1} / {BeforePhotos.Count}";
+    public string AfterCounter => AfterPhotos.Count == 0 ? "0 / 0" : $"{AfterIndex + 1} / {AfterPhotos.Count}";
+    partial void OnBeforeIndexChanged(int value) { OnPropertyChanged(nameof(CurrentBeforePhoto)); OnPropertyChanged(nameof(BeforeCounter)); }
+    partial void OnAfterIndexChanged(int value) { OnPropertyChanged(nameof(CurrentAfterPhoto)); OnPropertyChanged(nameof(AfterCounter)); }
 
     public InterventionPhotosViewModel(CustomerDetailsViewModel parent, Intervention intervention, MainViewModel mainViewModel)
     {
@@ -46,6 +55,10 @@ public partial class InterventionPhotosViewModel : ObservableObject
         LoadPhotos(BeforePhotos, intervention.BeforePhotosJson);
         LoadPhotos(AfterPhotos, intervention.AfterPhotosJson);
         BuildPhotoPairs();
+        OnPropertyChanged(nameof(CurrentBeforePhoto));
+        OnPropertyChanged(nameof(CurrentAfterPhoto));
+        OnPropertyChanged(nameof(BeforeCounter));
+        OnPropertyChanged(nameof(AfterCounter));
         _ = LoadHistoryAsync();
     }
 
@@ -89,6 +102,18 @@ public partial class InterventionPhotosViewModel : ObservableObject
         }
         catch (Exception ex) { StatusMessage = $"Impossibile caricare lo storico: {ex.Message}"; }
     }
+
+    [RelayCommand]
+    private void PreviousBefore() { if (BeforePhotos.Count > 0) BeforeIndex = (BeforeIndex - 1 + BeforePhotos.Count) % BeforePhotos.Count; }
+
+    [RelayCommand]
+    private void NextBefore() { if (BeforePhotos.Count > 0) BeforeIndex = (BeforeIndex + 1) % BeforePhotos.Count; }
+
+    [RelayCommand]
+    private void PreviousAfter() { if (AfterPhotos.Count > 0) AfterIndex = (AfterIndex - 1 + AfterPhotos.Count) % AfterPhotos.Count; }
+
+    [RelayCommand]
+    private void NextAfter() { if (AfterPhotos.Count > 0) AfterIndex = (AfterIndex + 1) % AfterPhotos.Count; }
 
     [RelayCommand]
     private void Back() => _mainViewModel.ShowCustomerDetails(_parent);
