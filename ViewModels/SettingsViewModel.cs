@@ -310,7 +310,7 @@ public partial class SettingsViewModel : ObservableObject
         {
             var folder = System.IO.Path.Combine(BeautyStudio.Data.AppDbContext.DataDirectory, "Logs");
             System.IO.Directory.CreateDirectory(folder);
-            Process.Start(new ProcessStartInfo("explorer.exe", $"\\"{folder}\\"") { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
         }
         catch (Exception ex)
         {
