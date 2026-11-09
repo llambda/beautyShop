@@ -27,6 +27,8 @@ public partial class InterventionPhotosViewModel : ObservableObject
     public ObservableCollection<InterventionPhotoItem> AfterPhotos { get; } = new();
     public ObservableCollection<PhotoComparisonPair> PhotoPairs { get; } = new();
     public ObservableCollection<InterventionHistoryEntry> History { get; } = new();
+    public ObservableCollection<string> MissingPhotoPaths { get; } = new();
+    public string PhotoIntegrityMessage => MissingPhotoPaths.Count == 0 ? "Tutte le fotografie collegate sono disponibili." : "Attenzione: " + MissingPhotoPaths.Count + " fotografie non sono state trovate nei percorsi salvati.";
     public string CustomerName => $"{_parent.Customer.FirstName} {_parent.Customer.LastName}".Trim();
     public string NotesDisplay => string.IsNullOrWhiteSpace(Intervention.Notes) ? "Nessuna nota presente" : Intervention.Notes;
 
@@ -56,6 +58,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
         LoadPhotos(BeforePhotos, intervention.BeforePhotosJson);
         LoadPhotos(AfterPhotos, intervention.AfterPhotosJson);
         BuildPhotoPairs();
+        OnPropertyChanged(nameof(PhotoIntegrityMessage));
         OnPropertyChanged(nameof(CurrentBeforePhoto));
         OnPropertyChanged(nameof(CurrentAfterPhoto));
         OnPropertyChanged(nameof(BeforeCounter));
@@ -71,6 +74,8 @@ public partial class InterventionPhotosViewModel : ObservableObject
             foreach (var path in JsonSerializer.Deserialize<string[]>(json) ?? Array.Empty<string>())
             {
                 _metadata.TryGetValue(path, out var info);
+                if (!File.Exists(path))
+                    MissingPhotoPaths.Add(path);
                 target.Add(new InterventionPhotoItem(path, info?.Date ?? SafeFileDate(path), info?.Description ?? string.Empty));
             }
         }
