@@ -6,7 +6,18 @@
  <ScrollViewer VerticalScrollBarVisibility="Auto"><Grid Margin="24"><StackPanel MaxWidth="900" HorizontalAlignment="Stretch">
   <Button Command="{Binding Parent.CancelEditorCommand}" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left"><StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/><TextBlock Text="Torna alla scheda cliente" Margin="8,0,0,0"/></StackPanel></Button>
   <TextBlock Text="{Binding Parent.Customer.FirstName}" FontSize="14" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,12,0,4"/>
-  <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20"/>
+  <TextBlock FontSize="28" FontWeight="SemiBold" Margin="0,0,0,20">
+   <TextBlock.Style>
+    <Style TargetType="TextBlock">
+     <Setter Property="Text" Value="Dettagli intervento"/>
+     <Style.Triggers>
+      <DataTrigger Binding="{Binding Parent.IsConvertingAppointment}" Value="True">
+       <Setter Property="Text" Value="Conferma svolgimento appuntamento"/>
+      </DataTrigger>
+     </Style.Triggers>
+    </Style>
+   </TextBlock.Style>
+  </TextBlock>
   <Border Background="White" CornerRadius="15" Padding="24"><StackPanel>
    <TextBlock Text="Data" Margin="0,0,0,5"/><DatePicker SelectedDate="{Binding Parent.InterventionDate}" Margin="0,0,0,16"/>
    <StackPanel Margin="0,0,0,16">
