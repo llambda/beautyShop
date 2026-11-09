@@ -46,6 +46,7 @@
               <TextBlock Text="{Binding Time}" FontSize="10" FontWeight="Bold" Foreground="#8D4268"/>
               <TextBlock Text="{Binding CustomerName}" FontSize="10" FontWeight="SemiBold" TextWrapping="Wrap"/>
               <TextBlock Text="{Binding InterventionType}" FontSize="9" Foreground="#725E69" TextWrapping="Wrap"/>
+              <TextBlock Text="{Binding Status}" FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" TextWrapping="Wrap"/>
              </StackPanel>
             </Border>
            </DataTemplate></ItemsControl.ItemTemplate>
