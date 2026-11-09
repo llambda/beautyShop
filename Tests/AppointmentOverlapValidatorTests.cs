@@ -45,4 +45,32 @@ public sealed class AppointmentOverlapValidatorTests
         Assert.Throws<ArgumentOutOfRangeException>(() =>
             AppointmentOverlapValidator.HasOverlap(Start, 0, Array.Empty<Appointment>()));
     }
+
+    [Fact]
+    public void AllowsExactlyTwelveHours()
+    {
+        Assert.False(AppointmentOverlapValidator.HasOverlap(Start, 720, Array.Empty<Appointment>()));
+    }
+
+    [Fact]
+    public void RejectsDurationLongerThanTwelveHours()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            AppointmentOverlapValidator.HasOverlap(Start, 721, Array.Empty<Appointment>()));
+    }
+
+    [Fact]
+    public void IgnoresInactiveStatusRegardlessOfLetterCase()
+    {
+        var existing = new Appointment { Date = Start.AddMinutes(10), DurationMinutes = 60, Status = "annullato" };
+        Assert.False(AppointmentOverlapValidator.HasOverlap(Start, 60, new[] { existing }));
+    }
+
+    [Fact]
+    public void IgnoresInvalidLegacyDuration()
+    {
+        var existing = new Appointment { Date = Start.AddMinutes(10), DurationMinutes = 0 };
+        Assert.False(AppointmentOverlapValidator.HasOverlap(Start, 60, new[] { existing }));
+    }
+
 }
