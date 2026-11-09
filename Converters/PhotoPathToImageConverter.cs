@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using System.Windows;
 
 namespace BeautyStudio.Converters;
 
@@ -19,7 +20,7 @@ public class PhotoPathToImageConverter : IValueConverter
             string.IsNullOrWhiteSpace(path) ||
             !File.Exists(path))
         {
-            return null!;
+            return DependencyProperty.UnsetValue;
         }
 
         try
