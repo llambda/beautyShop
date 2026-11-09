@@ -63,7 +63,7 @@
                         </Button>
                         <Button Command="{Binding OpenLogFolderCommand}" Padding="16,9" Margin="0,0,10,10">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="FolderText" Width="18" Height="18"/>
+                                <materialDesign:PackIcon Kind="FolderOpen" Width="18" Height="18"/>
                                 <TextBlock Text="Apri registro errori" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
