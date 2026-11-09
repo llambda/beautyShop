@@ -58,6 +58,24 @@
      </TextBlock>
     </StackPanel>
    </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Consenso informato mancante" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <TextBlock Text="Appuntamenti futuri di clienti senza un PDF del consenso registrato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding MissingConsentAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <StackPanel Margin="0,5">
+        <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/>
+        <TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+        <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+       </StackPanel>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Tutti i clienti degli appuntamenti futuri hanno il consenso registrato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding MissingConsentAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
   </StackPanel>
  </ScrollViewer>
 </UserControl>
