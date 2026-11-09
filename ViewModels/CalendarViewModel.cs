@@ -112,10 +112,15 @@ public partial class CalendarViewModel : ObservableObject
             var hoursService = new WorkingHoursService();
             foreach (var appointment in appointments)
             {
-                appointment.IsOutsideWorkingHours = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+                appointment.IsOutsideWorkingHours = false;
+                appointment.WorkingHoursWarning = string.Empty;
+                if (!string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase)
-                    && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason);
-                appointment.WorkingHoursWarning = appointment.IsOutsideWorkingHours ? reason : string.Empty;
+                    && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason))
+                {
+                    appointment.IsOutsideWorkingHours = true;
+                    appointment.WorkingHoursWarning = reason;
+                }
             }
             BuildCalendar(appointments);
         }
