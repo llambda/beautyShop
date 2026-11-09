@@ -43,6 +43,22 @@ public class InterventionService
         await db.SaveChangesAsync();
     }
 
+    public async Task SaveAndDeleteAppointmentAsync(Intervention intervention, int appointmentId)
+    {
+        await using var db = new AppDbContext();
+        await using var transaction = await db.Database.BeginTransactionAsync();
+        if (intervention.Id == 0) db.Interventions.Add(intervention);
+        else db.Interventions.Update(intervention);
+
+        var appointment = await db.Appointments.FirstOrDefaultAsync(x => x.Id == appointmentId);
+        if (appointment == null)
+            throw new InvalidOperationException("L'appuntamento da archiviare non è più presente.");
+
+        db.Appointments.Remove(appointment);
+        await db.SaveChangesAsync();
+        await transaction.CommitAsync();
+    }
+
     public async Task DeleteAsync(Intervention intervention)
     {
         await using var db = new AppDbContext();
