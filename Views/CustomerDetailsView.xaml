@@ -39,6 +39,18 @@
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel><TextBlock Text="Note cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="{Binding Customer.Notes, TargetNullValue='Nessuna nota disponibile'}" FontSize="14" Foreground="#777077" TextWrapping="Wrap"/></StackPanel>
                 </Border>
+
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Consenso informato" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="{Binding Customer.ConsentFormPath, TargetNullValue='Nessun PDF caricato'}"
+                                   Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                   TextWrapping="Wrap" Margin="0,0,0,12"/>
+                        <Button Content="Apri PDF firmato"
+                                Command="{Binding OpenConsentFormCommand}"
+                                HorizontalAlignment="Left" Padding="14,8"/>
+                    </StackPanel>
+                </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
                         <Grid Margin="0,0,0,15">
