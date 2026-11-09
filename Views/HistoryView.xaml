@@ -10,7 +10,9 @@
    <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="18" Margin="0,0,0,16">
     <StackPanel>
      <WrapPanel>
-      <StackPanel Margin="0,0,10,10"><TextBlock Text="Cliente" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" DisplayMemberPath="LastName" Width="190"/></StackPanel>
+      <StackPanel Margin="0,0,10,10"><TextBlock Text="Cliente" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" Width="190">
+       <ComboBox.ItemTemplate><DataTemplate><TextBlock><Run Text="{Binding LastName}"/><Run Text=" "/><Run Text="{Binding FirstName}"/></TextBlock></DataTemplate></ComboBox.ItemTemplate>
+      </ComboBox></StackPanel>
       <StackPanel Margin="0,0,10,10"><TextBlock Text="Tipo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Name" Width="170"/></StackPanel>
       <StackPanel Margin="0,0,10,10"><TextBlock Text="Luogo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" DisplayMemberPath="Name" Width="170"/></StackPanel>
       <StackPanel Margin="0,0,10,10"><TextBlock Text="Dal" Margin="0,0,0,4"/><DatePicker SelectedDate="{Binding FromDate}" Width="135"/></StackPanel>
