@@ -14,12 +14,18 @@ namespace BeautyStudio.ViewModels;
 public partial class CalendarViewModel : ObservableObject
 {
     private readonly AppointmentService _appointmentService = new();
+    private readonly MainViewModel _mainViewModel;
 
     [ObservableProperty] private DateTime displayedMonth = new(DateTime.Today.Year, DateTime.Today.Month, 1);
+    [ObservableProperty] private DateTime selectedAgendaDate = DateTime.Today;
     [ObservableProperty] private bool isLoading;
 
     public ObservableCollection<CalendarDayViewModel> Days { get; } = new();
+    public ObservableCollection<Appointment> DailyAppointments { get; } = new();
     public string MonthTitle => DisplayedMonth.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("it-IT"));
+    public string AgendaTitle => SelectedAgendaDate.Date == DateTime.Today
+        ? "Agenda di oggi"
+        : $"Agenda del {SelectedAgendaDate:dd/MM/yyyy}";
     public string ReminderMessage
     {
         get
@@ -30,12 +36,22 @@ public partial class CalendarViewModel : ObservableObject
         }
     }
 
-    public CalendarViewModel() => _ = LoadAsync();
+    public CalendarViewModel(MainViewModel mainViewModel)
+    {
+        _mainViewModel = mainViewModel;
+        _ = LoadAsync();
+    }
 
     partial void OnDisplayedMonthChanged(DateTime value)
     {
         OnPropertyChanged(nameof(MonthTitle));
         BuildCalendar();
+    }
+
+    partial void OnSelectedAgendaDateChanged(DateTime value)
+    {
+        OnPropertyChanged(nameof(AgendaTitle));
+        BuildDailyAgenda();
     }
 
     [RelayCommand]
@@ -45,10 +61,21 @@ public partial class CalendarViewModel : ObservableObject
     private void NextMonth() => DisplayedMonth = DisplayedMonth.AddMonths(1);
 
     [RelayCommand]
-    private void Today() => DisplayedMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+    private void Today()
+    {
+        SelectedAgendaDate = DateTime.Today;
+        DisplayedMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+    }
 
     [RelayCommand]
     private async Task RefreshAsync() => await LoadAsync();
+
+    [RelayCommand]
+    private void OpenCustomer(Appointment? appointment)
+    {
+        if (appointment?.Customer != null)
+            _mainViewModel.OpenCustomerDetails(appointment.Customer);
+    }
 
     [RelayCommand]
     private void ExportMonthPdf()
@@ -85,21 +112,16 @@ public partial class CalendarViewModel : ObservableObject
 
     private void BuildCalendar(System.Collections.Generic.List<Appointment>? appointments = null)
     {
+        if (appointments != null) _loadedAppointments = appointments;
         var first = new DateTime(DisplayedMonth.Year, DisplayedMonth.Month, 1);
         int offset = ((int)first.DayOfWeek + 6) % 7;
         var start = first.AddDays(-offset);
-        var all = appointments;
-        if (all == null)
-        {
-            // Month navigation rebuilds from the appointments already loaded.
-            all = _loadedAppointments;
-        }
         Days.Clear();
         for (int i = 0; i < 42; i++)
         {
             var date = start.AddDays(i);
             var day = new CalendarDayViewModel(date, date.Month == DisplayedMonth.Month);
-            foreach (var appointment in all.Where(x => x.Date.Date == date.Date))
+            foreach (var appointment in _loadedAppointments.Where(x => x.Date.Date == date.Date))
             {
                 var customer = appointment.Customer;
                 day.Appointments.Add(new AppointmentReminderViewModel(
@@ -110,8 +132,17 @@ public partial class CalendarViewModel : ObservableObject
             }
             Days.Add(day);
         }
-        if (appointments != null) _loadedAppointments = appointments;
+        BuildDailyAgenda();
         OnPropertyChanged(nameof(ReminderMessage));
+    }
+
+    private void BuildDailyAgenda()
+    {
+        DailyAppointments.Clear();
+        foreach (var appointment in _loadedAppointments
+            .Where(x => x.Date.Date == SelectedAgendaDate.Date)
+            .OrderBy(x => x.Date))
+            DailyAppointments.Add(appointment);
     }
 
     private System.Collections.Generic.List<Appointment> _loadedAppointments = new();
