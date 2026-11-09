@@ -23,6 +23,31 @@
                     <Button Content="Modifica intervento / aggiungi o rimuovi foto" Command="{Binding EditCommand}" HorizontalAlignment="Left" Padding="14,7" Margin="0,16,0,0"/>
                 </StackPanel>
             </Border>
+            <Border Background="White" Padding="18" Margin="0,0,0,18">
+                <StackPanel>
+                    <TextBlock Text="Confronto prima / dopo" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding PhotoPairs}">
+                        <ItemsControl.ItemTemplate><DataTemplate>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <StackPanel Margin="0,0,8,0">
+                                    <TextBlock Text="PRIMA" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding BeforePath}" Padding="0" BorderThickness="0">
+                                        <Image Source="{Binding BeforePath}" Height="220" Stretch="Uniform"/>
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                    <TextBlock Text="DOPO" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                    <Button Command="{Binding DataContext.OpenPhotoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding AfterPath}" Padding="0" BorderThickness="0">
+                                        <Image Source="{Binding AfterPath}" Height="220" Stretch="Uniform"/>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate></ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="Le foto sono abbinate nell'ordine in cui sono state caricate." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
             <Grid>
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                 <Border Background="White" Padding="18" Margin="0,0,9,0">
