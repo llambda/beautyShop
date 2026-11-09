@@ -87,10 +87,16 @@
                                 <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Tipo" Binding="{Binding Type.Name}" Width="*"/>
                                 <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Prezzo" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="Auto"/>
+                                <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding IsPaid}" IsReadOnly="True" Width="Auto"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        
+                        <WrapPanel Margin="0,12,0,0">
+                            <TextBlock Text="{Binding TotalRevenue, StringFormat='Totale: {0:C2}'}" FontWeight="SemiBold" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding TotalPaid, StringFormat='Incassato: {0:C2}'}" Foreground="#2E7D32" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding TotalUnpaid, StringFormat='Da saldare: {0:C2}'}" Foreground="#B26A00"/>
+                        </WrapPanel>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
