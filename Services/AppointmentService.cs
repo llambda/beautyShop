@@ -62,9 +62,7 @@ public class AppointmentService
                  .ToListAsync()
             : new List<Appointment>();
 
-        bool slotTaken = activeAppointment && candidates.Any(x =>
-            x.Date < appointment.Date.AddMinutes(appointment.DurationMinutes)
-            && x.Date.AddMinutes(x.DurationMinutes) > appointment.Date);
+        bool slotTaken = activeAppointment && AppointmentOverlapValidator.HasOverlap(appointment.Date, appointment.DurationMinutes, candidates);
         if (slotTaken)
             throw new InvalidOperationException("Questo orario si sovrappone a un altro appuntamento. Modifica l'orario o la durata.");
         if (appointment.Id == 0) db.Add(appointment);
