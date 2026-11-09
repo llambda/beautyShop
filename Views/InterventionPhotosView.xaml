@@ -40,7 +40,7 @@
                             <Button Command="{Binding NextBeforeCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronRight" Width="22" Height="22"/></Button>
                         </StackPanel>
                         <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                        <DatePicker SelectedDate="{Binding CurrentBeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CurrentBeforePhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                        <DatePicker SelectedDate="{Binding CurrentBeforePhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Descrizione" Margin="0,8,0,3"/>
                         <TextBox Text="{Binding CurrentBeforePhoto.Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="55"/>
                     </StackPanel>
@@ -60,7 +60,7 @@
                             <Button Command="{Binding NextAfterCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronRight" Width="22" Height="22"/></Button>
                         </StackPanel>
                         <TextBlock Text="Data foto" Margin="0,8,0,3"/>
-                        <DatePicker SelectedDate="{Binding CurrentAfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding CurrentAfterPhoto, Converter={StaticResource ObjectToBooleanConverter}}"/>
+                        <DatePicker SelectedDate="{Binding CurrentAfterPhoto.Date, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Descrizione" Margin="0,8,0,3"/>
                         <TextBox Text="{Binding CurrentAfterPhoto.Description, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="55"/>
                     </StackPanel>
