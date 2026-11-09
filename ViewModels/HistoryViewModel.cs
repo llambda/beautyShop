@@ -71,6 +71,13 @@ public partial class HistoryViewModel : ObservableObject
 
     private void ApplyFilters()
     {
+        if (FromDate.HasValue && ToDate.HasValue && FromDate.Value.Date > ToDate.Value.Date)
+        {
+            FilteredInterventions.Clear();
+            StatusMessage = "La data iniziale non può essere successiva alla data finale.";
+            return;
+        }
+
         var query = Interventions.AsEnumerable();
         if (SelectedCustomer != null) query = query.Where(x => x.CustomerId == SelectedCustomer.Id);
         if (SelectedType != null) query = query.Where(x => x.TypeId == SelectedType.Id);
