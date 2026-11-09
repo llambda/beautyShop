@@ -36,6 +36,7 @@ public class InterventionService
     public async Task SaveAsync(Intervention intervention)
     {
         await using var db = new AppDbContext();
+        await using var transaction = await db.Database.BeginTransactionAsync();
         var previous = intervention.Id == 0
             ? null
             : await db.Interventions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == intervention.Id);
@@ -60,6 +61,7 @@ public class InterventionService
             Details = details
         });
         await db.SaveChangesAsync();
+        await transaction.CommitAsync();
     }
 
     public async Task<List<InterventionHistoryEntry>> GetHistoryAsync(int interventionId)
