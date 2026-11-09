@@ -31,6 +31,16 @@ public partial class App : Application
                     CONSTRAINT FK_Interventions_InterventionLocations_LocationId FOREIGN KEY (LocationId) REFERENCES InterventionLocations (Id) ON DELETE RESTRICT,
                     CONSTRAINT FK_Interventions_InterventionTypes_TypeId FOREIGN KEY (TypeId) REFERENCES InterventionTypes (Id) ON DELETE RESTRICT
                 );");
+                await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS InterventionHistory (
+                    Id INTEGER NOT NULL CONSTRAINT PK_InterventionHistory PRIMARY KEY AUTOINCREMENT,
+                    InterventionId INTEGER NOT NULL,
+                    CustomerId INTEGER NOT NULL,
+                    ChangedAt TEXT NOT NULL,
+                    Action TEXT NOT NULL,
+                    Details TEXT NOT NULL,
+                    CONSTRAINT FK_InterventionHistory_Interventions_InterventionId FOREIGN KEY (InterventionId) REFERENCES Interventions (Id) ON DELETE CASCADE,
+                    CONSTRAINT FK_InterventionHistory_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
+                );");
                 await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS Appointments (
                     Id INTEGER NOT NULL CONSTRAINT PK_Appointments PRIMARY KEY AUTOINCREMENT,
                     CustomerId INTEGER NOT NULL,
