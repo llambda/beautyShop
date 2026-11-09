@@ -8,8 +8,19 @@
             <Button Command="{Binding BackCommand}" HorizontalAlignment="Left" Padding="10,6" Margin="0,0,0,16">
                 <TextBlock Text="← Torna alla scheda cliente"/>
             </Button>
-            <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold"/>
-            <TextBlock Text="{Binding CustomerName}" FontSize="16" Margin="0,5,0,16"/>
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Dettagli intervento" FontSize="28" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding CustomerName}" FontSize="16" Margin="0,5,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Command="{Binding EditCommand}"
+                        Style="{StaticResource MaterialDesignToolButton}" Width="44" Height="44"
+                        ToolTip="Modifica intervento / aggiungi o rimuovi foto"
+                        AutomationProperties.Name="Modifica intervento, aggiungi o rimuovi foto">
+                    <materialDesign:PackIcon Kind="Pencil" Width="23" Height="23"/>
+                </Button>
+            </Grid>
             <Border Background="White" Padding="20" Margin="0,0,0,18">
                 <StackPanel>
                     <WrapPanel>
@@ -20,14 +31,13 @@
                         <TextBlock Text="{Binding Intervention.IsPaid, StringFormat='Pagato: {0}'}" Margin="0,0,24,8"/>
                     </WrapPanel>
                     <TextBlock Text="{Binding Intervention.Notes, TargetNullValue='Nessuna nota'}" TextWrapping="Wrap" Margin="0,8,0,0"/>
-                    <Button Content="Modifica intervento / aggiungi o rimuovi foto" Command="{Binding EditCommand}" HorizontalAlignment="Left" Padding="14,8" Margin="0,16,0,0" MinHeight="38"/>
                 </StackPanel>
             </Border>
             <Grid Margin="0,0,0,18">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                 <Border Grid.Column="0" Background="White" Padding="20" Margin="0,0,8,0" MinHeight="620">
                     <StackPanel>
-                        <TextBlock Text="FOTO PRIMA" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="FOTO PRIMA" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
                         <Button Command="{Binding OpenPhotoCommand}" CommandParameter="{Binding CurrentBeforePhoto.Path}" Padding="0" BorderThickness="0" Background="Transparent" Height="480" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Image Source="{Binding CurrentBeforePhoto.Path}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -49,7 +59,7 @@
                 </Border>
                 <Border Grid.Column="1" Background="White" Padding="20" Margin="8,0,0,0" MinHeight="620">
                     <StackPanel>
-                        <TextBlock Text="FOTO DOPO" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="FOTO DOPO" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,12"/>
                         <Button Command="{Binding OpenPhotoCommand}" CommandParameter="{Binding CurrentAfterPhoto.Path}" Padding="0" BorderThickness="0" Background="Transparent" Height="480" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch">
                             <Viewbox Stretch="Uniform" StretchDirection="DownOnly" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Image Source="{Binding CurrentAfterPhoto.Path}" Width="720" Height="480" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
