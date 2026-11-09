@@ -39,7 +39,7 @@ public class AppointmentService
             .Include(x => x.Customer)
             .Include(x => x.InterventionType)
             .Include(x => x.Location)
-            .Where(x => x.Date >= DateTime.Now && x.Status != "Annullato")
+            .Where(x => x.Date >= DateTime.Now && x.Status != "Annullato" && x.Status != "Non presentato")
             .OrderBy(x => x.Date)
             .ToListAsync();
     }
