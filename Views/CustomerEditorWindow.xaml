@@ -137,6 +137,18 @@
                              Margin="0,5,0,15"
                              Padding="8"/>
 
+
+                    <TextBlock Text="Consenso informato firmato (PDF)" FontWeight="SemiBold" Margin="0,5,0,5"/>
+                    <TextBlock Text="{Binding ConsentFormPath, TargetNullValue='Nessun consenso caricato'}"
+                               Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                               TextWrapping="Wrap" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                        <Button Content="Carica PDF" Command="{Binding SelectConsentFormCommand}"
+                                Padding="12,7" Margin="0,0,8,0"/>
+                        <Button Content="Rimuovi" Command="{Binding RemoveConsentFormCommand}"
+                                Padding="12,7"/>
+                    </StackPanel>
+
                     <TextBlock Text="{Binding ErrorMessage}"
                                Foreground="#C62828"
                                TextWrapping="Wrap"
