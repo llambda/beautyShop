@@ -494,19 +494,18 @@ public partial class CustomerDetailsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task DeleteInterventionAsync()
+    private async Task DeleteInterventionAsync(Intervention? intervention)
     {
-        if (SelectedIntervention == null) return;
-        if (MessageBox.Show($"Eliminare l'intervento del {SelectedIntervention.Date:dd/MM/yyyy}? Verranno eliminate anche le fotografie prima/dopo e lo storico delle modifiche collegato.", "Elimina intervento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        if (intervention == null) return;
+        if (MessageBox.Show($"Eliminare l'intervento del {intervention.Date:dd/MM/yyyy}? Verranno eliminate anche le fotografie prima/dopo e lo storico delle modifiche collegato.", "Elimina intervento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
-        var photosToDelete = DeserializePhotos(SelectedIntervention.BeforePhotosJson)
-            .Concat(DeserializePhotos(SelectedIntervention.AfterPhotosJson)).ToArray();
-        await _interventionService.DeleteAsync(SelectedIntervention);
+        var photosToDelete = DeserializePhotos(intervention.BeforePhotosJson)
+            .Concat(DeserializePhotos(intervention.AfterPhotosJson)).ToArray();
+        await _interventionService.DeleteAsync(intervention);
         DeleteRemovedPhotos(photosToDelete, Array.Empty<string>());
         await ReloadInterventionsAsync();
-        SelectedIntervention = null;
+        if (SelectedIntervention?.Id == intervention.Id) SelectedIntervention = null;
         StatusMessage = "Intervento eliminato.";
-        _mainViewModel.ShowCustomerDetails(this);
     }
 
     [RelayCommand]
