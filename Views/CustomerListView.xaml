@@ -29,6 +29,13 @@
                            FontSize="13"
                            Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
                            Margin="0,5,0,0"/>
+
+                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                         Width="340"
+                         Padding="10,8"
+                         Margin="0,14,0,0"
+                         materialDesign:HintAssist.Hint="Cerca per nome, cognome, telefono o email"
+                         ToolTip="La lista si aggiorna mentre digiti"/>
             </StackPanel>
 
             <!-- NUOVO CLIENTE -->
