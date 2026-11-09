@@ -32,6 +32,10 @@
             <views:RemindersView/>
         </DataTemplate>
 
+        <DataTemplate DataType="{x:Type vm:GalleryViewModel}">
+            <views:GalleryView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
             <views:HistoryView/>
         </DataTemplate>
@@ -219,6 +223,18 @@
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="History" Width="24" Height="24"/>
                             <TextBlock Text="Storico" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- GALLERIA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Galleria"
+                            Height="48" HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ImageMultiple" Width="24" Height="24"/>
+                            <TextBlock Text="Galleria" Margin="15,0,0,0" VerticalAlignment="Center"
                                        Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </StackPanel>
                     </Button>
