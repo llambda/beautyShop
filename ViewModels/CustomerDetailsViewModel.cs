@@ -226,6 +226,14 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         if (appointment == null) return;
 
+        if (string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase))
+        {
+            MessageBox.Show("Non puoi confermare lo svolgimento di un appuntamento annullato o con stato Non presentato.",
+                "Appuntamento non confermabile", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
         if (appointment.LocationId == null || appointment.InterventionTypeId == null)
         {
             MessageBox.Show("L'appuntamento non contiene un luogo e un tipo di intervento. Modificalo prima di confermare lo svolgimento.",
