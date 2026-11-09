@@ -69,8 +69,8 @@ public partial class InterventionPhotosViewModel : ObservableObject
         int count = Math.Max(BeforePhotos.Count, AfterPhotos.Count);
         for (int i = 0; i < count; i++)
             PhotoPairs.Add(new PhotoComparisonPair(
-                i < BeforePhotos.Count ? BeforePhotos[i].Path : null,
-                i < AfterPhotos.Count ? AfterPhotos[i].Path : null));
+                i < BeforePhotos.Count ? BeforePhotos[i] : null,
+                i < AfterPhotos.Count ? AfterPhotos[i] : null));
     }
 
     private static DateTime? SafeFileDate(string path)
@@ -164,11 +164,11 @@ public partial class InterventionPhotoItem : ObservableObject
 
 public sealed class PhotoComparisonPair
 {
-    public string? BeforePath { get; }
-    public string? AfterPath { get; }
-    public PhotoComparisonPair(string? beforePath, string? afterPath)
+    public InterventionPhotoItem? BeforePhoto { get; }
+    public InterventionPhotoItem? AfterPhoto { get; }
+    public PhotoComparisonPair(InterventionPhotoItem? beforePhoto, InterventionPhotoItem? afterPhoto)
     {
-        BeforePath = beforePath;
-        AfterPath = afterPath;
+        BeforePhoto = beforePhoto;
+        AfterPhoto = afterPhoto;
     }
 }
