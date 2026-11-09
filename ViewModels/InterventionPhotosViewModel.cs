@@ -16,7 +16,7 @@ public partial class InterventionPhotosViewModel : ObservableObject
     public ObservableCollection<string> BeforePhotos { get; } = new();
     public ObservableCollection<string> AfterPhotos { get; } = new();
 
-    public string CustomerName => $"{Intervention.Customer?.FirstName} {Intervention.Customer?.LastName}".Trim();
+    public string CustomerName => $"{_parent.Customer.FirstName} {_parent.Customer.LastName}".Trim();
 
     public InterventionPhotosViewModel(CustomerDetailsViewModel parent, Intervention intervention, MainViewModel mainViewModel)
     {
