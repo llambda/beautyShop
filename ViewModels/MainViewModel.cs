@@ -21,6 +21,7 @@ public partial class MainViewModel : ObservableObject
     private readonly SettingsViewModel _settingsViewModel;
     private CalendarViewModel? _calendarViewModel;
     private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
+    private RemindersViewModel? _remindersViewModel;
     private readonly DashboardViewModel _dashboardViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
@@ -135,6 +136,12 @@ public partial class MainViewModel : ObservableObject
                 CurrentViewModel = _settingsViewModel;
                 _ = _settingsViewModel.LoadLocationsCommand.ExecuteAsync(null);
                 _ = _settingsViewModel.LoadInterventionTypesCommand.ExecuteAsync(null);
+                break;
+
+            case "Promemoria":
+                _remindersViewModel ??= new RemindersViewModel();
+                CurrentViewModel = _remindersViewModel;
+                _ = _remindersViewModel.RefreshCommand.ExecuteAsync(null);
                 break;
 
             case "Appuntamenti":
