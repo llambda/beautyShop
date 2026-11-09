@@ -43,7 +43,7 @@
                     <StackPanel>
                         <TextBlock Text="Foto dopo" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
                         <ItemsControl ItemsSource="{Binding AfterPhotos}">
-                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0,0,10,10" BorderBrush="#DDDDDD" BorderThickness="1">
