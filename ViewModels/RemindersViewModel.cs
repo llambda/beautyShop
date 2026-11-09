@@ -20,7 +20,7 @@ public partial class RemindersViewModel : ObservableObject
     [ObservableProperty] private bool isLoading;
     [ObservableProperty] private string? statusMessage;
 
-    public RemindersViewModel() => _ = RefreshAsync();
+    public RemindersViewModel() { }
 
     [RelayCommand]
     private async Task RefreshAsync()
