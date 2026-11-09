@@ -134,11 +134,9 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <WrapPanel Margin="0,12,0,0">
-                            <TextBlock Text="{Binding TotalRevenue, StringFormat='Totale: {0:C2}'}" FontWeight="SemiBold" Margin="0,0,18,0"/>
-                            <TextBlock Text="{Binding InterventionCount, StringFormat='Trattamenti: {0}'}" Margin="0,0,18,0"/>
-                            <TextBlock Text="{Binding LastInterventionDate, StringFormat='Ultimo trattamento: {0:dd/MM/yyyy}', TargetNullValue='Ultimo trattamento: -'}" Margin="0,0,18,0"/>
-                            <TextBlock Text="{Binding TotalPaid, StringFormat='Incassato: {0:C2}'}" Foreground="#2E7D32" Margin="0,0,18,0"/>
-                            <TextBlock Text="{Binding TotalUnpaid, StringFormat='Da saldare: {0:C2}'}" Foreground="#B26A00"/>
+                            <TextBlock Text="{Binding InterventionCount, StringFormat='Interventi effettuati: {0}'}" FontWeight="SemiBold" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding LastInterventionDate, StringFormat='Ultimo intervento: {0:dd/MM/yyyy}', TargetNullValue='Ultimo intervento: -'}" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding NextAppointmentDate, StringFormat='Prossimo appuntamento: {0:dd/MM/yyyy HH:mm}', TargetNullValue='Nessun appuntamento futuro'}" Margin="0,0,18,0"/>
                         </WrapPanel>
                     </StackPanel>
                 </Border>
