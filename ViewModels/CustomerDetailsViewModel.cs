@@ -63,6 +63,54 @@ public partial class CustomerDetailsViewModel : ObservableObject
     public ObservableCollection<InterventionType> Types { get; } = new();
     public ObservableCollection<string> BeforePhotos { get; } = new();
     public ObservableCollection<string> AfterPhotos { get; } = new();
+    public ObservableCollection<CustomerTimelineEntry> Timeline { get; } = new();
+    public ObservableCollection<Intervention> FilteredInterventions { get; } = new();
+    [ObservableProperty] private InterventionType? historyFilterType;
+    [ObservableProperty] private InterventionLocation? historyFilterLocation;
+    [ObservableProperty] private DateTime? historyFromDate;
+    [ObservableProperty] private DateTime? historyToDate;
+
+    partial void OnHistoryFilterTypeChanged(InterventionType? value) => ApplyHistoryFilter();
+    partial void OnHistoryFilterLocationChanged(InterventionLocation? value) => ApplyHistoryFilter();
+    partial void OnHistoryFromDateChanged(DateTime? value) => ApplyHistoryFilter();
+    partial void OnHistoryToDateChanged(DateTime? value) => ApplyHistoryFilter();
+
+    [RelayCommand]
+    private void ClearHistoryFilters()
+    {
+        HistoryFilterType = null;
+        HistoryFilterLocation = null;
+        HistoryFromDate = null;
+        HistoryToDate = null;
+        ApplyHistoryFilter();
+    }
+
+    private void ApplyHistoryFilter()
+    {
+        var filtered = Interventions.Where(item =>
+            (HistoryFilterType == null || item.TypeId == HistoryFilterType.Id)
+            && (HistoryFilterLocation == null || item.LocationId == HistoryFilterLocation.Id)
+            && (!HistoryFromDate.HasValue || item.Date.Date >= HistoryFromDate.Value.Date)
+            && (!HistoryToDate.HasValue || item.Date.Date <= HistoryToDate.Value.Date))
+            .OrderByDescending(item => item.Date).ToList();
+        FilteredInterventions.Clear();
+        foreach (var item in filtered) FilteredInterventions.Add(item);
+    }
+
+    private void RebuildTimeline()
+    {
+        Timeline.Clear();
+        foreach (var item in Appointments)
+            Timeline.Add(new CustomerTimelineEntry(item.Date, "Appuntamento", item.Status,
+                item.InterventionType?.Name ?? "Tipo non specificato", item.Location?.Name ?? "Luogo non specificato"));
+        foreach (var item in Interventions)
+            Timeline.Add(new CustomerTimelineEntry(item.Date, "Intervento", item.Type?.Name ?? "Tipo non specificato",
+                item.Location?.Name ?? "Luogo non specificato", item.IsPaid ? "Pagato" : "Non pagato"));
+        var ordered = Timeline.OrderByDescending(item => item.Date).ToList();
+        Timeline.Clear();
+        foreach (var item in ordered) Timeline.Add(item);
+    }
+
 
     partial void OnSelectedInterventionChanged(Intervention? value)
     {
@@ -87,7 +135,10 @@ public partial class CustomerDetailsViewModel : ObservableObject
             OnPropertyChanged(nameof(TotalUnpaid));
             OnPropertyChanged(nameof(InterventionCount));
             OnPropertyChanged(nameof(LastInterventionDate));
+            ApplyHistoryFilter();
+            RebuildTimeline();
         };
+        Appointments.CollectionChanged += (_, _) => RebuildTimeline();
         _mainViewModel = mainViewModel;
         _returnToUpcomingAppointments = returnToUpcomingAppointments;
         if (loadImmediately) _ = LoadAsync();
@@ -163,6 +214,8 @@ public partial class CustomerDetailsViewModel : ObservableObject
         var items = await _interventionService.GetForCustomerAsync(Customer.Id);
         Interventions.Clear();
         foreach (var item in items) Interventions.Add(item);
+        ApplyHistoryFilter();
+        RebuildTimeline();
     }
 
     private async Task ReloadAppointmentsAsync()
@@ -171,6 +224,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         Appointments.Clear();
         foreach (var item in items) Appointments.Add(item);
         OnPropertyChanged(nameof(NextAppointmentDate));
+        RebuildTimeline();
     }
 
     [RelayCommand]
@@ -578,4 +632,21 @@ public partial class CustomerDetailsViewModel : ObservableObject
 
     [RelayCommand]
     private void BackToCustomers() => _mainViewModel.ShowCustomers();
+}
+public sealed class CustomerTimelineEntry
+{
+    public DateTime Date { get; }
+    public string Category { get; }
+    public string Detail { get; }
+    public string PrimaryInfo { get; }
+    public string SecondaryInfo { get; }
+
+    public CustomerTimelineEntry(DateTime date, string category, string detail, string primaryInfo, string secondaryInfo)
+    {
+        Date = date;
+        Category = category;
+        Detail = detail;
+        PrimaryInfo = primaryInfo;
+        SecondaryInfo = secondaryInfo;
+    }
 }
