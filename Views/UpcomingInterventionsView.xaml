@@ -26,6 +26,7 @@
       </DataGridTextColumn.Binding>
      </DataGridTextColumn>
      <DataGridTextColumn Header="Tipo di intervento" Binding="{Binding InterventionType.Name}" Width="2*"/>
+     <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
      <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="3*"/>
      <DataGridTemplateColumn Header="Azioni" Width="220">
       <DataGridTemplateColumn.CellTemplate>
