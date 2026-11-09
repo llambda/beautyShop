@@ -48,7 +48,7 @@ public partial class MainViewModel : ObservableObject
         set => SetProperty(ref _menuWidth, value);
     }
 
-    private string _selectedSection = "Clienti";
+    private string _selectedSection = "Panoramica";
 
     public string SelectedSection
     {
