@@ -21,7 +21,7 @@ public sealed class UpdateCheckService
         {
             using var response = await Client.GetAsync(ReleasesUrl);
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                return new(current.ToString(3), null, null, false, "Nessuna versione stabile è stata ancora pubblicata.");
+                return new(Format(current), null, null, false, "Nessuna versione stabile è stata ancora pubblicata.");
             response.EnsureSuccessStatusCode();
 
             await using var stream = await response.Content.ReadAsStreamAsync();
@@ -29,18 +29,20 @@ public sealed class UpdateCheckService
             var tag = json.RootElement.TryGetProperty("tag_name", out var tagElement) ? tagElement.GetString() : null;
             var url = json.RootElement.TryGetProperty("html_url", out var urlElement) ? urlElement.GetString() : null;
             if (string.IsNullOrWhiteSpace(tag) || !Version.TryParse(tag.TrimStart('v', 'V'), out var latest))
-                return new(current.ToString(3), tag, url, false, "La versione pubblicata non ha un numero versione riconoscibile.");
+                return new(Format(current), tag, url, false, "La versione pubblicata non ha un numero versione riconoscibile.");
 
             bool available = latest > current;
-            return new(current.ToString(3), latest.ToString(3), url, available,
+            return new(Format(current), Format(latest), url, available,
                 available ? $"È disponibile la versione {latest}." : "BeautyStudio è aggiornato.");
         }
         catch (Exception ex)
         {
             ApplicationLog.Write("Aggiornamenti", ex);
-            return new(current.ToString(3), null, null, false, "Controllo aggiornamenti non riuscito: " + ex.Message);
+            return new(Format(current), null, null, false, "Controllo aggiornamenti non riuscito: " + ex.Message);
         }
     }
+
+    private static string Format(Version version) => $"{version.Major}.{Math.Max(0, version.Minor)}.{Math.Max(0, version.Build)}";
 
     private static HttpClient CreateClient()
     {
