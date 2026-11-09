@@ -36,6 +36,19 @@
                          Margin="0,14,0,0"
                          materialDesign:HintAssist.Hint="Cerca per nome, cognome, telefono o email"
                          ToolTip="La lista si aggiorna mentre digiti"/>
+                <WrapPanel Margin="0,10,0,0" VerticalAlignment="Center">
+                    <TextBox Text="{Binding TreatmentFilter, UpdateSourceTrigger=PropertyChanged}"
+                             Width="190" Padding="8,6" Margin="0,0,8,8"
+                             materialDesign:HintAssist.Hint="Filtra per trattamento"/>
+                    <ComboBox ItemsSource="{Binding ConsentFilters}" SelectedItem="{Binding SelectedConsentFilter}"
+                              Width="170" Padding="7,5" Margin="0,0,8,8"/>
+                    <ComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding SelectedSortOption}"
+                              Width="205" Padding="7,5" Margin="0,0,8,8"/>
+                    <DatePicker SelectedDate="{Binding LastInterventionFrom}" Width="145" Margin="0,0,8,8"
+                                ToolTip="Ultimo intervento: dal"/>
+                    <DatePicker SelectedDate="{Binding LastInterventionTo}" Width="145" Margin="0,0,8,8"
+                                ToolTip="Ultimo intervento: al"/>
+                </WrapPanel>
             </StackPanel>
 
             <!-- NUOVO CLIENTE -->
