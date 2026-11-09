@@ -116,9 +116,17 @@ public partial class CalendarViewModel : ObservableObject
                     && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase);
                 appointment.IsOutsideWorkingHours = false;
                 appointment.WorkingHoursWarning = string.Empty;
-                appointment.HasOverlapWarning = active && AppointmentOverlapValidator.HasOverlap(
-                    appointment.Date, appointment.DurationMinutes, appointments.Where(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Status != "Non presentato"));
-                if (active && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason))
+                appointment.HasOverlapWarning = active
+                    && appointment.DurationMinutes > 0 && appointment.DurationMinutes <= 720
+                    && AppointmentOverlapValidator.HasOverlap(
+                        appointment.Date, appointment.DurationMinutes,
+                        appointments.Where(x => x.Id != appointment.Id && x.Status != "Annullato" && x.Status != "Non presentato"));
+                if (active && (appointment.DurationMinutes <= 0 || appointment.DurationMinutes > 720))
+                {
+                    appointment.IsOutsideWorkingHours = true;
+                    appointment.WorkingHoursWarning = "Durata dell'appuntamento non valida.";
+                }
+                else if (active && !hoursService.IsAppointmentWithinWorkingHours(appointment.Date, appointment.DurationMinutes, out var reason))
                 {
                     appointment.IsOutsideWorkingHours = true;
                     appointment.WorkingHoursWarning = reason;
