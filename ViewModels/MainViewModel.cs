@@ -1,5 +1,8 @@
 ﻿
 using BeautyStudio.Models;
+using BeautyStudio.Data;
+using Microsoft.EntityFrameworkCore;
+using System;
 using BeautyStudio.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -25,6 +28,15 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string searchText = string.Empty;
+
+    [ObservableProperty] private string treatmentFilter = string.Empty;
+    [ObservableProperty] private string selectedSortOption = "Cognome A-Z";
+    [ObservableProperty] private string selectedConsentFilter = "Tutti";
+    [ObservableProperty] private DateTime? lastInterventionFrom;
+    [ObservableProperty] private DateTime? lastInterventionTo;
+
+    public ObservableCollection<string> SortOptions { get; } = new() { "Cognome A-Z", "Nome A-Z", "Ultimo intervento recente", "Ultimo intervento meno recente" };
+    public ObservableCollection<string> ConsentFilters { get; } = new() { "Tutti", "Consenso presente", "Consenso mancante" };
 
     private bool _isMenuExpanded = true;
 
@@ -88,16 +100,37 @@ public partial class MainViewModel : ObservableObject
     }
 
     partial void OnSearchTextChanged(string value) => ApplyCustomerFilter();
+    partial void OnTreatmentFilterChanged(string value) => ApplyCustomerFilter();
+    partial void OnSelectedSortOptionChanged(string value) => ApplyCustomerFilter();
+    partial void OnSelectedConsentFilterChanged(string value) => ApplyCustomerFilter();
+    partial void OnLastInterventionFromChanged(DateTime? value) => ApplyCustomerFilter();
+    partial void OnLastInterventionToChanged(DateTime? value) => ApplyCustomerFilter();
 
     private void ApplyCustomerFilter()
     {
         string term = SearchText?.Trim() ?? string.Empty;
+        string treatment = TreatmentFilter?.Trim() ?? string.Empty;
         var filtered = Customers.Where(customer =>
-            string.IsNullOrWhiteSpace(term)
-            || $"{customer.FirstName} {customer.LastName}".Contains(term, System.StringComparison.CurrentCultureIgnoreCase)
-            || (customer.Phone?.Contains(term, System.StringComparison.CurrentCultureIgnoreCase) ?? false)
-            || (customer.Email?.Contains(term, System.StringComparison.CurrentCultureIgnoreCase) ?? false))
+            (string.IsNullOrWhiteSpace(term)
+             || $"{customer.FirstName} {customer.LastName}".Contains(term, StringComparison.CurrentCultureIgnoreCase)
+             || (customer.Phone?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
+             || (customer.Email?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false)
+             || (customer.Address?.Contains(term, StringComparison.CurrentCultureIgnoreCase) ?? false))
+            && (string.IsNullOrWhiteSpace(treatment) || customer.TreatmentNames.Contains(treatment, StringComparison.CurrentCultureIgnoreCase))
+            && (SelectedConsentFilter == "Tutti"
+                || (SelectedConsentFilter == "Consenso presente" && !string.IsNullOrWhiteSpace(customer.ConsentFormPath))
+                || (SelectedConsentFilter == "Consenso mancante" && string.IsNullOrWhiteSpace(customer.ConsentFormPath)))
+            && (!LastInterventionFrom.HasValue || (customer.LastInterventionDate.HasValue && customer.LastInterventionDate.Value.Date >= LastInterventionFrom.Value.Date))
+            && (!LastInterventionTo.HasValue || (customer.LastInterventionDate.HasValue && customer.LastInterventionDate.Value.Date <= LastInterventionTo.Value.Date)))
             .ToList();
+
+        filtered = SelectedSortOption switch
+        {
+            "Nome A-Z" => filtered.OrderBy(x => x.FirstName).ThenBy(x => x.LastName).ToList(),
+            "Ultimo intervento recente" => filtered.OrderByDescending(x => x.LastInterventionDate ?? DateTime.MinValue).ThenBy(x => x.LastName).ToList(),
+            "Ultimo intervento meno recente" => filtered.OrderBy(x => x.LastInterventionDate ?? DateTime.MaxValue).ThenBy(x => x.LastName).ToList(),
+            _ => filtered.OrderBy(x => x.LastName).ThenBy(x => x.FirstName).ToList()
+        };
 
         FilteredCustomers.Clear();
         foreach (var customer in filtered)
@@ -188,6 +221,16 @@ public partial class MainViewModel : ObservableObject
         try
         {
             var customers = await _customerService.GetAllAsync();
+            await using (var db = new AppDbContext())
+            {
+                var interventions = await db.Interventions.Include(x => x.Type).AsNoTracking().ToListAsync();
+                foreach (var customer in customers)
+                {
+                    var history = interventions.Where(x => x.CustomerId == customer.Id).ToList();
+                    customer.LastInterventionDate = history.Count == 0 ? null : history.Max(x => x.Date);
+                    customer.TreatmentNames = string.Join(" ", history.Select(x => x.Type?.Name).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct());
+                }
+            }
 
             Customers.Clear();
 
