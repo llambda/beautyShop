@@ -252,15 +252,24 @@ public partial class CustomerDetailsViewModel : ObservableObject
     {
         int appointmentCount = Appointments.Count;
         int interventionCount = Interventions.Count;
-        string impact = $"Stai per eliminare {Customer.FirstName} {Customer.LastName}.\\n\\n"
+        string impact = $"Stai per eliminare {Customer.FirstName} {Customer.LastName}.\n\n"
             + $"Saranno eliminati definitivamente anche {appointmentCount} appuntamenti e {interventionCount} interventi, "
-            + "incluse le fotografie e lo storico collegato. Questa operazione non può essere annullata.\\n\\nContinuare?";
+            + "incluse le fotografie e lo storico collegato. Questa operazione non può essere annullata.\n\nContinuare?";
         if (MessageBox.Show(impact, "Eliminazione cliente e dati collegati", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
+
+        var treatmentPhotos = Interventions
+            .SelectMany(x => DeserializePhotos(x.BeforePhotosJson).Concat(DeserializePhotos(x.AfterPhotosJson)))
+            .ToArray();
+        string? customerPhoto = Customer.PhotoPath;
+        string? consentPdf = Customer.ConsentFormPath;
 
         try
         {
             await _customerService.DeleteAsync(Customer.Id);
+            DeleteRemovedPhotos(treatmentPhotos, Array.Empty<string>());
+            TryDeleteManagedFile(customerPhoto, Path.Combine(AppDbContext.PhotosDirectory, "Customers"));
+            TryDeleteManagedFile(consentPdf, AppDbContext.ConsentsDirectory);
             await _mainViewModel.RefreshCustomersAsync();
             _mainViewModel.ShowCustomers();
         }
@@ -274,7 +283,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
     private async Task DeleteAppointmentAsync()
     {
         if (SelectedAppointment == null) return;
-        if (MessageBox.Show($"Eliminare l'appuntamento del {SelectedAppointment.Date:dd/MM/yyyy} alle {SelectedAppointment.Date:HH:mm}?\\nNon verrà creato alcun intervento nello storico.", "Elimina appuntamento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        if (MessageBox.Show($"Eliminare l'appuntamento del {SelectedAppointment.Date:dd/MM/yyyy} alle {SelectedAppointment.Date:HH:mm}?\nNon verrà creato alcun intervento nello storico.", "Elimina appuntamento", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes)
             return;
         await _appointmentService.DeleteAsync(SelectedAppointment);
         await ReloadAppointmentsAsync();
@@ -444,6 +453,20 @@ public partial class CustomerDetailsViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(json)) return Array.Empty<string>();
         try { return JsonSerializer.Deserialize<string[]>(json) ?? Array.Empty<string>(); }
         catch { return Array.Empty<string>(); }
+    }
+
+    private static void TryDeleteManagedFile(string? path, string managedRoot)
+    {
+        if (string.IsNullOrWhiteSpace(path)) return;
+        try
+        {
+            string root = Path.GetFullPath(managedRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                + Path.DirectorySeparatorChar;
+            string fullPath = Path.GetFullPath(path);
+            if (fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase) && File.Exists(fullPath))
+                File.Delete(fullPath);
+        }
+        catch { }
     }
 
     private static void DeleteRemovedPhotos(System.Collections.Generic.IEnumerable<string> oldPaths, System.Collections.Generic.IEnumerable<string> retainedPaths)
