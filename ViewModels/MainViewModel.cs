@@ -4,6 +4,7 @@ using BeautyStudio.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -18,6 +19,10 @@ public partial class MainViewModel : ObservableObject
     private UpcomingInterventionsViewModel? _upcomingInterventionsViewModel;
 
     public ObservableCollection<Customer> Customers { get; } = new();
+    public ObservableCollection<Customer> FilteredCustomers { get; } = new();
+
+    [ObservableProperty]
+    private string searchText = string.Empty;
 
     private bool _isMenuExpanded = true;
 
@@ -73,9 +78,27 @@ public partial class MainViewModel : ObservableObject
         _customerService = customerService;
         _dialogService = dialogService;
         _settingsViewModel = settingsViewModel;
+        Customers.CollectionChanged += (_, _) => ApplyCustomerFilter();
 
         // All'avvio mostriamo la lista clienti.
         CurrentViewModel = this;
+    }
+
+    partial void OnSearchTextChanged(string value) => ApplyCustomerFilter();
+
+    private void ApplyCustomerFilter()
+    {
+        string term = SearchText?.Trim() ?? string.Empty;
+        var filtered = Customers.Where(customer =>
+            string.IsNullOrWhiteSpace(term)
+            || $"{customer.FirstName} {customer.LastName}".Contains(term, System.StringComparison.CurrentCultureIgnoreCase)
+            || (customer.Phone?.Contains(term, System.StringComparison.CurrentCultureIgnoreCase) ?? false)
+            || (customer.Email?.Contains(term, System.StringComparison.CurrentCultureIgnoreCase) ?? false))
+            .ToList();
+
+        FilteredCustomers.Clear();
+        foreach (var customer in filtered)
+            FilteredCustomers.Add(customer);
     }
 
     [RelayCommand]
