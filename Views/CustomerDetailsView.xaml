@@ -105,7 +105,6 @@
                             <TextBlock Text="{Binding TotalPaid, StringFormat='Incassato: {0:C2}'}" Foreground="#2E7D32" Margin="0,0,18,0"/>
                             <TextBlock Text="{Binding TotalUnpaid, StringFormat='Da saldare: {0:C2}'}" Foreground="#B26A00"/>
                         </WrapPanel>
-                 </Grid>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
