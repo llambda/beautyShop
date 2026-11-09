@@ -36,7 +36,7 @@ public sealed class BackupService
             using var archive = ZipFile.OpenRead(zipPath);
             foreach (var archiveEntry in archive.Entries)
             {
-                var normalized = archiveEntry.FullName.Replace('\\\\', '/');
+                var normalized = archiveEntry.FullName.Replace('\\', '/');
                 if (Path.IsPathRooted(normalized) || normalized.Split('/').Any(x => x == ".."))
                     throw new InvalidDataException("Il backup contiene un percorso non consentito.");
             }
