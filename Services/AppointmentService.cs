@@ -52,11 +52,19 @@ public class AppointmentService
 
         bool activeAppointment = !string.Equals(appointment.Status, "Annullato", StringComparison.OrdinalIgnoreCase)
             && !string.Equals(appointment.Status, "Non presentato", StringComparison.OrdinalIgnoreCase);
-        bool slotTaken = activeAppointment && await db.Appointments.AnyAsync(x =>
-            x.Id != appointment.Id
-            && x.Status != "Annullato"
-            && x.Status != "Non presentato"
-            && x.Date < appointment.Date.AddMinutes(appointment.DurationMinutes)
+        var candidates = activeAppointment
+            ? await db.Appointments.AsNoTracking()
+                .Where(x => x.Id != appointment.Id
+                    && x.Status != "Annullato"
+                    && x.Status != "Non presentato"
+                    && x.Date >= appointment.Date.AddMinutes(-720)
+                    && x.Date <= appointment.Date.AddMinutes(720))
+                .Select(x => new { x.Date, x.DurationMinutes })
+                .ToListAsync()
+            : new List<dynamic>();
+
+        bool slotTaken = activeAppointment && candidates.Any(x =>
+            x.Date < appointment.Date.AddMinutes(appointment.DurationMinutes)
             && x.Date.AddMinutes(x.DurationMinutes) > appointment.Date);
         if (slotTaken)
             throw new InvalidOperationException("Questo orario si sovrappone a un altro appuntamento. Modifica l'orario o la durata.");
