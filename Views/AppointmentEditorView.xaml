@@ -29,9 +29,30 @@
                         <TextBlock Text="Data" Margin="0,0,0,5"/>
                         <DatePicker SelectedDate="{Binding Parent.AppointmentDate}" Margin="0,0,0,16"/>
 
-                        <TextBlock Text="Ora (HH:mm)" Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding Parent.AppointmentTime, UpdateSourceTrigger=PropertyChanged}"
-                                 Padding="9" Margin="0,0,0,16"/>
+                        <TextBlock Text="Orario di inizio" Margin="0,0,0,5"/>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Grid.Column="0"
+                                      ItemsSource="{Binding Parent.AppointmentHourOptions}"
+                                      SelectedItem="{Binding Parent.AppointmentHour}"
+                                      ItemStringFormat="{}{0:00}"
+                                      MinHeight="42"
+                                      Padding="8"
+                                      ToolTip="Seleziona l'ora"/>
+                            <TextBlock Grid.Column="1" Text=":" FontSize="22"
+                                       VerticalAlignment="Center" Margin="10,0"/>
+                            <ComboBox Grid.Column="2"
+                                      ItemsSource="{Binding Parent.AppointmentMinuteOptions}"
+                                      SelectedItem="{Binding Parent.AppointmentMinute}"
+                                      ItemStringFormat="{}{0:00}"
+                                      MinHeight="42"
+                                      Padding="8"
+                                      ToolTip="Seleziona i minuti, a intervalli di 5"/>
+                        </Grid>
 
                         <TextBlock Text="Durata (minuti)" Margin="0,0,0,5"/>
                         <ComboBox ItemsSource="{Binding Parent.AppointmentDurationOptions}"
