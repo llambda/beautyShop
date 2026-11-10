@@ -182,6 +182,14 @@ public partial class MainViewModel : ObservableObject
         _ = _upcomingInterventionsViewModel.RefreshCommand.ExecuteAsync(null);
     }
 
+    public void ShowCalendar()
+    {
+        _calendarViewModel ??= new CalendarViewModel(this);
+        SelectedSection = "Appuntamenti";
+        CurrentViewModel = _calendarViewModel;
+        _ = _calendarViewModel.RefreshCommand.ExecuteAsync(null);
+    }
+
     public void ShowCustomerDetails(CustomerDetailsViewModel viewModel)
     {
         CurrentViewModel = viewModel;
