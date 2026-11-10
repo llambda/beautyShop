@@ -89,6 +89,50 @@ public partial class CalendarViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private async Task EditAppointmentAsync(Appointment? appointment)
+    {
+        if (appointment?.Customer == null) return;
+        var details = new CustomerDetailsViewModel(
+            appointment.Customer, _mainViewModel,
+            loadImmediately: false, returnToCalendar: true);
+        await details.LoadAndEditAppointmentAsync(appointment);
+    }
+
+    [RelayCommand]
+    private async Task MarkAppointmentAsExecutedAsync(Appointment? appointment)
+    {
+        if (appointment?.Customer == null) return;
+        var details = new CustomerDetailsViewModel(
+            appointment.Customer, _mainViewModel,
+            loadImmediately: false, returnToCalendar: true);
+        await details.LoadAndMarkAppointmentAsExecutedAsync(appointment);
+    }
+
+    [RelayCommand]
+    private async Task DeleteAppointmentAsync(Appointment? appointment)
+    {
+        if (appointment == null) return;
+        if (MessageBox.Show(
+            $"Eliminare l'appuntamento del {appointment.Date:dd/MM/yyyy} alle {appointment.Date:HH:mm} per {appointment.Customer?.FirstName} {appointment.Customer?.LastName}?",
+            "Elimina appuntamento",
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Warning) != System.Windows.MessageBoxResult.Yes)
+            return;
+
+        try
+        {
+            await _appointmentService.DeleteAsync(appointment);
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Eliminazione non riuscita: {ex.Message}",
+                "Errore", System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error);
+        }
+    }
+
+    [RelayCommand]
     private void ExportMonthPdf()
     {
         try
