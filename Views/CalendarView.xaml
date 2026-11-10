@@ -138,9 +138,20 @@
           <Grid>
            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
            <TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
-           <Button Grid.Column="1" Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Padding="9,5" MinHeight="34" ToolTip="Apri la scheda cliente">
-            <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="Account" Width="17" Height="17"/><TextBlock Text="Cliente" Margin="5,0,0,0" VerticalAlignment="Center"/></StackPanel>
-           </Button>
+           <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
+            <Button Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Apri la scheda cliente" AutomationProperties.Name="Apri la scheda cliente">
+             <materialDesign:PackIcon Kind="Account" Width="19" Height="19"/>
+            </Button>
+            <Button Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Conferma appuntamento ed entra nella registrazione dell'intervento" AutomationProperties.Name="Conferma appuntamento">
+             <materialDesign:PackIcon Kind="Check" Width="19" Height="19"/>
+            </Button>
+            <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Modifica appuntamento" AutomationProperties.Name="Modifica appuntamento">
+             <materialDesign:PackIcon Kind="Pencil" Width="19" Height="19"/>
+            </Button>
+            <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Elimina appuntamento" AutomationProperties.Name="Elimina appuntamento">
+             <materialDesign:PackIcon Kind="Delete" Width="19" Height="19"/>
+            </Button>
+           </StackPanel>
           </Grid>
           <TextBlock FontWeight="SemiBold" Margin="0,3,0,0"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
           <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,2,0,0"/>
