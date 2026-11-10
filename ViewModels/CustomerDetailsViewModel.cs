@@ -44,6 +44,10 @@ public partial class CustomerDetailsViewModel : ObservableObject
     [ObservableProperty] private DateTime appointmentDate = DateTime.Today;
     [ObservableProperty] private int appointmentDurationMinutes = 60;
     public ObservableCollection<int> AppointmentDurationOptions { get; } = new() { 15, 30, 45, 60, 90, 120, 180 };
+    public ObservableCollection<int> AppointmentHourOptions { get; } = new(Enumerable.Range(0, 24));
+    public ObservableCollection<int> AppointmentMinuteOptions { get; } = new(Enumerable.Range(0, 12).Select(x => x * 5));
+    [ObservableProperty] private int appointmentHour = DateTime.Now.Hour;
+    [ObservableProperty] private int appointmentMinute = (DateTime.Now.Minute / 5) * 5;
     [ObservableProperty] private string appointmentTime = DateTime.Now.ToString("HH:mm");
     [ObservableProperty] private string? appointmentNotes;
     [ObservableProperty] private string selectedAppointmentStatus = "Da confermare";
@@ -287,7 +291,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedAppointment = null;
         AppointmentDate = DateTime.Today;
         AppointmentDurationMinutes = 60;
-        AppointmentTime = DateTime.Now.ToString("HH:mm");
+        AppointmentHour = DateTime.Now.Hour;
+        AppointmentMinute = (DateTime.Now.Minute / 5) * 5;
+        AppointmentTime = $"{AppointmentHour:00}:{AppointmentMinute:00}";
         AppointmentNotes = string.Empty;
         SelectedAppointmentStatus = "Da confermare";
         SelectedAppointmentType = Types.FirstOrDefault();
@@ -303,7 +309,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SelectedAppointment = item;
         AppointmentDate = item.Date.Date;
         AppointmentDurationMinutes = item.DurationMinutes <= 0 ? 60 : item.DurationMinutes;
-        AppointmentTime = item.Date.ToString("HH:mm");
+        AppointmentHour = item.Date.Hour;
+        AppointmentMinute = (item.Date.Minute / 5) * 5;
+        AppointmentTime = $"{AppointmentHour:00}:{AppointmentMinute:00}";
         AppointmentNotes = item.Notes;
         SelectedAppointmentStatus = string.IsNullOrWhiteSpace(item.Status) ? "Da confermare" : item.Status;
         SelectedAppointmentType = Types.FirstOrDefault(x => x.Id == item.InterventionTypeId);
@@ -324,11 +332,14 @@ public partial class CustomerDetailsViewModel : ObservableObject
         try
         {
             var item = SelectedAppointment ?? new Appointment { CustomerId = Customer.Id };
-            if (!TimeSpan.TryParse(AppointmentTime, out var time))
+            if (AppointmentHour is < 0 or > 23 || AppointmentMinute is < 0 or > 55 || AppointmentMinute % 5 != 0)
             {
-                StatusMessage = "Inserisci un orario valido (HH:mm).";
+                StatusMessage = "Seleziona un orario valido.";
                 return;
             }
+
+            AppointmentTime = $"{AppointmentHour:00}:{AppointmentMinute:00}";
+            var time = new TimeSpan(AppointmentHour, AppointmentMinute, 0);
             item.Date = AppointmentDate.Date.Add(time);
             item.DurationMinutes = AppointmentDurationMinutes;
             item.Notes = AppointmentNotes?.Trim();
