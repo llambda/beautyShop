@@ -84,29 +84,6 @@
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
-                        <TextBlock Text="Cronologia cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <TextBlock Text="Appuntamenti, interventi e modifiche alla scheda in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
-                        <ItemsControl ItemsSource="{Binding Timeline}">
-                            <ItemsControl.ItemTemplate><DataTemplate>
-                                <Grid Margin="0,7">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="125"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold" VerticalAlignment="Top"/>
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{Binding Category}" FontWeight="SemiBold"/>
-                                        <TextBlock Text="{Binding Detail}" />
-                                        <TextBlock Text="{Binding PrimaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
-                                        <TextBlock Text="{Binding SecondaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate></ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <TextBlock Text="Nessuna attività registrata." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
-                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Timeline.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
-                </Border>
-                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel>
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
@@ -212,6 +189,29 @@
                             <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,8" Margin="0,0,8,0" MinHeight="38"/>
                             <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,8" MinHeight="38"/>
                         </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Cronologia cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Appuntamenti, interventi e modifiche alla scheda in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Timeline}">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Grid Margin="0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="125"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Category}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Detail}" />
+                                        <TextBlock Text="{Binding PrimaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                        <TextBlock Text="{Binding SecondaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nessuna attività registrata." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Timeline.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
             </StackPanel>
