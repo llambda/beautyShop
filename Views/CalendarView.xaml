@@ -49,50 +49,145 @@
       </ItemsControl.ItemContainerStyle>
       <ItemsControl.ItemTemplate>
        <DataTemplate>
-        <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0"
-                Padding="5" Margin="0" MinHeight="0"
-                Background="{DynamicResource MaterialDesign.Brush.Surface}"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-         <Border.Style>
-          <Style TargetType="{x:Type Border}">
-           <Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/>
+        <Button Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                CommandParameter="{Binding Date}"
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                Padding="0" BorderThickness="0" Background="Transparent"
+                Focusable="False">
+         <Button.Style>
+          <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFlatButton}">
+           <Setter Property="IsEnabled" Value="False"/>
            <Style.Triggers>
-            <DataTrigger Binding="{Binding IsToday}" Value="True">
-             <Setter Property="Background" Value="#FFFFF3F7"/>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="0">
+             <Setter Property="IsEnabled" Value="False"/>
             </DataTrigger>
-            <DataTrigger Binding="{Binding IsSelected}" Value="True">
-             <Setter Property="Background" Value="#FFF1DCE7"/>
-             <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
-             <Setter Property="BorderThickness" Value="2"/>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="1">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="2">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="3">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="4">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="5">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="6">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="7">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="8">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="9">
+             <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Appointments.Count}" Value="10">
+             <Setter Property="IsEnabled" Value="True"/>
             </DataTrigger>
            </Style.Triggers>
           </Style>
-         </Border.Style>
-         <Grid ClipToBounds="True">
-          <Grid.RowDefinitions>
-           <RowDefinition Height="Auto"/>
-           <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"
-                     HorizontalAlignment="Left" VerticalAlignment="Top">
-           <TextBlock.Style>
-            <Style TargetType="{x:Type TextBlock}">
-             <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
-             <Style.Triggers>
-              <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
-               <Setter Property="Foreground" Value="#FFB8AFB4"/>
-              </DataTrigger>
-             </Style.Triggers>
-            </Style>
-           </TextBlock.Style>
-          </TextBlock>
-          <TextBlock Grid.Row="1"
-                     Text="{Binding Appointments.Count, StringFormat={}{0} appuntamenti}"
-                     FontSize="9" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
-                     TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom"
-                     HorizontalAlignment="Left"/>
-         </Grid>
-        </Border>
+         </Button.Style>
+         <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0"
+                 Padding="5" Margin="0" MinHeight="0"
+                 Background="{DynamicResource MaterialDesign.Brush.Surface}"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Border.Style>
+           <Style TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/>
+            <Style.Triggers>
+             <DataTrigger Binding="{Binding IsToday}" Value="True">
+              <Setter Property="Background" Value="#FFFFF3F7"/>
+             </DataTrigger>
+             <DataTrigger Binding="{Binding IsSelected}" Value="True">
+              <Setter Property="Background" Value="#FFF1DCE7"/>
+              <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
+              <Setter Property="BorderThickness" Value="2"/>
+             </DataTrigger>
+            </Style.Triggers>
+           </Style>
+          </Border.Style>
+          <Grid ClipToBounds="True">
+           <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+           </Grid.RowDefinitions>
+           <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"
+                      HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock.Style>
+             <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+              <Style.Triggers>
+               <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                <Setter Property="Foreground" Value="#FFB8AFB4"/>
+               </DataTrigger>
+              </Style.Triggers>
+             </Style>
+            </TextBlock.Style>
+           </TextBlock>
+           <TextBlock Grid.Row="1"
+                      Text="{Binding Appointments.Count, StringFormat={}{0} appuntamenti}"
+                      FontSize="9" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                      TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom"
+                      HorizontalAlignment="Left">
+            <TextBlock.Style>
+             <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Style.Triggers>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="1">
+                <Setter Property="Text" Value="Ci sono 1 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="2">
+                <Setter Property="Text" Value="Ci sono 2 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="3">
+                <Setter Property="Text" Value="Ci sono 3 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="4">
+                <Setter Property="Text" Value="Ci sono 4 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="5">
+                <Setter Property="Text" Value="Ci sono 5 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="6">
+                <Setter Property="Text" Value="Ci sono 6 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="7">
+                <Setter Property="Text" Value="Ci sono 7 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="8">
+                <Setter Property="Text" Value="Ci sono 8 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="9">
+                <Setter Property="Text" Value="Ci sono 9 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+               <DataTrigger Binding="{Binding Appointments.Count}" Value="10">
+                <Setter Property="Text" Value="Ci sono 10 appuntamenti"/>
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+              </Style.Triggers>
+             </Style>
+            </TextBlock.Style>
+           </TextBlock>
+          </Grid>
+         </Border>
+        </Button>
        </DataTemplate>
       </ItemsControl.ItemTemplate>
      </ItemsControl>
