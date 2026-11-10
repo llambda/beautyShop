@@ -34,7 +34,7 @@
      </UniformGrid>
      <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}"
                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                     ClipToBounds="True" Focusable="False">
+                     Focusable="False">
       <ItemsControl.ItemsPanel>
        <ItemsPanelTemplate>
         <UniformGrid Columns="7" Rows="6"/>
@@ -49,28 +49,11 @@
       </ItemsControl.ItemContainerStyle>
       <ItemsControl.ItemTemplate>
        <DataTemplate>
-        <Button Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                CommandParameter="{Binding Date}"
-                IsHitTestVisible="{Binding HasAppointments}"
-                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                Padding="0" BorderThickness="0" Background="Transparent"
-                Focusable="False" MinHeight="0" MinWidth="0">
-         <Button.Template>
-          <ControlTemplate TargetType="{x:Type Button}">
-           <Border Background="{TemplateBinding Background}"
-                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                   SnapsToDevicePixels="True">
-            <ContentPresenter HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              Content="{TemplateBinding Content}"
-                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                              RecognizesAccessKey="True"/>
-           </Border>
-          </ControlTemplate>
-         </Button.Template>
+        <!-- La cella mantiene una propria struttura grafica: il pulsante è solo
+             un livello trasparente di input e non determina l'altezza della cella. -->
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
          <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0"
-                 Padding="5" Margin="0" MinHeight="0"
+                 Padding="5" Margin="0"
                  Background="{DynamicResource MaterialDesign.Brush.Surface}"
                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
           <Border.Style>
@@ -120,11 +103,24 @@
            </TextBlock>
           </Grid>
          </Border>
-        </Button>
+         <Button Panel.ZIndex="1"
+                 Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 CommandParameter="{Binding Date}"
+                 IsHitTestVisible="{Binding HasAppointments}"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Padding="0" Margin="0" BorderThickness="0"
+                 Background="Transparent" Focusable="False"
+                 MinHeight="0" MinWidth="0">
+          <Button.Template>
+           <ControlTemplate TargetType="{x:Type Button}">
+            <Grid Background="Transparent"/>
+           </ControlTemplate>
+          </Button.Template>
+         </Button>
+        </Grid>
        </DataTemplate>
       </ItemsControl.ItemTemplate>
-     </ItemsControl>
-    </Grid>
+     </ItemsControl>   </Grid>
    </Border>
    <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="16">
     <Grid>
