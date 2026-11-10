@@ -22,6 +22,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
 {
     private readonly MainViewModel _mainViewModel;
     private readonly bool _returnToUpcomingAppointments;
+    private readonly bool _returnToCalendar;
     private bool _convertingAppointmentToIntervention;
     private readonly InterventionService _interventionService = new();
     private readonly CustomerService _customerService = new();
@@ -130,7 +131,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         SetPhotos(AfterPhotos, value.AfterPhotosJson);
     }
 
-    public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false)
+    public CustomerDetailsViewModel(Customer customer, MainViewModel mainViewModel, bool loadImmediately = true, bool returnToUpcomingAppointments = false, bool returnToCalendar = false)
     {
         Customer = customer;
         Appointments.CollectionChanged += (_, _) => OnPropertyChanged(nameof(NextAppointmentDate));
@@ -147,6 +148,7 @@ public partial class CustomerDetailsViewModel : ObservableObject
         Appointments.CollectionChanged += (_, _) => RebuildTimeline();
         _mainViewModel = mainViewModel;
         _returnToUpcomingAppointments = returnToUpcomingAppointments;
+        _returnToCalendar = returnToCalendar;
         if (loadImmediately) _ = LoadAsync();
     }
 
@@ -219,7 +221,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
 
     private void ReturnAfterAppointmentEdit()
     {
-        if (_returnToUpcomingAppointments)
+        if (_returnToCalendar)
+            _mainViewModel.ShowCalendar();
+        else if (_returnToUpcomingAppointments)
             _mainViewModel.ShowUpcomingAppointments();
         else
             _mainViewModel.ShowCustomerDetails(this);
@@ -506,7 +510,9 @@ public partial class CustomerDetailsViewModel : ObservableObject
             _convertingAppointmentToIntervention = false;
             IsConvertingAppointment = false;
             StatusMessage = convertedAppointment ? "Appuntamento registrato nello storico degli interventi." : "Intervento salvato.";
-            if (_returnToUpcomingAppointments && !convertedAppointment)
+            if (_returnToCalendar && convertedAppointment)
+                _mainViewModel.ShowCalendar();
+            else if (_returnToUpcomingAppointments && !convertedAppointment)
                 _mainViewModel.ShowUpcomingAppointments();
             else
                 _mainViewModel.ShowCustomerDetails(this);
