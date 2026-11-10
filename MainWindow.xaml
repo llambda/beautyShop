@@ -16,12 +16,28 @@
 
     <Window.Resources>
 
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView/>
+        </DataTemplate>
+
         <DataTemplate DataType="{x:Type vm:MainViewModel}">
             <views:CustomerListView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:CalendarViewModel}">
             <views:CalendarView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type vm:RemindersViewModel}">
+            <views:RemindersView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:GalleryViewModel}">
+            <views:GalleryView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:HistoryViewModel}">
+            <views:HistoryView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:UpcomingInterventionsViewModel}">
@@ -30,6 +46,10 @@
 
         <DataTemplate DataType="{x:Type vm:CustomerDetailsViewModel}">
             <views:CustomerDetailsView/>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type vm:InterventionPhotosViewModel}">
+            <views:InterventionPhotosView/>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type vm:InterventionEditorViewModel}">
@@ -69,6 +89,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="110"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="55"/>
                 </Grid.RowDefinitions>
 
@@ -101,6 +122,8 @@
 
                 <StackPanel Grid.Row="1"
                             Margin="8,15">
+
+
 
                     <!-- CLIENTI -->
 
@@ -154,6 +177,19 @@
                     </Button>
 
 
+                    <!-- PROMEMORIA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Promemoria"
+                            Height="48"
+                            HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="BellOutline" Width="24" Height="24"/>
+                            <TextBlock Text="Promemoria" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
+
                     <!-- INTERVENTI -->
 
                     <Button Style="{StaticResource MaterialDesignFlatButton}"
@@ -179,25 +215,66 @@
 
                     </Button>
 
-                    <!-- IMPOSTAZIONI -->
+                    <!-- STORICO -->
                     <Button Style="{StaticResource MaterialDesignFlatButton}"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Impostazioni"
-                            Height="48"
-                            HorizontalContentAlignment="Center">
+                            CommandParameter="Storico"
+                            Height="48" HorizontalContentAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Cog" Width="24" Height="24"/>
-                            <TextBlock Text="Impostazioni" Margin="15,0,0,0" VerticalAlignment="Center"
+                            <materialDesign:PackIcon Kind="History" Width="24" Height="24"/>
+                            <TextBlock Text="Storico" Margin="15,0,0,0" VerticalAlignment="Center"
                                        Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         </StackPanel>
                     </Button>
 
+                    <!-- GALLERIA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Galleria"
+                            Height="48" HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ImageMultiple" Width="24" Height="24"/>
+                            <TextBlock Text="Galleria" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- PANORAMICA -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="Panoramica"
+                            Height="48" HorizontalContentAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ViewDashboard" Width="24" Height="24"/>
+                            <TextBlock Text="Panoramica" Margin="15,0,0,0" VerticalAlignment="Center"
+                                       Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </StackPanel>
+                    </Button>
+
+
+
+
                 </StackPanel>
 
 
+                <!-- IMPOSTAZIONI IN FONDO AL MENU -->
+                <Button Grid.Row="2"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="Impostazioni"
+                        Height="48"
+                        Margin="8,4"
+                        HorizontalContentAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Cog" Width="24" Height="24"/>
+                        <TextBlock Text="Impostazioni" Margin="15,0,0,0" VerticalAlignment="Center"
+                                   Visibility="{Binding IsMenuExpanded, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </StackPanel>
+                </Button>
+
                 <!-- COMPRESSIONE MENU -->
 
-                <Button Grid.Row="2"
+                <Button Grid.Row="3"
                         Command="{Binding ToggleMenuCommand}"
                         Style="{StaticResource MaterialDesignToolButton}"
                         HorizontalAlignment="Center"
@@ -247,42 +324,7 @@
 
         <Grid Grid.Column="1">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-
-            <!-- HEADER -->
-
-            <Border Grid.Row="0"
-                    Background="{DynamicResource MaterialDesign.Brush.Surface}"
-                    BorderBrush="{DynamicResource MaterialDesign.Brush.Divider}"
-                    BorderThickness="0,0,0,1">
-
-                <Button HorizontalAlignment="Right"
-                        Margin="0"
-                        Width="36"
-                        Height="36"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Impostazioni"
-                        ToolTip="Impostazioni"
-                        Style="{StaticResource MaterialDesignToolButton}">
-
-                    <materialDesign:PackIcon
-                        Kind="Cog"
-                        Width="20"
-                        Height="20"/>
-
-                </Button>
-
-            </Border>
-
-
-            <!-- CONTENUTO DINAMICO -->
-
-            <ContentControl Grid.Row="1"
-                            Content="{Binding CurrentViewModel}"
+            <ContentControl Content="{Binding CurrentViewModel}"
                             Margin="10"/>
 
         </Grid>

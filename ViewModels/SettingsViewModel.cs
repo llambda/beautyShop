@@ -1,3 +1,4 @@
+using MessageBox = BeautyStudio.Services.StyledMessageBox;
 using BeautyStudio.Models;
 using BeautyStudio.Services;
 using BeautyStudio.Views;
@@ -5,6 +6,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace BeautyStudio.ViewModels;
 
@@ -14,6 +17,10 @@ public partial class SettingsViewModel : ObservableObject
 {
     private readonly InterventionLocationService _locationService;
     private readonly InterventionTypeService _typeService;
+    private readonly CustomerService _customerService;
+    private readonly BackupService _backupService = new();
+    private readonly UpdateCheckService _updateCheckService = new();
+    private readonly WorkingHoursService _workingHoursService = new();
     private readonly ThemeSettingsService _themeService = new();
     private bool _loadingTheme;
 
@@ -38,6 +45,7 @@ public partial class SettingsViewModel : ObservableObject
         new("BlueGrey", "#FF607D8B", "#FF78909C", "#FFFFFFFF", "#FFFFFFFF"),
         new("Grey", "#FF9E9E9E", "#FFBDBDBD", "#000000", "#000000"),
     };
+    public ObservableCollection<WorkingDaySetting> WorkingDays { get; } = new();
     public ObservableCollection<PaletteOption> PrimaryPalettes { get; } = BuildPalettes();
     public ObservableCollection<PaletteOption> SecondaryPalettes { get; } = BuildPalettes();
 
@@ -48,11 +56,18 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty] private InterventionLocation? selectedLocation;
     [ObservableProperty] private ObservableCollection<InterventionType> interventionTypes = new();
     [ObservableProperty] private InterventionType? selectedInterventionType;
+    [ObservableProperty] private string? dataManagementStatus;
+    [ObservableProperty] private string updateStatus = "Non hai ancora controllato gli aggiornamenti.";
+    [ObservableProperty] private bool isCheckingUpdates;
+    [ObservableProperty] private string currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
+    private string? _latestReleaseUrl;
 
-    public SettingsViewModel(InterventionLocationService locationService, InterventionTypeService typeService)
+    public SettingsViewModel(InterventionLocationService locationService, InterventionTypeService typeService, CustomerService customerService)
     {
         _locationService = locationService;
         _typeService = typeService;
+        _customerService = customerService;
+        foreach (var day in _workingHoursService.Load()) WorkingDays.Add(day);
 
         var settings = _themeService.Load();
         _loadingTheme = true;
@@ -77,6 +92,20 @@ public partial class SettingsViewModel : ObservableObject
             SecondaryColor = SelectedSecondaryPalette.SecondaryHex,
             IsDark = IsDarkTheme
         });
+    }
+
+    [RelayCommand]
+    private void SaveWorkingHours()
+    {
+        try
+        {
+            _workingHoursService.Save(WorkingDays);
+            DataManagementStatus = "Orari di lavoro salvati. Le nuove prenotazioni rispetteranno giorni, orari e pause impostati.";
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Impossibile salvare gli orari: " + ex.Message;
+        }
     }
 
     [RelayCommand]
@@ -176,4 +205,135 @@ public partial class SettingsViewModel : ObservableObject
         SelectedInterventionType = null;
         await LoadInterventionTypesAsync();
     }
+    [RelayCommand]
+    private void CreateBackup()
+    {
+        try
+        {
+            var path = _backupService.CreateBackup();
+            DataManagementStatus = "Backup creato: " + path;
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Creazione backup", ex);
+            DataManagementStatus = "Backup non riuscito: " + ex.Message;
+        }
+    }
+
+    [RelayCommand]
+    private void RestoreBackup()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Seleziona un backup BeautyStudio",
+            Filter = "Backup BeautyStudio (*.zip)|*.zip",
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog() != true) return;
+        if (MessageBox.Show("Il ripristino sostituirà il database e i documenti attuali. Continuare?",
+            "Ripristino backup", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+        try
+        {
+            _backupService.RestoreBackup(dialog.FileName);
+            DataManagementStatus = "Backup ripristinato. Riavvia l'applicazione per ricaricare tutti i dati.";
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Ripristino backup", ex);
+            DataManagementStatus = "Ripristino non riuscito: " + ex.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task ExportCustomersAsync()
+    {
+        try
+        {
+            var customers = await _customerService.GetAllAsync();
+            var path = new ExportService().ExportCustomersCsv(customers);
+            DataManagementStatus = "Elenco clienti esportato: " + path;
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            DataManagementStatus = "Esportazione clienti non riuscita: " + ex.Message;
+        }
+    }
+
+
+    [RelayCommand]
+    private async Task CheckForUpdatesAsync()
+    {
+        IsCheckingUpdates = true;
+        UpdateStatus = "Controllo disponibilità aggiornamenti...";
+        try
+        {
+            var result = await _updateCheckService.CheckAsync();
+            CurrentVersion = result.CurrentVersion;
+            _latestReleaseUrl = result.ReleaseUrl;
+            UpdateStatus = result.Message;
+            ApplicationLog.Write("Aggiornamenti", result.Message);
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Aggiornamenti", ex);
+            UpdateStatus = "Controllo aggiornamenti non riuscito. Consulta il registro applicazione.";
+        }
+        finally
+        {
+            IsCheckingUpdates = false;
+        }
+    }
+
+    [RelayCommand]
+    private void OpenLatestRelease()
+    {
+        try
+        {
+            var url = string.IsNullOrWhiteSpace(_latestReleaseUrl)
+                ? "https://github.com/llambda/beautyShop/releases"
+                : _latestReleaseUrl;
+            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Apertura pagina aggiornamenti", ex);
+            UpdateStatus = "Impossibile aprire la pagina delle versioni.";
+        }
+    }
+
+    [RelayCommand]
+    private void VerifyBackup()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Verifica un backup BeautyStudio",
+            Filter = "Backup BeautyStudio (*.zip)|*.zip",
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        _backupService.ValidateBackup(dialog.FileName, out var message);
+        DataManagementStatus = message;
+        ApplicationLog.Write("Verifica backup", $"{dialog.FileName}: {message}");
+    }
+
+    [RelayCommand]
+    private void OpenLogFolder()
+    {
+        try
+        {
+            var folder = System.IO.Path.Combine(BeautyStudio.Data.AppDbContext.DataDirectory, "Logs");
+            System.IO.Directory.CreateDirectory(folder);
+            Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            ApplicationLog.Write("Apertura registro", ex);
+            DataManagementStatus = "Impossibile aprire la cartella dei registri: " + ex.Message;
+        }
+    }
+
 }

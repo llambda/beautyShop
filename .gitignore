@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+
+# IDE
+.idea/
+.vscode/
+
+# Local application data / secrets
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.zip

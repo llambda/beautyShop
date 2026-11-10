@@ -26,13 +26,22 @@
       </DataGridTextColumn.Binding>
      </DataGridTextColumn>
      <DataGridTextColumn Header="Tipo di intervento" Binding="{Binding InterventionType.Name}" Width="2*"/>
+     <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="2*"/>
+     <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
      <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="3*"/>
-     <DataGridTemplateColumn Header="Azioni" Width="220">
+     <DataGridTemplateColumn Header="Azioni" Width="150">
       <DataGridTemplateColumn.CellTemplate>
        <DataTemplate>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-         <Button Content="Modifica" Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="9,5" Margin="0,0,5,0" ToolTip="Modifica appuntamento"/>
-         <Button Content="Segna eseguito" Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Padding="9,5" ToolTip="Registra l'appuntamento nello storico interventi"/>
+         <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="38" Height="38" Margin="0,0,4,0" ToolTip="Modifica appuntamento" AutomationProperties.Name="Modifica appuntamento">
+          <materialDesign:PackIcon Kind="Pencil" Width="19" Height="19"/>
+         </Button>
+         <Button Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="38" Height="38" Margin="0,0,4,0" ToolTip="Conferma e registra come eseguito" AutomationProperties.Name="Conferma appuntamento eseguito">
+          <materialDesign:PackIcon Kind="Check" Width="19" Height="19"/>
+         </Button>
+         <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="38" Height="38" ToolTip="Elimina appuntamento" AutomationProperties.Name="Elimina appuntamento">
+          <materialDesign:PackIcon Kind="Delete" Width="19" Height="19"/>
+         </Button>
         </StackPanel>
        </DataTemplate>
       </DataGridTemplateColumn.CellTemplate>

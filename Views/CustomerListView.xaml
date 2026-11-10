@@ -34,13 +34,13 @@
                          Width="340"
                          Padding="10,8"
                          Margin="0,14,0,0"
-                         materialDesign:HintAssist.Hint="Cerca per nome, cognome, telefono o email"
+                         materialDesign:HintAssist.Hint="Cerca per nome, telefono, email o indirizzo"
                          ToolTip="La lista si aggiorna mentre digiti"/>
             </StackPanel>
 
             <!-- NUOVO CLIENTE -->
-            <Button Grid.Column="1"
-                    Command="{Binding AddCustomerCommand}"
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+<Button Command="{Binding AddCustomerCommand}"
                     Background="{DynamicResource MaterialDesign.Brush.Primary}"
                     Foreground="White"
                     BorderThickness="0"
@@ -64,6 +64,7 @@
                                FontWeight="SemiBold"/>
                 </StackPanel>
             </Button>
+            </StackPanel>
         </Grid>
 
         <!-- ELENCO CLIENTI -->
@@ -234,6 +235,8 @@
                                             Margin="8,0,0,0"
                                             VerticalAlignment="Center"/>
                                     </StackPanel>
+                                    <TextBlock Text="{Binding LastInterventionDate, StringFormat='Ultimo intervento: {0:dd/MM/yyyy}', TargetNullValue='Nessun intervento registrato'}"
+                                               FontSize="11" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,8,0,0"/>
                                 </StackPanel>
                             </Grid>
                         </Button>

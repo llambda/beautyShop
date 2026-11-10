@@ -48,6 +48,15 @@ public partial class CustomerEditorViewModel : ObservableObject
     private string? consentFormPath;
 
     [ObservableProperty]
+    private DateTime? consentAcquiredAt;
+
+    [ObservableProperty]
+    private string? allergies;
+
+    [ObservableProperty]
+    private string? sensitivities;
+
+    [ObservableProperty]
     private string? errorMessage;
 
     [ObservableProperty]
@@ -79,6 +88,9 @@ public partial class CustomerEditorViewModel : ObservableObject
             Notes = customer.Notes;
             PhotoPath = customer.PhotoPath;
             ConsentFormPath = customer.ConsentFormPath;
+            ConsentAcquiredAt = customer.ConsentAcquiredAt;
+            Allergies = customer.Allergies;
+            Sensitivities = customer.Sensitivities;
         }
     }
 
@@ -109,11 +121,18 @@ public partial class CustomerEditorViewModel : ObservableObject
         };
 
         if (dialog.ShowDialog() == true)
+        {
             ConsentFormPath = dialog.FileName;
+            ConsentAcquiredAt = DateTime.Now;
+        }
     }
 
     [RelayCommand]
-    private void RemoveConsentForm() => ConsentFormPath = null;
+    private void RemoveConsentForm()
+    {
+        ConsentFormPath = null;
+        ConsentAcquiredAt = null;
+    }
 
     [RelayCommand]
     private void Cancel()
@@ -205,6 +224,9 @@ public partial class CustomerEditorViewModel : ObservableObject
             customer.Notes = Notes?.Trim();
             customer.PhotoPath = finalPhotoPath;
             customer.ConsentFormPath = finalConsentFormPath;
+            customer.ConsentAcquiredAt = string.IsNullOrWhiteSpace(finalConsentFormPath) ? null : (ConsentAcquiredAt ?? DateTime.Now);
+            customer.Allergies = Allergies?.Trim();
+            customer.Sensitivities = Sensitivities?.Trim();
 
             if (_customerId.HasValue)
                 await _customerService.UpdateAsync(customer);

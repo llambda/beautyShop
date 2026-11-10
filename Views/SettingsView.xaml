@@ -28,11 +28,11 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                                             <Button Grid.Column="0" Content="Primary" Tag="{Binding Hex}"
-                                                    Click="PrimaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Click="PrimaryPalette_Click" MinHeight="34" Padding="8,8" BorderThickness="0"
                                                     Background="{Binding Hex}" Foreground="{Binding PrimaryText}"
                                                     ToolTip="Imposta colore primario"/>
                                             <Button Grid.Column="1" Content="Secondary" Tag="{Binding SecondaryHex}"
-                                                    Click="SecondaryPalette_Click" Padding="4,5" BorderThickness="0"
+                                                    Click="SecondaryPalette_Click" MinHeight="34" Padding="8,8" BorderThickness="0"
                                                     Background="{Binding SecondaryHex}" Foreground="{Binding SecondaryText}"
                                                     ToolTip="Imposta colore secondario"/>
                                         </Grid>
@@ -41,6 +41,73 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Backup ed esportazione" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Proteggi i dati e crea una copia esportabile dell'elenco clienti." TextWrapping="Wrap" Margin="0,5,0,14"/>
+                    <WrapPanel>
+                        <Button Command="{Binding CreateBackupCommand}" Padding="16,9" Margin="0,0,10,10">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="BackupRestore" Width="18" Height="18"/>
+                                <TextBlock Text="Crea backup" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding VerifyBackupCommand}" Padding="16,9" Margin="0,0,10,10">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ShieldCheck" Width="18" Height="18"/>
+                                <TextBlock Text="Verifica backup" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding OpenLogFolderCommand}" Padding="16,9" Margin="0,0,10,10">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FolderOpen" Width="18" Height="18"/>
+                                <TextBlock Text="Apri registro errori" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding RestoreBackupCommand}" Padding="16,9" Margin="0,0,10,10">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Restore" Width="18" Height="18"/>
+                                <TextBlock Text="Ripristina backup" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding ExportCustomersCommand}" Padding="16,9" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FileDelimited" Width="18" Height="18"/>
+                                <TextBlock Text="Esporta clienti CSV" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding DataManagementStatus}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Orari di lavoro e disponibilità" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="Imposta i giorni di apertura, gli orari e le eventuali pause. I nuovi appuntamenti non potranno essere salvati fuori da queste fasce o durante le pause."
+                               TextWrapping="Wrap" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,12"/>
+                    <DataGrid ItemsSource="{Binding WorkingDays}" AutoGenerateColumns="False" CanUserAddRows="False"
+                              HeadersVisibility="Column" IsReadOnly="False" MinHeight="210" MaxHeight="260"
+                              Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Giorno" Binding="{Binding DisplayName}" IsReadOnly="True" Width="*"/>
+                            <DataGridCheckBoxColumn Header="Aperto" Binding="{Binding IsWorkingDay, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                            <DataGridTextColumn Header="Apertura" Binding="{Binding StartTime, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
+                            <DataGridTextColumn Header="Chiusura" Binding="{Binding EndTime, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
+                            <DataGridCheckBoxColumn Header="Pausa" Binding="{Binding HasBreak, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+                            <DataGridTextColumn Header="Inizio pausa" Binding="{Binding BreakStart, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                            <DataGridTextColumn Header="Fine pausa" Binding="{Binding BreakEnd, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Command="{Binding SaveWorkingHoursCommand}" HorizontalAlignment="Left" Padding="16,9" Margin="0,12,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSave" Width="18" Height="18"/>
+                            <TextBlock Text="Salva orari" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
             </Border>
 
@@ -105,6 +172,29 @@
                             <DataGridTextColumn Header="Descrizione" Binding="{Binding Description}" Width="2*"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" CornerRadius="12" Padding="22" Margin="0,20,0,0">
+                <StackPanel>
+                    <TextBlock Text="Versione e aggiornamenti" FontSize="20" FontWeight="SemiBold"/>
+                    <TextBlock Text="{Binding CurrentVersion, StringFormat='Versione installata: {0}'}" Margin="0,6,0,10"/>
+                    <WrapPanel>
+                        <Button Command="{Binding CheckForUpdatesCommand}" IsEnabled="{Binding IsCheckingUpdates, Converter={StaticResource InverseBooleanConverter}}" Padding="16,9" Margin="0,0,10,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Update" Width="18" Height="18"/>
+                                <TextBlock Text="Controlla aggiornamenti" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding OpenLatestReleaseCommand}" Padding="16,9" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="OpenInNew" Width="18" Height="18"/>
+                                <TextBlock Text="Apri pagina versioni" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding UpdateStatus}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap"/>
+                    <TextBlock Text="Il programma verifica le release pubblicate su GitHub. L'installazione resta manuale per evitare sostituzioni non sicure dei file in uso." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,8,0,0"/>
                 </StackPanel>
             </Border>
         </StackPanel>

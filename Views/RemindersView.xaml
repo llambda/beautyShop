@@ -1,0 +1,146 @@
+<UserControl x:Class="BeautyStudio.Views.RemindersView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+ <ScrollViewer VerticalScrollBarVisibility="Auto">
+  <StackPanel Margin="24">
+   <Grid Margin="0,0,0,18">
+    <StackPanel>
+     <TextBlock Text="Promemoria appuntamenti" FontSize="28" FontWeight="SemiBold"/>
+     <TextBlock Text="Controlla gli appuntamenti imminenti e quelli da completare." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,0"/>
+    </StackPanel>
+    <Button Command="{Binding RefreshCommand}" HorizontalAlignment="Right" VerticalAlignment="Center" Padding="12,7">
+     <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="Refresh" Margin="0,0,6,0"/><TextBlock Text="Aggiorna"/></StackPanel>
+    </Button>
+   </Grid>
+   <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,12"/>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,0,0,14">
+    <StackPanel>
+     <TextBlock Text="Oggi" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding TodayAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}" /><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun appuntamento per oggi." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding TodayAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,0,0,14">
+    <StackPanel>
+     <TextBlock Text="Domani" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding TomorrowAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}"/><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun appuntamento per domani." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding TomorrowAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,0,0,14">
+    <StackPanel>
+     <TextBlock Text="Da confermare" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding UnconfirmedAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}"/><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun appuntamento da confermare." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding UnconfirmedAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16">
+    <StackPanel>
+     <TextBlock Text="Dati mancanti" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding IncompleteAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate><StackPanel Margin="0,5"><TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/><TextBlock Text="{Binding Customer.FirstName}"/><TextBlock Text="{Binding Customer.LastName}"/><TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/><TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/></StackPanel></DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Tutti gli appuntamenti hanno luogo e tipo." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IncompleteAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Consenso informato mancante" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <TextBlock Text="Appuntamenti futuri di clienti senza un PDF del consenso registrato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding MissingConsentAppointments}">
+      <ItemsControl.ItemTemplate><DataTemplate>
+       <StackPanel Margin="0,5">
+        <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/>
+        <TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+        <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+       </StackPanel>
+      </DataTemplate></ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Tutti i clienti degli appuntamenti futuri hanno il consenso registrato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding MissingConsentAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Appuntamenti in ritardo" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <TextBlock Text="Appuntamenti passati che non risultano ancora completati, annullati o segnati come non presentati." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding OverdueAppointments}">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <StackPanel Margin="0,5">
+         <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/>
+         <TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+         <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+        </StackPanel>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun appuntamento in ritardo." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding OverdueAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Appuntamenti non effettuati" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,8"/>
+     <TextBlock Text="Ultimi 30 appuntamenti contrassegnati come non presentato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding NoShowAppointments}">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <StackPanel Margin="0,5">
+         <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold"/>
+         <TextBlock><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+         <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+        </StackPanel>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun appuntamento segnato come non presentato." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding NoShowAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="16" Margin="0,14,0,0">
+    <StackPanel>
+     <TextBlock Text="Clienti da ricontattare" FontSize="19" FontWeight="SemiBold" Margin="0,0,0,4"/>
+     <TextBlock Text="Clienti senza appuntamenti futuri e senza interventi negli ultimi 90 giorni." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+     <ItemsControl ItemsSource="{Binding CustomersToReconnect}">
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <Border BorderBrush="{DynamicResource MaterialDesign.Brush.Divider}" BorderThickness="0,0,0,1" Padding="0,8">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel>
+           <TextBlock FontWeight="SemiBold"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+           <TextBlock Text="{Binding LastInterventionLabel, StringFormat='Ultimo intervento: {0}'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+          </StackPanel>
+          <TextBlock Grid.Column="1" Text="{Binding DaysSinceLastIntervention, StringFormat='{}{0} giorni'}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+         </Grid>
+        </Border>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>
+     <TextBlock Text="Nessun cliente da ricontattare." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding CustomersToReconnect.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </StackPanel>
+   </Border>
+  </StackPanel>
+ </ScrollViewer>
+</UserControl>

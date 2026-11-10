@@ -1,0 +1,37 @@
+<UserControl x:Class="BeautyStudio.Views.HistoryView"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+ Background="#F7F5F6">
+ <ScrollViewer VerticalScrollBarVisibility="Auto">
+  <StackPanel Margin="24">
+   <TextBlock Text="Storico interventi" FontSize="28" FontWeight="SemiBold"/>
+   <TextBlock Text="Cerca gli interventi per cliente, tipo, luogo e periodo." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,18"/>
+   <Border Background="{DynamicResource MaterialDesign.Brush.Surface}" Padding="18" Margin="0,0,0,16">
+    <StackPanel>
+     <Grid>
+      <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+      <StackPanel Grid.Column="0" Margin="0,0,10,10"><TextBlock Text="Cliente" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}" HorizontalAlignment="Stretch">
+       <ComboBox.ItemTemplate><DataTemplate><TextBlock><Run Text="{Binding LastName}"/><Run Text=" "/><Run Text="{Binding FirstName}"/></TextBlock></DataTemplate></ComboBox.ItemTemplate>
+      </ComboBox></StackPanel>
+      <StackPanel Grid.Column="1" Margin="0,0,10,10"><TextBlock Text="Tipo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding SelectedType}" DisplayMemberPath="Name" HorizontalAlignment="Stretch"/></StackPanel>
+      <StackPanel Grid.Column="2" Margin="0,0,0,10"><TextBlock Text="Luogo" Margin="0,0,0,4"/><ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding SelectedLocation}" DisplayMemberPath="Name" HorizontalAlignment="Stretch"/></StackPanel>
+     </Grid>
+     <Button Content="Azzera filtri" Command="{Binding ClearFiltersCommand}" HorizontalAlignment="Left" Padding="12,8" MinHeight="38"/>
+    </StackPanel>
+   </Border>
+   <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,10"/>
+   <DataGrid ItemsSource="{Binding FilteredInterventions}" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" MinHeight="250" MaxHeight="650">
+    <DataGrid.Columns>
+     <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
+     <DataGridTextColumn Header="Cliente" Binding="{Binding Customer.LastName}" Width="*"/>
+     <DataGridTextColumn Header="Nome" Binding="{Binding Customer.FirstName}" Width="*"/>
+     <DataGridTextColumn Header="Tipo" Binding="{Binding Type.Name}" Width="*"/>
+     <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="*"/>
+     <DataGridTextColumn Header="Prezzo" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="Auto"/>
+     <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding IsPaid}" Width="Auto"/>
+    </DataGrid.Columns>
+   </DataGrid>
+  </StackPanel>
+ </ScrollViewer>
+</UserControl>

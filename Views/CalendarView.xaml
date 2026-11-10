@@ -7,52 +7,174 @@
   <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
   <StackPanel Grid.Row="0" Margin="0,0,0,18">
    <TextBlock Text="Appuntamenti" FontSize="28" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"/>
-   <TextBlock Text="Calendario degli appuntamenti dei clienti" FontSize="13" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,0"/>
+   <TextBlock Text="Calendario e agenda giornaliera degli appuntamenti" FontSize="13" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,5,0,0"/>
+   <TextBlock Text="{Binding ReminderMessage}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,6,0,0"/>
   </StackPanel>
   <Grid Grid.Row="1" Margin="0,0,0,12">
    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
    <StackPanel Orientation="Horizontal">
     <Button Command="{Binding PreviousMonthCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronLeft" Width="22" Height="22"/></Button>
-    <Button Command="{Binding TodayCommand}" Content="Oggi" Margin="5,0" Padding="12,5"/>
+    <Button Command="{Binding TodayCommand}" Content="Oggi" Margin="5,0" Padding="12,8" MinHeight="38"/>
     <Button Command="{Binding NextMonthCommand}" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="ChevronRight" Width="22" Height="22"/></Button>
    </StackPanel>
    <TextBlock Grid.Column="1" Text="{Binding MonthTitle}" FontSize="21" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-   <Button Grid.Column="2" Command="{Binding RefreshCommand}" Style="{StaticResource MaterialDesignToolButton}" ToolTip="Aggiorna calendario" Width="40" Height="40"><materialDesign:PackIcon Kind="Refresh" Width="20" Height="20"/></Button>
+   <StackPanel Grid.Column="2" Orientation="Horizontal">
+    <Button Content="PDF" Command="{Binding ExportMonthPdfCommand}" Padding="10,8" Margin="0,0,5,0" ToolTip="Esporta il mese in PDF" MinHeight="38"/>
+    <Button Content="CSV" Command="{Binding ExportMonthCsvCommand}" Padding="10,8" Margin="0,0,5,0" ToolTip="Esporta il mese in CSV" MinHeight="38"/>
+    <Button Command="{Binding RefreshCommand}" Style="{StaticResource MaterialDesignToolButton}" ToolTip="Aggiorna calendario" Width="40" Height="40"><materialDesign:PackIcon Kind="Refresh" Width="20" Height="20"/></Button>
+   </StackPanel>
   </Grid>
-  <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="10">
-   <Grid>
-    <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-    <UniformGrid Grid.Row="0" Columns="7">
-     <TextBlock Text="Lunedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Martedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Mercoledì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Giovedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Venerdì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Sabato" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Domenica" HorizontalAlignment="Center" FontWeight="SemiBold"/>
-    </UniformGrid>
-    <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}">
-     <ItemsControl.ItemsPanel><ItemsPanelTemplate><UniformGrid Columns="7" Rows="6"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
-     <ItemsControl.ItemTemplate>
-      <DataTemplate>
-       <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0" Padding="5" MinHeight="88">
-        <Border.Style><Style TargetType="Border"><Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/><Style.Triggers><DataTrigger Binding="{Binding IsToday}" Value="True"><Setter Property="Background" Value="#FFF3F7"/></DataTrigger></Style.Triggers></Style></Border.Style>
-        <Grid>
-         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-         <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/><Style.Triggers><DataTrigger Binding="{Binding IsCurrentMonth}" Value="False"><Setter Property="Foreground" Value="#B8AFB4"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
-         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-          <ItemsControl ItemsSource="{Binding Appointments}">
-           <ItemsControl.ItemTemplate><DataTemplate>
-            <Border Background="#F4EAF0" CornerRadius="5" Padding="4" Margin="0,3,0,0">
-             <StackPanel>
-              <TextBlock Text="{Binding Time}" FontSize="10" FontWeight="Bold" Foreground="#8D4268"/>
-              <TextBlock Text="{Binding CustomerName}" FontSize="10" FontWeight="SemiBold" TextWrapping="Wrap"/>
-              <TextBlock Text="{Binding InterventionType}" FontSize="9" Foreground="#725E69" TextWrapping="Wrap"/>
-             </StackPanel>
-            </Border>
-           </DataTemplate></ItemsControl.ItemTemplate>
-          </ItemsControl>
-         </ScrollViewer>
+  <Grid Grid.Row="2">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="3*"/><ColumnDefinition Width="2*"/></Grid.ColumnDefinitions>
+   <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="6" Margin="0,0,12,0" ClipToBounds="False">
+    <Grid>
+     <Grid.RowDefinitions><RowDefinition Height="28"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <UniformGrid Grid.Row="0" Columns="7">
+      <TextBlock Text="Lunedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Martedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Mercoledì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Giovedì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Venerdì" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Sabato" HorizontalAlignment="Center" FontWeight="SemiBold"/><TextBlock Text="Domenica" HorizontalAlignment="Center" FontWeight="SemiBold"/>
+     </UniformGrid>
+     <ItemsControl Grid.Row="1" ItemsSource="{Binding Days}"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     Focusable="False">
+      <ItemsControl.ItemsPanel>
+       <ItemsPanelTemplate>
+        <UniformGrid Columns="7" Rows="6"/>
+       </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemContainerStyle>
+       <Style TargetType="{x:Type ContentPresenter}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        <Setter Property="Margin" Value="0"/>
+       </Style>
+      </ItemsControl.ItemContainerStyle>
+      <ItemsControl.ItemTemplate>
+       <DataTemplate>
+        <!-- La cella mantiene una propria struttura grafica: il pulsante è solo
+             un livello trasparente di input e non determina l'altezza della cella. -->
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+         <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0"
+                 Padding="5" Margin="0"
+                 Background="{DynamicResource MaterialDesign.Brush.Surface}"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          <Border.Style>
+           <Style TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{DynamicResource MaterialDesign.Brush.Surface}"/>
+            <Style.Triggers>
+             <DataTrigger Binding="{Binding IsToday}" Value="True">
+              <Setter Property="Background" Value="#FFFFF3F7"/>
+             </DataTrigger>
+             <DataTrigger Binding="{Binding IsSelected}" Value="True">
+              <Setter Property="Background" Value="#FFF1DCE7"/>
+              <Setter Property="BorderBrush" Value="{DynamicResource MaterialDesign.Brush.Primary}"/>
+              <Setter Property="BorderThickness" Value="2"/>
+             </DataTrigger>
+            </Style.Triggers>
+           </Style>
+          </Border.Style>
+          <Grid ClipToBounds="True">
+           <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+           <TextBlock Text="{Binding DayNumber}" FontWeight="SemiBold"
+                      HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock.Style>
+             <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Foreground" Value="{DynamicResource MaterialDesign.Brush.Foreground}"/>
+              <Style.Triggers>
+               <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                <Setter Property="Foreground" Value="#FFB8AFB4"/>
+               </DataTrigger>
+              </Style.Triggers>
+             </Style>
+            </TextBlock.Style>
+           </TextBlock>
+           <TextBlock Grid.Row="1" Text="{Binding AppointmentCountText}"
+                      FontSize="9" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                      TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom"
+                      HorizontalAlignment="Left">
+            <TextBlock.Style>
+             <Style TargetType="{x:Type TextBlock}">
+              <Setter Property="Visibility" Value="Collapsed"/>
+              <Style.Triggers>
+               <DataTrigger Binding="{Binding HasAppointments}" Value="True">
+                <Setter Property="Visibility" Value="Visible"/>
+               </DataTrigger>
+              </Style.Triggers>
+             </Style>
+            </TextBlock.Style>
+           </TextBlock>
+          </Grid>
+         </Border>
+         <Button Panel.ZIndex="1"
+                 Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 CommandParameter="{Binding Date}"
+                 IsHitTestVisible="{Binding HasAppointments}"
+                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 Padding="0" Margin="0" BorderThickness="0"
+                 Background="Transparent" Focusable="False"
+                 MinHeight="0" MinWidth="0">
+          <Button.Template>
+           <ControlTemplate TargetType="{x:Type Button}">
+            <Grid Background="Transparent"/>
+           </ControlTemplate>
+          </Button.Template>
+         </Button>
         </Grid>
-       </Border>
-      </DataTemplate>
-     </ItemsControl.ItemTemplate>
-    </ItemsControl>
-   </Grid>
-  </Border>
+       </DataTemplate>
+      </ItemsControl.ItemTemplate>
+     </ItemsControl>   </Grid>
+   </Border>
+   <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="16">
+    <Grid>
+     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+     <StackPanel Grid.Row="0">
+      <TextBlock Text="{Binding AgendaTitle}" FontSize="21" FontWeight="SemiBold"/>
+      <TextBlock Text="Seleziona una data per consultare gli appuntamenti e aprire la scheda cliente." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" TextWrapping="Wrap" Margin="0,5,0,10"/>
+     </StackPanel>
+     <DatePicker Grid.Row="1" SelectedDate="{Binding SelectedAgendaDate, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+     <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+      <ItemsControl ItemsSource="{Binding DailyAppointments}">
+       <ItemsControl.ItemTemplate><DataTemplate>
+        <Border BorderBrush="#E8E2E6" BorderThickness="0,0,0,1" Padding="12,10">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,10,0">
+           <TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
+           <TextBlock FontWeight="SemiBold" Margin="0,8,0,0"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+           <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,2,0,0"/>
+           <TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+           <TextBlock Text="{Binding DurationMinutes, StringFormat='Durata: {0} minuti'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+           <TextBlock Text="{Binding Status}" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,3,0,0"/>
+           <TextBlock Text="{Binding WorkingHoursWarning}" Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
+            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsOutsideWorkingHours}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+           </TextBlock>
+           <TextBlock Text="Attenzione: appuntamento sovrapposto a un altro." Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
+            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasOverlapWarning}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+           </TextBlock>
+           <TextBlock Text="{Binding Notes, TargetNullValue=''}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+           <Button Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Apri la scheda cliente" AutomationProperties.Name="Apri la scheda cliente">
+            <materialDesign:PackIcon Kind="Account" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Conferma appuntamento ed entra nella registrazione dell'intervento" AutomationProperties.Name="Conferma appuntamento">
+            <materialDesign:PackIcon Kind="Check" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Modifica appuntamento" AutomationProperties.Name="Modifica appuntamento">
+            <materialDesign:PackIcon Kind="Pencil" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Elimina appuntamento" AutomationProperties.Name="Elimina appuntamento">
+            <materialDesign:PackIcon Kind="Delete" Width="19" Height="19"/>
+           </Button>
+          </StackPanel>
+         </Grid>
+        </Border>
+       </DataTemplate></ItemsControl.ItemTemplate>
+      </ItemsControl>
+     </ScrollViewer>
+     <TextBlock Grid.Row="2" Text="Nessun appuntamento per questa data." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" VerticalAlignment="Top" Margin="0,12,0,0">
+      <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding DailyAppointments.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+     </TextBlock>
+    </Grid>
+   </Border>
+  </Grid>
  </Grid>
 </UserControl>

@@ -9,14 +9,33 @@
             <Button Command="{Binding BackToCustomersCommand}" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" Padding="5,5">
                 <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Kind="ArrowLeft" Width="20" Height="20"/><TextBlock Text="Torna ai clienti" Margin="8,0,0,0" VerticalAlignment="Center"/></StackPanel>
             </Button>
-            <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" Margin="0,10,0,0"/>
+            <Grid Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Scheda cliente" FontSize="27" FontWeight="SemiBold"
+                           Foreground="{DynamicResource MaterialDesign.Brush.Foreground}" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Command="{Binding EditCustomerCommand}"
+                        Style="{StaticResource MaterialDesignToolButton}" Width="42" Height="42"
+                        Margin="0,0,6,0" ToolTip="Modifica cliente" AutomationProperties.Name="Modifica cliente">
+                    <materialDesign:PackIcon Kind="Pencil" Width="22" Height="22"/>
+                </Button>
+                <Button Grid.Column="2" Command="{Binding DeleteCustomerCommand}"
+                        Style="{StaticResource MaterialDesignToolButton}" Width="42" Height="42"
+                        ToolTip="Elimina cliente e tutti i dati collegati" AutomationProperties.Name="Elimina cliente"
+                        Foreground="#B3261E">
+                    <materialDesign:PackIcon Kind="Delete" Width="23" Height="23"/>
+                </Button>
+            </Grid>
         </StackPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
                 <Border Background="White" CornerRadius="15" Padding="20" Margin="0,0,0,18">
                     <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="160"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                         <Border Width="140" Height="160" CornerRadius="12" Background="#F3E8ED" ClipToBounds="True">
-                            <Image Source="{Binding Customer.PhotoPath}" Stretch="UniformToFill"/>
+                            <Image Source="{Binding Customer.PhotoPath, Converter={StaticResource PhotoPathToImageConverter}}" Stretch="UniformToFill"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0,0,0">
                             <TextBlock Text="{Binding Customer.FirstName}" FontSize="25" FontWeight="SemiBold"/>
@@ -37,42 +56,53 @@
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
-                    <StackPanel><TextBlock Text="Note cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/><TextBlock Text="{Binding Customer.Notes, TargetNullValue='Nessuna nota disponibile'}" FontSize="14" Foreground="#777077" TextWrapping="Wrap"/></StackPanel>
+                    <StackPanel><TextBlock Text="Note personali (uso interno)" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,5"/><TextBlock Text="Annotazioni riservate alla gestione del cliente." FontSize="12" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,12"/><TextBlock Text="{Binding Customer.Notes, TargetNullValue='Nessuna nota disponibile'}" FontSize="14" Foreground="#777077" TextWrapping="Wrap"/></StackPanel>
                 </Border>
 
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
-                        <TextBlock Text="Consenso informato" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
-                        <TextBlock Text="{Binding Customer.ConsentFormPath, TargetNullValue='Nessun PDF caricato'}"
-                                   Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
-                                   TextWrapping="Wrap" Margin="0,0,0,12"/>
-                        <Button Content="Apri PDF firmato"
-                                Command="{Binding OpenConsentFormCommand}"
-                                HorizontalAlignment="Left" Padding="14,8"/>
+                        <TextBlock Text="Informazioni importanti" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Allergie" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding Customer.Allergies, TargetNullValue='Non indicate'}" TextWrapping="Wrap" Margin="0,4,0,12"/>
+                        <TextBlock Text="Sensibilità e intolleranze" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding Customer.Sensitivities, TargetNullValue='Non indicate'}" TextWrapping="Wrap" Margin="0,4,0,0"/>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
                     <StackPanel>
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                            <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
-                                <Button Command="{Binding EditInterventionCommand}" CommandParameter="{Binding SelectedIntervention}" x:Name="EditInterventionButton" IsEnabled="False" ToolTip="Modifica intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
-                                <Button Command="{Binding DeleteInterventionCommand}" x:Name="DeleteInterventionButton" IsEnabled="False" ToolTip="Elimina intervento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
-                            </StackPanel>
-                        </Grid>
-                        <DataGrid ItemsSource="{Binding Interventions}" SelectedItem="{Binding SelectedIntervention}" SelectionChanged="Interventions_SelectionChanged" AutoGenerateColumns="False"
-                                  Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
-                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
-                                <DataGridTextColumn Header="Tipo" Binding="{Binding Type.Name}" Width="*"/>
-                                <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="*"/>
-                                <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        
+                        <TextBlock Text="Consenso informato" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="{Binding Customer.ConsentFormPath, TargetNullValue='ATTENZIONE: consenso informato mancante'}"
+                                   Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                   TextWrapping="Wrap" Margin="0,0,0,6"/>
+                        <TextBlock Text="{Binding Customer.ConsentAcquiredAt, StringFormat='Acquisito il {0:dd/MM/yyyy HH:mm}', TargetNullValue='Data di acquisizione non disponibile'}"
+                                   Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"
+                                   Margin="0,0,0,12"/>
+                        <Button Content="Apri PDF firmato"
+                                Command="{Binding OpenConsentFormCommand}"
+                                HorizontalAlignment="Left" Padding="14,8" MinHeight="38"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Cronologia cliente" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                        <TextBlock Text="Appuntamenti, interventi e modifiche alla scheda in ordine cronologico" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,0,0,8"/>
+                        <ItemsControl ItemsSource="{Binding Timeline}">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Grid Margin="0,7">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="125"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Date, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" FontWeight="SemiBold" VerticalAlignment="Top"/>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Category}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Detail}" />
+                                        <TextBlock Text="{Binding PrimaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                        <TextBlock Text="{Binding SecondaryInfo}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="Nessuna attività registrata." Foreground="{DynamicResource MaterialDesign.Brush.Secondary}">
+                            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Timeline.Count}" Value="0"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
                 <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
@@ -80,22 +110,108 @@
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                             <TextBlock Text="Appuntamenti" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button Command="{Binding NewAppointmentCommand}" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
-                                <Button Command="{Binding EditAppointmentCommand}" CommandParameter="{Binding SelectedAppointment}" x:Name="EditAppointmentButton" IsEnabled="False" ToolTip="Modifica appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/></Button>
-                                <Button Command="{Binding DeleteAppointmentCommand}" x:Name="DeleteAppointmentButton" IsEnabled="False" ToolTip="Elimina appuntamento selezionato" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/></Button>
-                            </StackPanel>
+                            <Button Grid.Column="1" Command="{Binding NewAppointmentCommand}" ToolTip="Nuovo appuntamento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
                         </Grid>
-                        <DataGrid ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}" SelectionChanged="Appointments_SelectionChanged" AutoGenerateColumns="False"
+                        <DataGrid ItemsSource="{Binding Appointments}" SelectedItem="{Binding SelectedAppointment}" AutoGenerateColumns="False"
                                   Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
                                   CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="100" MaxHeight="220" SelectionMode="Single">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Ora" Binding="{Binding Date, StringFormat='{}{0:HH:mm}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Durata" Binding="{Binding DurationMinutes, StringFormat='{}{0} min'}" Width="Auto"/>
                                 <DataGridTextColumn Header="Tipo" Binding="{Binding InterventionType.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Stato" Binding="{Binding Status}" Width="*"/>
                                 <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="*"/>
+                                <DataGridTemplateColumn Header="Azioni" Width="150">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button Command="{Binding DataContext.ConfirmAppointmentExecutedCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="40" Height="40" ToolTip="Conferma svolgimento e registra l'intervento"
+                                                        AutomationProperties.Name="Conferma svolgimento appuntamento">
+                                                    <materialDesign:PackIcon Kind="Check" Width="21" Height="21"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="40" Height="40" ToolTip="Modifica appuntamento"
+                                                        AutomationProperties.Name="Modifica appuntamento">
+                                                    <materialDesign:PackIcon Kind="Pencil" Width="20" Height="20"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="40" Height="40" ToolTip="Elimina appuntamento"
+                                                        AutomationProperties.Name="Elimina appuntamento"
+                                                        Foreground="#B3261E">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
                         </DataGrid>
+                    </StackPanel>
+                </Border>
+<Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="Interventi" FontSize="20" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Command="{Binding NewInterventionCommand}" ToolTip="Nuovo intervento" Style="{StaticResource MaterialDesignToolButton}" Width="40" Height="40"><materialDesign:PackIcon Kind="Plus" Width="22" Height="22"/></Button>
+                        </Grid>
+                        <WrapPanel Margin="0,0,0,12">
+                            <ComboBox ItemsSource="{Binding Types}" SelectedItem="{Binding HistoryFilterType}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per tipo di intervento"/>
+                            <ComboBox ItemsSource="{Binding Locations}" SelectedItem="{Binding HistoryFilterLocation}" DisplayMemberPath="Name" Width="170" Margin="0,0,8,8" ToolTip="Filtra per luogo"/>
+                            <Button Content="Azzera filtri" Command="{Binding ClearHistoryFiltersCommand}" Padding="10,8" Margin="0,0,0,8" MinHeight="38"/>
+                        </WrapPanel>
+                        <DataGrid ItemsSource="{Binding FilteredInterventions}" SelectedItem="{Binding SelectedIntervention}" MouseDoubleClick="Interventions_MouseDoubleClick" AutoGenerateColumns="False"
+                                  Background="{DynamicResource MaterialDesign.Brush.Surface}" Foreground="{DynamicResource MaterialDesign.Brush.Foreground}"
+                                  CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" MinHeight="130" MaxHeight="240" SelectionMode="Single">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Data" Binding="{Binding Date, StringFormat='{}{0:dd/MM/yyyy}'}" Width="Auto"/>
+                                <DataGridTextColumn Header="Tipo" Binding="{Binding Type.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Luogo" Binding="{Binding Location.Name}" Width="*"/>
+                                <DataGridTextColumn Header="Prezzo" Binding="{Binding Price, StringFormat={}{0:C2}}" Width="Auto"/>
+                                <DataGridCheckBoxColumn Header="Pagato" Binding="{Binding IsPaid}" IsReadOnly="True" Width="Auto"/>
+                                <DataGridTextColumn Header="Note" Binding="{Binding Notes}" Width="2*"/>
+                                <DataGridTemplateColumn Header="Azioni" Width="95">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button Command="{Binding DataContext.OpenInterventionDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="38" Height="38" ToolTip="Visualizza dettagli e fotografie"
+                                                        AutomationProperties.Name="Visualizza dettagli intervento">
+                                                    <materialDesign:PackIcon Kind="ImageMultiple" Width="20" Height="20"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.DeleteInterventionCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}"
+                                                        Width="38" Height="38" ToolTip="Elimina intervento"
+                                                        AutomationProperties.Name="Elimina intervento" Foreground="#B3261E">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="20" Height="20"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <WrapPanel Margin="0,12,0,0">
+                            <TextBlock Text="{Binding InterventionCount, StringFormat='Interventi effettuati: {0}'}" FontWeight="SemiBold" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding LastInterventionDate, StringFormat='Ultimo intervento: {0:dd/MM/yyyy}', TargetNullValue='Ultimo intervento: -'}" Margin="0,0,18,0"/>
+                            <TextBlock Text="{Binding NextAppointmentDate, StringFormat='Prossimo appuntamento: {0:dd/MM/yyyy HH:mm}', TargetNullValue='Nessun appuntamento futuro'}" Margin="0,0,18,0"/>
+                        </WrapPanel>
+                    </StackPanel>
+         
+                </Border>
+                <Border Background="White" CornerRadius="15" Padding="22" Margin="0,0,0,18">
+                    <StackPanel>
+                        <TextBlock Text="Esporta scheda cliente" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Esporta PDF" Command="{Binding ExportCustomerPdfCommand}" Padding="14,8" Margin="0,0,8,0" MinHeight="38"/>
+                            <Button Content="Esporta CSV" Command="{Binding ExportCustomerCsvCommand}" Padding="14,8" MinHeight="38"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
             </StackPanel>

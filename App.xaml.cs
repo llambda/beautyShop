@@ -1,8 +1,10 @@
-﻿using BeautyStudio.Data;
+using MessageBox = BeautyStudio.Services.StyledMessageBox;
+using BeautyStudio.Data;
 using BeautyStudio.Services;
 using BeautyStudio.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace BeautyStudio;
 
@@ -11,6 +13,21 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            ApplicationLog.Write("Errore non gestito", args.ExceptionObject as System.Exception
+                ?? new System.Exception(Convert.ToString(args.ExceptionObject)));
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            ApplicationLog.Write("Attività asincrona non gestita", args.Exception);
+            args.SetObserved();
+        };
+        DispatcherUnhandledException += (_, args) =>
+        {
+            ApplicationLog.Write("Interfaccia WPF", args.Exception);
+            MessageBox.Show("Si è verificato un errore inatteso. I dettagli sono stati salvati nel registro dell'applicazione.",
+                "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
+            args.Handled = true;
+        };
         try
         {
             await using (var db = new AppDbContext())
@@ -31,6 +48,24 @@ public partial class App : Application
                     CONSTRAINT FK_Interventions_InterventionLocations_LocationId FOREIGN KEY (LocationId) REFERENCES InterventionLocations (Id) ON DELETE RESTRICT,
                     CONSTRAINT FK_Interventions_InterventionTypes_TypeId FOREIGN KEY (TypeId) REFERENCES InterventionTypes (Id) ON DELETE RESTRICT
                 );");
+                await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS CustomerActivities (
+                    Id INTEGER NOT NULL CONSTRAINT PK_CustomerActivities PRIMARY KEY AUTOINCREMENT,
+                    CustomerId INTEGER NOT NULL,
+                    OccurredAt TEXT NOT NULL,
+                    Category TEXT NOT NULL,
+                    Detail TEXT NOT NULL,
+                    CONSTRAINT FK_CustomerActivities_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
+                );");
+                await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS InterventionHistory (
+                    Id INTEGER NOT NULL CONSTRAINT PK_InterventionHistory PRIMARY KEY AUTOINCREMENT,
+                    InterventionId INTEGER NOT NULL,
+                    CustomerId INTEGER NOT NULL,
+                    ChangedAt TEXT NOT NULL,
+                    Action TEXT NOT NULL,
+                    Details TEXT NOT NULL,
+                    CONSTRAINT FK_InterventionHistory_Interventions_InterventionId FOREIGN KEY (InterventionId) REFERENCES Interventions (Id) ON DELETE CASCADE,
+                    CONSTRAINT FK_InterventionHistory_Customers_CustomerId FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE
+                );");
                 await db.Database.ExecuteSqlRawAsync(@"CREATE TABLE IF NOT EXISTS Appointments (
                     Id INTEGER NOT NULL CONSTRAINT PK_Appointments PRIMARY KEY AUTOINCREMENT,
                     CustomerId INTEGER NOT NULL,
@@ -47,6 +82,50 @@ public partial class App : Application
                 var appointmentTypeColumn = await db.Database.SqlQueryRaw<int>("SELECT COUNT(*) AS Value FROM pragma_table_info('Appointments') WHERE name = 'InterventionTypeId'").SingleAsync();
                 if (appointmentTypeColumn == 0)
                     await db.Database.ExecuteSqlRawAsync("ALTER TABLE Appointments ADD COLUMN InterventionTypeId INTEGER NULL;");
+
+                async Task EnsureColumnAsync(string table, string column, string alterSql)
+                {
+                    // I valori table/column vengono passati come parametri SQL;
+                    // il comando ALTER è scelto esclusivamente tra stringhe statiche interne.
+                    var count = await db.Database.SqlQuery<int>(
+                        $"SELECT COUNT(*) AS Value FROM pragma_table_info({table}) WHERE name = {column}")
+                        .SingleAsync();
+
+                    if (count == 0)
+                        await db.Database.ExecuteSqlRawAsync(alterSql);
+                }
+
+                await EnsureColumnAsync("Customers", "Allergies",
+                    "ALTER TABLE Customers ADD COLUMN Allergies TEXT NULL;");
+                await EnsureColumnAsync("Customers", "Sensitivities",
+                    "ALTER TABLE Customers ADD COLUMN Sensitivities TEXT NULL;");
+                await EnsureColumnAsync("Interventions", "Price",
+                    "ALTER TABLE Interventions ADD COLUMN Price TEXT NOT NULL DEFAULT '0';");
+                await EnsureColumnAsync("Interventions", "IsPaid",
+                    "ALTER TABLE Interventions ADD COLUMN IsPaid INTEGER NOT NULL DEFAULT 0;");
+                await EnsureColumnAsync("Interventions", "PaidAt",
+                    "ALTER TABLE Interventions ADD COLUMN PaidAt TEXT NULL;");
+                await EnsureColumnAsync("Interventions", "PhotoMetadataJson",
+                    "ALTER TABLE Interventions ADD COLUMN PhotoMetadataJson TEXT NOT NULL DEFAULT '{{}}';");
+                await EnsureColumnAsync("Appointments", "DurationMinutes",
+                    "ALTER TABLE Appointments ADD COLUMN DurationMinutes INTEGER NOT NULL DEFAULT 60;");
+                await EnsureColumnAsync("Appointments", "Status",
+                    "ALTER TABLE Appointments ADD COLUMN Status TEXT NOT NULL DEFAULT 'Da confermare';");
+                await EnsureColumnAsync("Appointments", "LocationId",
+                    "ALTER TABLE Appointments ADD COLUMN LocationId INTEGER NULL;");
+                await EnsureColumnAsync("Customers", "ConsentAcquiredAt",
+                    "ALTER TABLE Customers ADD COLUMN ConsentAcquiredAt TEXT NULL;");
+            }
+
+            try
+            {
+                new BackupService().CreateAutomaticBackupIfNeeded();
+            }
+            catch (System.Exception backupException)
+            {
+                ApplicationLog.Write("Backup automatico all’avvio", backupException);
+                MessageBox.Show($"Backup automatico non riuscito. L'applicazione verrà comunque avviata.\n{backupException.Message}",
+                    "Beauty Studio - Backup", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
             var customerService = new CustomerService();
@@ -54,7 +133,7 @@ public partial class App : Application
             var dialogService = new CustomerDialogService(customerService, photoStorageService);
             var locationService = new InterventionLocationService();
             var typeService = new InterventionTypeService();
-            var settingsViewModel = new SettingsViewModel(locationService, typeService);
+            var settingsViewModel = new SettingsViewModel(locationService, typeService, customerService);
             var mainViewModel = new MainViewModel(customerService, dialogService, settingsViewModel);
             var mainWindow = new MainWindow(mainViewModel);
             MainWindow = mainWindow;
@@ -63,7 +142,12 @@ public partial class App : Application
         }
         catch (System.Exception ex)
         {
-            MessageBox.Show($"Errore durante l'avvio del programma:\n{ex.Message}", "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
+            ApplicationLog.Write("Avvio", ex);
+            string logPath = System.IO.Path.Combine(AppDbContext.DataDirectory, "Logs", $"BeautyStudio_{DateTime.Now:yyyyMMdd}.log");
+
+            MessageBox.Show(
+                $"Errore durante l'avvio del programma:\n{ex.Message}\n\nDettagli completi: {logPath}",
+                "Beauty Studio", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown();
         }
     }
