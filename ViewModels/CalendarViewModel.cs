@@ -168,6 +168,8 @@ public partial class CalendarViewModel : ObservableObject
                     appointment.Status,
                     appointment.IsOutsideWorkingHours,
                     appointment.HasOverlapWarning));
+            day.OnPropertyChanged(nameof(CalendarDayViewModel.HasAppointments));
+            day.OnPropertyChanged(nameof(CalendarDayViewModel.AppointmentCountText));
             }
             Days.Add(day);
         }
@@ -196,6 +198,8 @@ public sealed class CalendarDayViewModel : ObservableObject
     public bool IsToday => Date.Date == DateTime.Today;
     public bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
     public ObservableCollection<AppointmentReminderViewModel> Appointments { get; } = new();
+    public bool HasAppointments => Appointments.Count > 0;
+    public string AppointmentCountText => $"Ci sono {Appointments.Count} appuntamenti";
     public CalendarDayViewModel(DateTime date, bool isCurrentMonth)
     {
         Date = date;
