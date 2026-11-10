@@ -133,39 +133,39 @@
      <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
       <ItemsControl ItemsSource="{Binding DailyAppointments}">
        <ItemsControl.ItemTemplate><DataTemplate>
-        <Border BorderBrush="#E8E2E6" BorderThickness="0,0,0,1" Padding="0,10">
-         <StackPanel>
-          <Grid>
-           <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <Border BorderBrush="#E8E2E6" BorderThickness="0,0,0,1" Padding="12,10">
+         <Grid>
+          <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+          <StackPanel Grid.Column="0" Margin="0,0,10,0">
            <TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
-           <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
-            <Button Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Apri la scheda cliente" AutomationProperties.Name="Apri la scheda cliente">
-             <materialDesign:PackIcon Kind="Account" Width="19" Height="19"/>
-            </Button>
-            <Button Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Conferma appuntamento ed entra nella registrazione dell'intervento" AutomationProperties.Name="Conferma appuntamento">
-             <materialDesign:PackIcon Kind="Check" Width="19" Height="19"/>
-            </Button>
-            <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Modifica appuntamento" AutomationProperties.Name="Modifica appuntamento">
-             <materialDesign:PackIcon Kind="Pencil" Width="19" Height="19"/>
-            </Button>
-            <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Elimina appuntamento" AutomationProperties.Name="Elimina appuntamento">
-             <materialDesign:PackIcon Kind="Delete" Width="19" Height="19"/>
-            </Button>
-           </StackPanel>
-          </Grid>
-          <TextBlock FontWeight="SemiBold" Margin="0,3,0,0"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
-          <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,2,0,0"/>
-          <TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
-          <TextBlock Text="{Binding DurationMinutes, StringFormat='Durata: {0} minuti'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
-          <TextBlock Text="{Binding Status}" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,3,0,0"/>
-          <TextBlock Text="{Binding WorkingHoursWarning}" Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
-           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsOutsideWorkingHours}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
-          </TextBlock>
-          <TextBlock Text="Attenzione: appuntamento sovrapposto a un altro." Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
-           <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasOverlapWarning}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
-          </TextBlock>
-          <TextBlock Text="{Binding Notes, TargetNullValue=''}" TextWrapping="Wrap" Margin="0,3,0,0"/>
-         </StackPanel>
+           <TextBlock FontWeight="SemiBold" Margin="0,8,0,0"><Run Text="{Binding Customer.FirstName}"/><Run Text=" "/><Run Text="{Binding Customer.LastName}"/></TextBlock>
+           <TextBlock Text="{Binding InterventionType.Name, TargetNullValue='Tipo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}" Margin="0,2,0,0"/>
+           <TextBlock Text="{Binding Location.Name, TargetNullValue='Luogo non specificato'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+           <TextBlock Text="{Binding DurationMinutes, StringFormat='Durata: {0} minuti'}" Foreground="{DynamicResource MaterialDesign.Brush.Secondary}"/>
+           <TextBlock Text="{Binding Status}" FontWeight="SemiBold" Foreground="{DynamicResource MaterialDesign.Brush.Primary}" Margin="0,3,0,0"/>
+           <TextBlock Text="{Binding WorkingHoursWarning}" Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
+            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsOutsideWorkingHours}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+           </TextBlock>
+           <TextBlock Text="Attenzione: appuntamento sovrapposto a un altro." Foreground="#B3261E" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,3,0,0">
+            <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasOverlapWarning}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+           </TextBlock>
+           <TextBlock Text="{Binding Notes, TargetNullValue=''}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+          </StackPanel>
+          <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top">
+           <Button Command="{Binding DataContext.OpenCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Apri la scheda cliente" AutomationProperties.Name="Apri la scheda cliente">
+            <materialDesign:PackIcon Kind="Account" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.MarkAppointmentAsExecutedCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Conferma appuntamento ed entra nella registrazione dell'intervento" AutomationProperties.Name="Conferma appuntamento">
+            <materialDesign:PackIcon Kind="Check" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.EditAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Modifica appuntamento" AutomationProperties.Name="Modifica appuntamento">
+            <materialDesign:PackIcon Kind="Pencil" Width="19" Height="19"/>
+           </Button>
+           <Button Command="{Binding DataContext.DeleteAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource MaterialDesignToolButton}" Width="36" Height="36" ToolTip="Elimina appuntamento" AutomationProperties.Name="Elimina appuntamento">
+            <materialDesign:PackIcon Kind="Delete" Width="19" Height="19"/>
+           </Button>
+          </StackPanel>
+         </Grid>
         </Border>
        </DataTemplate></ItemsControl.ItemTemplate>
       </ItemsControl>
