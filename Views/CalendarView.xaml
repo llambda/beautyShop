@@ -51,10 +51,24 @@
        <DataTemplate>
         <Button Command="{Binding DataContext.SelectDateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 CommandParameter="{Binding Date}"
-                IsEnabled="{Binding HasAppointments}"
+                IsHitTestVisible="{Binding HasAppointments}"
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-                Padding="0" BorderThickness="0" Background="Transparent" Focusable="False">
+                Padding="0" BorderThickness="0" Background="Transparent"
+                Focusable="False" MinHeight="0" MinWidth="0">
+         <Button.Template>
+          <ControlTemplate TargetType="{x:Type Button}">
+           <Border Background="{TemplateBinding Background}"
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                   SnapsToDevicePixels="True">
+            <ContentPresenter HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Content="{TemplateBinding Content}"
+                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                              RecognizesAccessKey="True"/>
+           </Border>
+          </ControlTemplate>
+         </Button.Template>
          <Border BorderBrush="#E8E2E6" BorderThickness="0,1,1,0"
                  Padding="5" Margin="0" MinHeight="0"
                  Background="{DynamicResource MaterialDesign.Brush.Surface}"
